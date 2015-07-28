@@ -1,0 +1,74 @@
+class AlramsController < ApplicationController
+  before_action :set_alram, only: [:show, :edit, :update, :destroy]
+
+  # GET /alrams
+  # GET /alrams.json
+  def index
+    @alrams = Alram.where(user_id: params[:id]).order("updated_at desc")
+  end
+
+  # GET /alrams/1
+  # GET /alrams/1.json
+  def show
+  end
+
+  # GET /alrams/new
+  def new
+    @alram = Alram.new
+  end
+
+  # GET /alrams/1/edit
+  def edit
+  end
+
+  # POST /alrams
+  # POST /alrams.json
+  def create
+    @alram = Alram.new(alram_params)
+
+    respond_to do |format|
+      if @alram.save
+        format.html { redirect_to @alram, notice: 'Alram was successfully created.' }
+        format.json { render :show, status: :created, location: @alram }
+      else
+        format.html { render :new }
+        format.json { render json: @alram.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /alrams/1
+  # PATCH/PUT /alrams/1.json
+  def update
+    respond_to do |format|
+      if @alram.update(alram_params)
+        format.html { redirect_to @alram, notice: 'Alram was successfully updated.' }
+        format.json { render :show, status: :ok, location: @alram }
+      else
+        format.html { render :edit }
+        format.json { render json: @alram.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /alrams/1
+  # DELETE /alrams/1.json
+  def destroy
+    @alram.destroy
+    respond_to do |format|
+      format.html { redirect_to alrams_url, notice: 'Alram was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_alram
+      @alram = Alram.find(params[:id])
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def alram_params
+      params[:alram]
+    end
+end
