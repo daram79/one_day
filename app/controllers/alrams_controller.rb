@@ -60,6 +60,10 @@ class AlramsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  def get_alram_data
+    @alram = Alram.where(user_id: params[:user_id], send_flg: true).last
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
