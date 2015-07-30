@@ -8,7 +8,7 @@ class Comment < ActiveRecord::Base
   
   def create_alram
     if self.user_id != self.feed.user_id
-      self.alram.create(user_id: self.feed.user_id, friend_user_id: self.user_id)
+      self.alram.create(user_id: self.feed.user_id, send_user_id: self.user_id)
     end
   end
   
