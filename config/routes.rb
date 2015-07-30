@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   
   resources :users do
     member do
-      post "set_registration_id"
+      put "set_registration_id"
     end
   end
   
