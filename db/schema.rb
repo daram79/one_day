@@ -18,10 +18,12 @@ ActiveRecord::Schema.define(version: 20150727143613) do
     t.integer  "alram_id"
     t.string   "alram_type"
     t.integer  "send_user_id"
+    t.boolean  "send_flg",     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "alrams", ["send_flg"], name: "index_alrams_on_send_flg", using: :btree
   add_index "alrams", ["user_id"], name: "index_alrams_on_user_id", using: :btree
 
   create_table "comments", force: true do |t|
