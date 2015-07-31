@@ -73,6 +73,20 @@ class AlramsController < ApplicationController
   def get_alram_data
     @alram = Alram.where(user_id: params[:user_id], send_flg: true).last
   end
+  
+  def phone_alram_on
+    current_user = User.find(params[:user_id])
+    current_user.alram_on = true
+    current_user.save
+    render :json => {alram_type: true}
+  end
+  
+  def phone_alram_off
+    current_user = User.find(params[:user_id])
+    current_user.alram_on = false
+    current_user.save
+    render :json => {alram_type: false}
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

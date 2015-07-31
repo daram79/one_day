@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :users do
     member do
       put "set_registration_id"
+      get "get_alram_on"
     end
   end
   
