@@ -122,11 +122,11 @@ class FeedsController < ApplicationController
   
   def add_comment
     current_user = User.find(params[:user_id])
-    comment = Comment.create(feed_id:params[:id] , user_id: current_user.id, content: params[:comment_content])
+    comment = Comment.create(feed_id:params[:id] , user_id: current_user.id, content: params[:comment_content], ip: params[:ip])
     comment_count = Comment.where(feed_id:params[:id]).count
     comment.feed.update(comment_count: comment_count)
     
-    render json: {comment_content: comment.content, user_nick: current_user.nick}
+    render json: {comment_content: comment.content}
   end
 
   private
@@ -137,6 +137,6 @@ class FeedsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def feed_params
-      params[:feed].permit(:user_id, :content, :html_content, feed_photos_attributes: [:image])
+      params[:feed].permit(:user_id, :content, :html_content, :ip, feed_photos_attributes: [:image])
     end
 end

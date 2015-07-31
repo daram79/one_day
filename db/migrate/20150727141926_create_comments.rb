@@ -4,6 +4,7 @@ class CreateComments < ActiveRecord::Migration
       t.integer :feed_id
       t.integer :user_id
       t.text  :content
+      t.string :ip
       t.timestamps
     end
     add_index :comments, :feed_id

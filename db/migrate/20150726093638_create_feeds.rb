@@ -6,6 +6,7 @@ class CreateFeeds < ActiveRecord::Migration
       t.text  :html_content
       t.integer :like_count, default: 0
       t.integer :comment_count, default: 0
+      t.string :ip
       t.timestamps
     end
   end
