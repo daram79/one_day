@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150727143613) do
+ActiveRecord::Schema.define(version: 20150731052444) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -72,8 +72,16 @@ ActiveRecord::Schema.define(version: 20150727143613) do
 
   add_index "likes", ["feed_id"], name: "index_likes_on_feed_id", using: :btree
 
+  create_table "notices", force: true do |t|
+    t.string   "title"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "users", force: true do |t|
     t.text     "registration_id"
+    t.boolean  "alram_on",        default: true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
