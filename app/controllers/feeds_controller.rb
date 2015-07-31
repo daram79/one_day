@@ -3,13 +3,16 @@
 class FeedsController < ApplicationController
   include ActionView::Helpers::DateHelper
   
-  before_action :set_feed, only: [:show, :edit, :update, :destroy, :comment]
+  before_action :set_feed, only: [:edit, :update, :destroy, :comment]
 
   # GET /feeds
   # GET /feeds.json
   def index
     @current_user = User.find(params[:user_id])
-    @feeds = Feed.all.order('updated_at desc').limit(100)
+    
+    # search_start_time = Time.now.utc - 1
+    search_start_time = (DateTime.now - 1).utc
+    @feeds = Feed.where("created_at > '#{search_start_time}'").order('updated_at desc').limit(100)
     @time_word = Hash.new
     @feeds.each do |feed|
       @time_word[feed.id] = time_ago_in_words(feed.created_at)
@@ -20,7 +23,10 @@ class FeedsController < ApplicationController
   # GET /feeds/1.json
   def show
     @current_user = User.find(params[:user_id])
-    @item_photo = @feed.feed_photos[0]
+    # @item_photo = @feed.feed_photos[0]
+    search_start_time = (DateTime.now - 1).utc
+    @feed = Feed.where("id = ? and created_at > ?", params[:id], search_start_time).first
+    @item_photo = @feed.feed_photos[0] if @feed
     @time_word = time_ago_in_words(@feed.created_at)
   end
 
