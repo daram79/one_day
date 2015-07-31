@@ -66,6 +66,11 @@ class UsersController < ApplicationController
     @user.update(registration_id: params[:registration_id])
     render :json => {status: 200}
   end
+  
+  def get_alram_on
+    user = User.find(params[:id])
+    render :json => {status: 200, alram_on: user.alram_on}
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
