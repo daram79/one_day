@@ -71,6 +71,18 @@ class UsersController < ApplicationController
     user = User.find(params[:id])
     render :json => {status: 200, alram_on: user.alram_on}
   end
+  
+  def agreement
+    
+  end
+  
+  def personal_information_policy
+    
+  end
+  
+  def notice
+    @notices = Notice.all.order("id desc")
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

@@ -1,0 +1,28 @@
+<div style="padding:0 20px;">
+	<table style="width:100%">
+		<% @notices.each do |notice| %>
+		<tr class='title' id='<%=notice.id%>'>
+			<td style="padding:10px 10px 0 10px;">
+				<span style="color:black; font-size:16px;"><%= raw notice.title.to_s.html_safe %></span>
+				<span style="color:gray; font-size:14px;"><%=notice.created_at.strftime("%y/%m/%d")%></span>
+			</td>
+		</tr>
+		<tr class='content' id='content_<%=notice.id%>' style="display:none;">
+			<td style="padding:5px 10px 10px 15px ;"><span style="color:gray; font-size:14px;"><%= raw hbr(notice.content.to_s.html_safe) %></span></td>
+		</tr>
+		<tr>
+			<td style="padding:10px 10px 0 10px; border-bottom:1px solid gray;"></td>
+		</tr>
+		<% end %>
+	</table>
+</div>
+<script>
+	$('.title').click(function(){
+		var id = $(this).attr('id');
+		if($("#content_" + id).css('display') == 'none'){
+			$("#content_" + id).show();
+		} else {
+			$("#content_" + id).hide();
+		}
+	});
+</script>

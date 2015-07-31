@@ -107,7 +107,8 @@ class FeedsController < ApplicationController
   
   def search_tag
     tag = params[:tag]
-    feed_ids = FeedTag.where(tag_name: tag).pluck(:feed_id)
+    search_start_time = (DateTime.now - 1).utc
+    feed_ids = FeedTag.where("tag_name = ? and created_at > ?",tag, search_start_time).pluck(:feed_id)
     @feeds = Feed.where(id: feed_ids)
   end
   

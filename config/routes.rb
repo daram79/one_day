@@ -5,6 +5,11 @@ Rails.application.routes.draw do
       put "set_registration_id"
       get "get_alram_on"
     end
+    collection do
+      get "agreement"
+      get "personal_information_policy"
+      get "notice"
+    end
   end
   
   resources :feeds do
