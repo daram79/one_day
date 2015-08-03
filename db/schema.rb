@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150731052444) do
+ActiveRecord::Schema.define(version: 20150802143557) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -29,7 +29,9 @@ ActiveRecord::Schema.define(version: 20150731052444) do
   create_table "comments", force: true do |t|
     t.integer  "feed_id"
     t.integer  "user_id"
+    t.string   "nick"
     t.text     "content"
+    t.string   "ip"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -54,10 +56,12 @@ ActiveRecord::Schema.define(version: 20150731052444) do
 
   create_table "feeds", force: true do |t|
     t.integer  "user_id"
+    t.string   "nick"
     t.text     "content"
     t.text     "html_content"
     t.integer  "like_count",    default: 0
     t.integer  "comment_count", default: 0
+    t.string   "ip"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -75,6 +79,18 @@ ActiveRecord::Schema.define(version: 20150731052444) do
   create_table "notices", force: true do |t|
     t.string   "title"
     t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_first_nicks", force: true do |t|
+    t.string   "nick"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_second_nicks", force: true do |t|
+    t.string   "nick"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

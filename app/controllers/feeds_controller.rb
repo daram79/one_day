@@ -51,7 +51,8 @@ class FeedsController < ApplicationController
       tags = Feed.get_tag(content) #태그 작성후 DB에 넣고 태그값 리턴해줌
       html_content = Feed.make_html(content, tags)
       #@feed = Feed.new(feed_params)
-      @feed = Feed.new(feed_params.merge(html_content: html_content))
+      nick = User.get_nick
+      @feed = Feed.new(feed_params.merge(html_content: html_content, nick: nick))
       respond_to do |format|
         if @feed.save
           #format.html { redirect_to @feed, notice: 'Feed was successfully created.' }
@@ -122,11 +123,19 @@ class FeedsController < ApplicationController
   
   def add_comment
     current_user = User.find(params[:user_id])
-    comment = Comment.create(feed_id:params[:id] , user_id: current_user.id, content: params[:comment_content], ip: params[:ip])
+    
+    feed = Feed.find(params[:id])
+    nick = feed.nick
+    if feed.user_id != current_user.id
+      while nick.eql?(feed.nick)
+        nick = User.get_nick
+      end
+    end
+    comment = Comment.create(feed_id:params[:id] , user_id: current_user.id, content: params[:comment_content], ip: params[:ip], nick: nick)
     comment_count = Comment.where(feed_id:params[:id]).count
     comment.feed.update(comment_count: comment_count)
     
-    render json: {comment_content: comment.content}
+    render json: {comment_content: comment.content, nick: comment.nick}
   end
 
   private
@@ -137,6 +146,6 @@ class FeedsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def feed_params
-      params[:feed].permit(:user_id, :content, :html_content, :ip, feed_photos_attributes: [:image])
+      params[:feed].permit(:user_id, :content, :html_content, :nick, :ip, feed_photos_attributes: [:image])
     end
 end
