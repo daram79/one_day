@@ -12,7 +12,7 @@ class FeedsController < ApplicationController
     
     # search_start_time = Time.now.utc - 1
     search_start_time = (DateTime.now - 1).utc
-    @feeds = Feed.where("created_at > '#{search_start_time}'").order('updated_at desc').limit(100)
+    @feeds = Feed.where("created_at > ?", search_start_time).order('updated_at desc').limit(100)
     @time_word = Hash.new
     @feeds.each do |feed|
       @time_word[feed.id] = time_ago_in_words(feed.created_at)
