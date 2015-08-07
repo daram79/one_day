@@ -19,6 +19,19 @@ class MemberNotesController < ApplicationController
     end
   end
   
+  def my_content
+    # @member_notes = MemberNote.all
+    user_id = params[:id]
+    @current_user = User.find(user_id)
+    # @member_notes = Feed.where(user_id: user_id).order("updated_at desc")
+    @member_notes = Feed.where("user_id = ?", user_id).order("updated_at desc")
+    
+    @time_word = Hash.new
+    @member_notes.each do |member_note|
+      @time_word[member_note.id] = time_ago_in_words(member_note.created_at)
+    end
+  end
+  
   # GET /member_notes/1/Likes
   # GET /member_notes/1/Likes.json
   def likes

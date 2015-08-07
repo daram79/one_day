@@ -37,6 +37,9 @@ Rails.application.routes.draw do
     member do
       get "likes"
     end
+    collection do
+      get "my_content"
+    end
   end
   
   # The priority is based upon order of creation: first created -> highest priority.
