@@ -11,7 +11,8 @@ class PopularsController < ApplicationController
     populars = Like.where("created_at > ?", search_start_time).group(:feed_id).order("count_feed_id desc").count(:feed_id)
     
     feed_ids = populars.keys
-    @populars = Feed.find(feed_ids) 
+    # @populars = Feed.find(feed_ids)
+    @populars = Feed.where(id: feed_ids).where("created_at > ?", search_start_time)
   end
 
   # GET /populars/1
