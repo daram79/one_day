@@ -2,8 +2,8 @@
 require 'open-uri'
 class NoticeMailer < ActionMailer::Base
   #デフォルトのヘッダ情報
-  # default to: Proc.new { ["shimtong1004@gmail.com", "goodnews1079@gmail.com"] }, from: 'shimtong1004@gmail.com'
-  default to: Proc.new { ["shimtong1004@gmail.com"] }, from: 'shimtong1004@gmail.com'
+  default to: Proc.new { ["shimtong1004@gmail.com", "goodnews1079@gmail.com"] }, from: 'shimtong1004@gmail.com'
+  # default to: Proc.new { ["shimtong1004@gmail.com"] }, from: 'shimtong1004@gmail.com'
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
