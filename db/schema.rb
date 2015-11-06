@@ -28,13 +28,11 @@ ActiveRecord::Schema.define(version: 20151106161443) do
 
   create_table "cgv_events", force: true do |t|
     t.integer  "event_id"
-    t.boolean  "is_send",    default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "cgv_events", ["event_id"], name: "index_cgv_events_on_event_id", using: :btree
-  add_index "cgv_events", ["is_send"], name: "index_cgv_events_on_is_send", using: :btree
 
   create_table "comments", force: true do |t|
     t.integer  "feed_id"
