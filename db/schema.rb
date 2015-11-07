@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151107075722) do
+ActiveRecord::Schema.define(version: 20151107161244) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -33,6 +33,16 @@ ActiveRecord::Schema.define(version: 20151107075722) do
   end
 
   add_index "cgv_events", ["event_id"], name: "index_cgv_events_on_event_id", using: :btree
+
+  create_table "clien_frugal_events", force: true do |t|
+    t.integer  "event_id"
+    t.string   "event_name"
+    t.string   "event_url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "clien_frugal_events", ["event_id"], name: "index_clien_frugal_events_on_event_id", using: :btree
 
   create_table "comments", force: true do |t|
     t.integer  "feed_id"
