@@ -13,6 +13,7 @@
 	  		return false;
 	  	} else {
 	  		// $("#new_event_mailing_list").submit();
+	  		$("#my_email").remove();
 	  		$.ajax({
 			   url: "/event_mailing_lists/create_ajax",
 			   dataType:'json',
