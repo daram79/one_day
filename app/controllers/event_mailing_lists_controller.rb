@@ -5,9 +5,9 @@ class EventMailingListsController < ApplicationController
   # GET /event_mailing_lists.json
   def index
     @event_mailing_list = EventMailingList.new
-    if params[:id]
-      @mail = EventMailingList.find(params[:id])
-    end
+    # if params[:id]
+      # @mail = EventMailingList.find(params[:id])
+    # end
   end
 
   # GET /event_mailing_lists/1
@@ -32,7 +32,7 @@ class EventMailingListsController < ApplicationController
       @event_mailing_list = EventMailingList.new(event_mailing_list_params)
       @event_mailing_list.save
     end
-    redirect_to controller: 'event_mailing_lists', action: 'index', id: @event_mailing_list.id
+    # redirect_to controller: 'event_mailing_lists', action: 'index', id: @event_mailing_list.id
 
     # respond_to do |format|
       # if @event_mailing_list.save
@@ -70,6 +70,13 @@ class EventMailingListsController < ApplicationController
     end
   end
   
+  def create_ajax
+    event_mailing_list = EventMailingList.find_by_email(params[:mail])
+    unless event_mailing_list
+      event_mailing_list = EventMailingList.create(email: params[:mail])
+    end
+    render :json => {status: :ok, data: event_mailing_list}
+  end
   
   def mail_receive_false
     @email = EventMailingList.find(params[:mail_id])

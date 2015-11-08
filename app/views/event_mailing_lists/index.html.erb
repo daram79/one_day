@@ -1,92 +1,93 @@
 <h1>이벤트 메일링 등록/검색</h1>
-<%= form_for(@event_mailing_list) do |f| %>
-	<div>
-		<%= f.text_field :email %>
-		<input type="button" id="go" value="메일등록/검색" />
-	</div>
-<% end %>
 
-<% if @mail %>
-<div id="my_email" style="margin-top: 20px;">
-	<table>
-		<tr>
-			<td><%= @mail.email %></td>
-			<td>
-				<input id="mail_receive_true" type="button" value="메일 받기" />
-				<input id="mail_receive_false" type="button" value="메일 안받기" />
-			</td>
-			<td>
-				<input id="del_mail" type="button" value="메일 삭제" />
-			</td>
-			<td>
-				현재상태: 
-					<span id="send_status_true" style="background-color: blue; color: white; padding:5px">메일 받음</span>
-					<span id="send_status_false" style="background-color: red; color: white; padding:5px">메일 안받음</span>
-			</td>
-		</tr>
-	</table>
+<div id="input_mail">
+	<input id="event_mailing_list_email" type="text" />
+	<input type="button" id="go" value="메일등록/검색" onclick="go()" />
 </div>
-<% end %>
-
-
 <script>
-	$('#go').click(function(){
+	
+	function go(){
 		var email = $.trim( $("#event_mailing_list_email").val() );  
 	  	if ( email == "" || email == "" ) {
 	  		alert("email 입력해주세요.");
 	  		return false;
 	  	} else {
-	  		$("#new_event_mailing_list").submit();
+	  		// $("#new_event_mailing_list").submit();
+	  		$.ajax({
+			   url: "/event_mailing_lists/create_ajax",
+			   dataType:'json',
+			   type:'POST',
+			   data: {mail: email},
+			   success: function(data){
+				   	var mail = data.data;
+				   	var html_str = "";
+				   	html_str += "<div id='my_email' style='margin-top: 20px;'>";
+				   	html_str += "	<table>";
+				   	html_str += "		<tr>";
+				   	html_str += "			<td>" + mail.email + "</td>";
+				   	html_str += "			<td>";
+				   	html_str += "				<input id='mail_receive_true' type='button' value='메일 받기' onclick='mail_receive_true(\"" + mail.id + "\")' />";	
+				   	html_str += "				<input id='mail_receive_false' type='button' value='메일 안받기' onclick='mail_receive_false(\"" + mail.id + "\")' />";
+				   	html_str += "			</td>";
+				   	html_str += "			<td>";
+				   	html_str += "				<input id='del_mail' type='button' value='메일 삭제' onclick='del_mail(\"" + mail.id + "\")' />";
+				   	html_str += "			</td>";
+				   	html_str += "			<td>";
+				   	html_str += "				현재상태:";
+				   	html_str += "					<span id='send_status_true' style='background-color: blue; color: white; padding:5px'>메일 받음</span>";
+				   	html_str += "					<span id='send_status_false' style='background-color: red; color: white; padding:5px'>메일 안받음</span>";				   					   	
+				   	html_str += "			</td>";
+				   	html_str += "		</tr>";
+				   	html_str += "	</table>";
+				   	html_str += "</div>";
+				   	$("#input_mail").after(html_str)
+				   	if(mail.send_flg) {
+				   		mail_send_true();
+				   	} else {
+				   		mail_send_false();
+				   	}
+			   	
+			   }
+			});
 	  	}
-	});
-</script>
-
-<% if @mail %>
-<script>
-	$('#mail_receive_false').click(function(){
-		$.ajax({
-		   url: "/event_mailing_lists/mail_receive_false",
-		   dataType:'json',
-		   data: {mail_id: <%= @mail.id %>},
-		   type:'PUT',
-		   success: function(data){
-		   	mail_send_false();
-		       alert("이벤트를 이메일로 전송하지 않습니다.");
-		   }
-		});
-	});
+	}
 	
-	$('#mail_receive_true').click(function(){
+	function mail_receive_true(mail_id){
 		$.ajax({
 		   url: "/event_mailing_lists/mail_receive_true",
 		   dataType:'json',
-		   data: {mail_id: <%= @mail.id %>},
+		   data: {mail_id: mail_id},
 		   type:'PUT',
 		   success: function(data){
 		   	mail_send_true();
-		       alert("이벤트를 이메일로 전송합니다.");
 		   }
 		});
-	});
+	}
 	
-	$('#del_mail').click(function(){
+	function mail_receive_false(mail_id){
+		$.ajax({
+		   url: "/event_mailing_lists/mail_receive_false",
+		   dataType:'json',
+		   data: {mail_id: mail_id},
+		   type:'PUT',
+		   success: function(data){
+		   	mail_send_false();
+		   }
+		});
+	}
+	
+	function del_mail(mail_id){
 		$.ajax({
 		   url: "/event_mailing_lists/del_mail",
 		   dataType:'json',
-		   data: {mail_id: <%= @mail.id %>},
+		   data: {mail_id: mail_id},
 		   type:'DELETE',
 		   success: function(data){
 		       alert("메일주소가 삭제 되었습니다.");
 		       $("#my_email").remove();
 		   }
 		});
-	});
-	
-	<% if @mail.send_flg %>
-		mail_send_true();
-	<% else %>
-		mail_send_false();
-	<% end %>
+	}
 	
 	function mail_send_true(){
 		$("#send_status_true").show();
@@ -98,4 +99,3 @@
 		$("#send_status_false").show();
 	}
 </script>
-<% end %>
