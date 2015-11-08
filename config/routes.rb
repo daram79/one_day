@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       put "mail_receive_false"
       put "mail_receive_true"
       delete "del_mail"
+      post "create_ajax"
     end
   end
 
