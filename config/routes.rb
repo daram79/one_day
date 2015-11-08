@@ -1,5 +1,14 @@
 Rails.application.routes.draw do
   
+  resources :event_mailing_lists do
+    collection do
+      get "all"
+      put "mail_receive_false"
+      put "mail_receive_true"
+      delete "del_mail"
+    end
+  end
+
   resources :users do
     member do
       put "set_registration_id"
