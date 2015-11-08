@@ -1,0 +1,17 @@
+<%= form_for(@event_mailing_list) do |f| %>
+  <% if @event_mailing_list.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@event_mailing_list.errors.count, "error") %> prohibited this event_mailing_list from being saved:</h2>
+
+      <ul>
+      <% @event_mailing_list.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

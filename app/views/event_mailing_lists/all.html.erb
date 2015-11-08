@@ -1,0 +1,65 @@
+<h1>이벤트 메일링 등록/검색</h1>
+<% @mails.each do |mail| %>
+	<table>
+		<tr id="mail_<%= mail.id %>">
+			<td width="200" align="right"><%= mail.email %></td>
+			<td>
+				<input type="button" value="메일 받기" onclick="mail_receive_true('<%=mail.id%>')" />
+				<input type="button" value="메일 안받기" onclick="mail_receive_false('<%=mail.id%>')" />
+			</td>
+			<td>
+				<input type="button" value="메일 삭제" onclick="del_mail('<%=mail.id%>')" />
+			</td>
+			<td>
+				현재상태: 
+					<span id="send_status_true_<%=mail.id%>" style=" display: <%= mail.send_flg ? 'inline' : 'none' %> ;background-color: blue; color: white; padding:5px">메일 받음</span>
+					<span id="send_status_false_<%=mail.id%>" style=" display: <%= mail.send_flg ? 'none' : 'inline' %> ; background-color: red; color: white; padding:5px">메일 안받음</span>
+			</td>
+		</tr>
+	</table>
+<% end %>
+
+
+<script>
+	function mail_receive_false(mail_id) {
+		$.ajax({
+		   url: "/event_mailing_lists/mail_receive_false",
+		   dataType:'json',
+		   data: {mail_id: mail_id},
+		   type:'PUT',
+		   success: function(data){
+		   	$("#send_status_true_" + mail_id).hide();
+		   	$("#send_status_false_" + mail_id).show();
+		   	alert("이벤트를 이메일로 전송하지 않습니다.");
+		   }
+		});
+	}
+	
+	function mail_receive_true(mail_id) {
+		$.ajax({
+		   url: "/event_mailing_lists/mail_receive_true",
+		   dataType:'json',
+		   data: {mail_id: mail_id},
+		   type:'PUT',
+		   success: function(data){
+		   	$("#send_status_true_" + mail_id).show();
+		   	$("#send_status_false_" + mail_id).hide();
+		   	alert("이벤트를 이메일로 전송합니다.");
+		   }
+		});
+	}
+	
+	
+	function del_mail(mail_id) {
+		$.ajax({
+		   url: "/event_mailing_lists/del_mail",
+		   dataType:'json',
+		   data: {mail_id: mail_id},
+		   type:'DELETE',
+		   success: function(data){
+		       alert("메일주소가 삭제 되었습니다.");
+		       $("#mail_" + mail_id).remove();
+		   }
+		});
+	}
+</script>

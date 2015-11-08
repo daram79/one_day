@@ -2,8 +2,8 @@
 require 'open-uri'
 class NoticeMailer < ActionMailer::Base
   #デフォルトのヘッダ情報
-  # default to: Proc.new { ["tellus.event@gmail.com", "goodnews1079@gmail.com"] }, from: 'shimtong1004@gmail.com'
-  default to: Proc.new { ["tellus.event@gmail.com"] }, from: 'shimtong1004@gmail.com'
+  default to: Proc.new { EventMailingList.where(send_flg: true).pluck(:email) }, from: 'shimtong1004@gmail.com'
+  # default to: Proc.new { ["tellus.event@gmail.com"] }, from: 'shimtong1004@gmail.com'
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
@@ -105,6 +105,32 @@ class NoticeMailer < ActionMailer::Base
         end
       end
     end
+    
+    
+    url = "http://m.clien.net/cs3/board?bo_style=lists&bo_table=coupon"
+    html_str = open(url).read
+    
+    doc = Nokogiri::HTML(html_str)
+    
+    divs = doc.css("div.wrap_tit")
+    
+    divs.each do |div|
+      if div.attributes["onclick"]
+        event_id = div.attributes["onclick"].value.split('&')[2]
+        event_id.slice! "wr_id="
+        event_name = div.css("span.lst_tit").text
+        event_url = @first_url + div.attributes["onclick"].value.split("'")[1]
+        
+        clien_fruga_event = ClienCouponEvent.find_by_event_id(event_id)
+        
+        unless clien_fruga_event
+          ClienCouponEvent.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url)
+          event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+          @event_ary.push event_hash
+        end
+      end
+    end
+    
     return if @event_ary.blank?
     
     mail subject: @title

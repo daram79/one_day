@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151107161244) do
+ActiveRecord::Schema.define(version: 20151108154827) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -34,6 +34,16 @@ ActiveRecord::Schema.define(version: 20151107161244) do
 
   add_index "cgv_events", ["event_id"], name: "index_cgv_events_on_event_id", using: :btree
 
+  create_table "clien_coupon_events", force: true do |t|
+    t.integer  "event_id"
+    t.string   "event_name"
+    t.string   "event_url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "clien_coupon_events", ["event_id"], name: "index_clien_coupon_events_on_event_id", using: :btree
+
   create_table "clien_frugal_events", force: true do |t|
     t.integer  "event_id"
     t.string   "event_name"
@@ -55,6 +65,15 @@ ActiveRecord::Schema.define(version: 20151107161244) do
   end
 
   add_index "comments", ["feed_id"], name: "index_comments_on_feed_id", using: :btree
+
+  create_table "event_mailing_lists", force: true do |t|
+    t.string   "email"
+    t.boolean  "send_flg",   default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "event_mailing_lists", ["send_flg"], name: "index_event_mailing_lists_on_send_flg", using: :btree
 
   create_table "feed_photos", force: true do |t|
     t.integer  "feed_id"
