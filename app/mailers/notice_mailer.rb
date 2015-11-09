@@ -136,4 +136,51 @@ class NoticeMailer < ActionMailer::Base
     mail subject: @title
   end
   
+  def naver_sg_sendmail_confirm
+    @title = "스타벅스 가쉽 이벤트 알림"
+    @first_url = "http://cafe.naver.com"
+    url = "http://cafe.naver.com/starbucksgossip/ArticleList.nhn?search.clubid=13500915&search.clubid=13500915"
+    
+    # doc = Nokogiri::HTML(open(url, "r:binary").read.encode("utf-8", "euc-kr"))
+    html_str = open(url).read.encode("utf-8", "euc-kr")
+    
+    doc = Nokogiri::HTML(html_str)
+    
+    
+    # charset = nil
+    # html = open(url) do |f|
+      # charset = f.charset # 文字種別を取得
+      # f.read # htmlを読み込んで変数htmlに渡す
+    # end
+#     
+    # # htmlをパース(解析)してオブジェクトを生成
+    # doc = Nokogiri::HTML.parse(html, nil, charset)
+    
+    aaa = doc.css(".aaa a")
+    
+    @event_ary = []
+    aaa.each do |a|
+      if a.text.include?("행사") || a.text.include?("이벤트")
+        no = a.attributes["href"].value.split("&").index {|item| item =~ /^articleid=/ }
+        if no
+          event_id = a.attributes["href"].value.split("&")[no]
+          event_id.slice! "articleid="
+          event_name = a.text
+          event_url = @first_url + a.attributes["href"].value
+            
+          event = Event.where(event_id: event_id, site_name: "sg").first
+            
+          unless event
+            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, site_name: "sg")
+            event_hash = {event_id: event_id, event_name: event_name, event_url: event_url, site_name: "sg"}
+            @event_ary.push event_hash
+          end
+        end
+      end
+    end
+    
+    return if @event_ary.blank?
+    mail subject: @title
+  end
+  
 end

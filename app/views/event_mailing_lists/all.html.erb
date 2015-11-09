@@ -30,7 +30,6 @@
 		   success: function(data){
 		   	$("#send_status_true_" + mail_id).hide();
 		   	$("#send_status_false_" + mail_id).show();
-		   	alert("이벤트를 이메일로 전송하지 않습니다.");
 		   }
 		});
 	}
@@ -44,7 +43,6 @@
 		   success: function(data){
 		   	$("#send_status_true_" + mail_id).show();
 		   	$("#send_status_false_" + mail_id).hide();
-		   	alert("이벤트를 이메일로 전송합니다.");
 		   }
 		});
 	}
