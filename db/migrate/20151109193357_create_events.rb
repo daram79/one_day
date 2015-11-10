@@ -4,7 +4,7 @@ class CreateEvents < ActiveRecord::Migration
       t.integer :event_id
       t.string :event_name
       t.string :event_url
-      t.string  :event_site_id
+      t.integer  :event_site_id
       t.timestamps
     end
     add_index :events, [:event_id, :event_site_id]

@@ -78,7 +78,7 @@ ActiveRecord::Schema.define(version: 20151110122309) do
   create_table "event_receive_users", force: true do |t|
     t.integer  "user_id"
     t.string   "user_email"
-    t.string   "event_site_id"
+    t.integer  "event_site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -95,7 +95,7 @@ ActiveRecord::Schema.define(version: 20151110122309) do
     t.integer  "event_id"
     t.string   "event_name"
     t.string   "event_url"
-    t.string   "event_site_id"
+    t.integer  "event_site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
