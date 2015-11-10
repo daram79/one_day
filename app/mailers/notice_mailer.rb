@@ -183,4 +183,36 @@ class NoticeMailer < ActionMailer::Base
     mail subject: @title
   end
   
+  def coex_event_sendmail_confirm   
+    @title = "코엑스 행사 알림" 
+    site_name = "coex"
+    # @first_url = "http://www.lottecinema.co.kr"
+    # @link_url = "http://www.lottecinema.co.kr/LHS/LHFS/Contents/Event/LotteCinemaEventView.aspx?eventId="
+    url = "http://www.coex.co.kr/blog/event_exhibition?list_type=list"
+    html_str = open(url).read
+    
+    doc = Nokogiri::HTML(html_str)
+    
+    as = doc.css(".article-list a")
+    
+    @event_ary = []
+    as.each do |a|
+      link_url = a.attributes["href"].value
+      no = link_url.split("/").index("event_exhibition")
+      event_id = link_url.split("/")[no+1]
+      event_name = a.css(".subject").text
+      event_url = a.attributes["href"].value
+      event = Event.where(event_id: event_id, site_name: site_name).first
+      unless event
+        Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, site_name: site_name)
+        event_hash = {event_id: event_id, event_name: event_name, event_url: event_url, site_name: site_name}
+        @event_ary.push event_hash
+      end
+    end
+    
+    return if @event_ary.blank?
+    
+    mail subject: @title
+  end
+  
 end
