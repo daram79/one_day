@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151109193357) do
+ActiveRecord::Schema.define(version: 20151110122309) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -75,16 +75,32 @@ ActiveRecord::Schema.define(version: 20151109193357) do
 
   add_index "event_mailing_lists", ["send_flg"], name: "index_event_mailing_lists_on_send_flg", using: :btree
 
-  create_table "events", force: true do |t|
-    t.integer  "event_id"
-    t.string   "event_name"
-    t.string   "event_url"
+  create_table "event_receive_users", force: true do |t|
+    t.integer  "user_id"
+    t.string   "user_email"
+    t.string   "event_site_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "event_receive_users", ["event_site_id"], name: "index_event_receive_users_on_event_site_id", using: :btree
+
+  create_table "event_sites", force: true do |t|
     t.string   "site_name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "events", ["event_id", "site_name"], name: "index_events_on_event_id_and_site_name", using: :btree
+  create_table "events", force: true do |t|
+    t.integer  "event_id"
+    t.string   "event_name"
+    t.string   "event_url"
+    t.string   "event_site_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "events", ["event_id", "event_site_id"], name: "index_events_on_event_id_and_event_site_id", using: :btree
 
   create_table "feed_photos", force: true do |t|
     t.integer  "feed_id"

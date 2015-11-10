@@ -1,8 +1,8 @@
-<h1>CGV 이벤트 알림</h1>
+<h1><%= @title %></h1>
 <div>
 	<% @event_ary.each do |event| %>
 		<div>
-			<a href='<%= @first_url + event["link"] %>'><%= event["description"] %></a>
+			<a href="<%= event[:event_url] %>"><%= event[:event_name] %></a>
 		</div>
 	<% end %>
 </div>
