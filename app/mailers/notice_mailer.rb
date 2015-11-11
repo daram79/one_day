@@ -1,8 +1,9 @@
 # coding : utf-8
 require 'open-uri'
 class NoticeMailer < ActionMailer::Base
+  default :from => "shimtong1004@gmail.com"
   #デフォルトのヘッダ情報
-  default to: Proc.new { EventMailingList.where(send_flg: true).pluck(:email) }, from: 'shimtong1004@gmail.com'
+  # default to: Proc.new { EventMailingList.where(send_flg: true).pluck(:email) }, from: 'shimtong1004@gmail.com'
   # default to: Proc.new { ["tellus.event@gmail.com"] }, from: 'shimtong1004@gmail.com'
 
   # Subject can be set in your I18n file at config/locales/en.yml
@@ -29,8 +30,11 @@ class NoticeMailer < ActionMailer::Base
     else
       return
     end
-    return if @event_ary.blank?
-    mail subject: @title
+    
+    email = EventReceiveUser.where(event_site_id: event_site_id, is_receive: true).pluck(:user_email)
+    
+    return if @event_ary.blank? || email.blank?
+    mail to: email , subject: @title
   end
   
 end

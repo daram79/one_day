@@ -68,22 +68,20 @@ ActiveRecord::Schema.define(version: 20151110122309) do
 
   create_table "event_mailing_lists", force: true do |t|
     t.string   "email"
-    t.boolean  "send_flg",   default: true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "event_mailing_lists", ["send_flg"], name: "index_event_mailing_lists_on_send_flg", using: :btree
 
   create_table "event_receive_users", force: true do |t|
     t.integer  "user_id"
     t.string   "user_email"
     t.integer  "event_site_id"
+    t.boolean  "is_receive",    default: true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "event_receive_users", ["event_site_id"], name: "index_event_receive_users_on_event_site_id", using: :btree
+  add_index "event_receive_users", ["event_site_id", "is_receive"], name: "index_event_receive_users_on_event_site_id_and_is_receive", using: :btree
 
   create_table "event_sites", force: true do |t|
     t.string   "site_name"
