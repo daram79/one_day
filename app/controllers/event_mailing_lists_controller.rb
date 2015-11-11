@@ -75,25 +75,27 @@ class EventMailingListsController < ApplicationController
     unless event_mailing_list
       event_mailing_list = EventMailingList.create(email: params[:mail])
     end
-    render :json => {status: :ok, data: event_mailing_list}
-  end
-  
-  def mail_receive_false
-    @email = EventMailingList.find(params[:mail_id])
-    @email.update(send_flg: false)
-    render :json => {status: :ok}
-  end
-  
-  def mail_receive_true
-    @email = EventMailingList.find(params[:mail_id])
-    @email.update(send_flg: true)
-    render :json => {status: :ok}
+    site_names = EventSite.all.pluck(:site_name)
+    event_receive_users = event_mailing_list.event_receive_users
+    render :json => {status: :ok, data: event_mailing_list, event_receive_users: event_receive_users, site_names: site_names}
   end
   
   def del_mail
     @email = EventMailingList.find(params[:mail_id])
     @email.destroy
     render :json => {status: :ok}
+  end
+  
+  def receive_true
+    event_receive_user = EventReceiveUser.find(params[:event_receive_user_id])
+    event_receive_user.update(is_receive: true)
+    render :json => {status: :ok, event_receive_user_id: event_receive_user.id}
+  end
+  
+  def receive_false
+    event_receive_user = EventReceiveUser.find(params[:event_receive_user_id])
+    event_receive_user.update(is_receive: false)
+    render :json => {status: :ok, event_receive_user_id: event_receive_user.id}
   end
   
   def all

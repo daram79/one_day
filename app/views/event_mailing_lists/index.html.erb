@@ -21,60 +21,46 @@
 			   data: {mail: email},
 			   success: function(data){
 				   	var mail = data.data;
+				   	var event_receive_users = data.event_receive_users;
 				   	var html_str = "";
+				   	var site_names = data.site_names;
 				   	html_str += "<div id='my_email' style='margin-top: 20px;'>";
 				   	html_str += "	<table>";
 				   	html_str += "		<tr>";
 				   	html_str += "			<td>" + mail.email + "</td>";
 				   	html_str += "			<td>";
-				   	html_str += "				<input id='mail_receive_true' type='button' value='메일 받기' onclick='mail_receive_true(\"" + mail.id + "\")' />";	
-				   	html_str += "				<input id='mail_receive_false' type='button' value='메일 안받기' onclick='mail_receive_false(\"" + mail.id + "\")' />";
-				   	html_str += "			</td>";
-				   	html_str += "			<td>";
 				   	html_str += "				<input id='del_mail' type='button' value='메일 삭제' onclick='del_mail(\"" + mail.id + "\")' />";
-				   	html_str += "			</td>";
-				   	html_str += "			<td>";
-				   	html_str += "				현재상태:";
-				   	html_str += "					<span id='send_status_true' style='background-color: blue; color: white; padding:5px'>메일 받음</span>";
-				   	html_str += "					<span id='send_status_false' style='background-color: red; color: white; padding:5px'>메일 안받음</span>";				   					   	
 				   	html_str += "			</td>";
 				   	html_str += "		</tr>";
 				   	html_str += "	</table>";
+				   	
+				   	html_str += "	<table>";
+				   	html_str += "		<tr>";
+				   	for(var i = 0; i < event_receive_users.length; i++){
+				   		html_str += "			<td>";
+				   		html_str += "				<input style='background-color:blue; color:white;' id='receive_true_" + event_receive_users[i].id + "' type='button' value='" + site_names[i] + "' onclick='receive_false(\"" + event_receive_users[i].id + "\")' />";
+				   		html_str += "				<input style='background-color:red; color:white;' id='receive_false_" + event_receive_users[i].id + "' type='button' value='" + site_names[i] + "' onclick='receive_true(\"" + event_receive_users[i].id + "\")' />";
+				   		html_str += "			</td>";
+				   	}
+				   	html_str += "		</tr>";
+				   	
+				   	html_str += "	</table>";
 				   	html_str += "</div>";
 				   	$("#input_mail").after(html_str)
-				   	if(mail.send_flg) {
-				   		mail_send_true();
-				   	} else {
-				   		mail_send_false();
-				   	}
+				   	
+				   	for(var i = 0; i < event_receive_users.length; i++){
+					   	if(event_receive_users[i].is_receive){
+					   		$("#receive_true_" + event_receive_users[i].id).show();
+					   		$("#receive_false_" + event_receive_users[i].id).hide();
+					   	} else {
+					   		$("#receive_true_" + event_receive_users[i].id).hide();
+					   		$("#receive_false_" + event_receive_users[i].id).show();
+					   	}
+					}
 			   	
 			   }
 			});
 	  	}
-	}
-	
-	function mail_receive_true(mail_id){
-		$.ajax({
-		   url: "/event_mailing_lists/mail_receive_true",
-		   dataType:'json',
-		   data: {mail_id: mail_id},
-		   type:'PUT',
-		   success: function(data){
-		   	mail_send_true();
-		   }
-		});
-	}
-	
-	function mail_receive_false(mail_id){
-		$.ajax({
-		   url: "/event_mailing_lists/mail_receive_false",
-		   dataType:'json',
-		   data: {mail_id: mail_id},
-		   type:'PUT',
-		   success: function(data){
-		   	mail_send_false();
-		   }
-		});
 	}
 	
 	function del_mail(mail_id){
@@ -90,13 +76,33 @@
 		});
 	}
 	
-	function mail_send_true(){
-		$("#send_status_true").show();
-		$("#send_status_false").hide();
+	function receive_true(event_receive_user_id){
+		$.ajax({
+		   url: "/event_mailing_lists/receive_true",
+		   dataType:'json',
+		   data: {event_receive_user_id: event_receive_user_id},
+		   type:'PUT',
+		   success: function(data){
+		   		var id = data.event_receive_user_id;
+			   	$("#receive_true_" + id).show();
+		   		$("#receive_false_" + id).hide();
+		   }
+		});
+		
 	}
 	
-	function mail_send_false(){
-		$("#send_status_true").hide();
-		$("#send_status_false").show();
+	function receive_false(event_receive_user_id){
+		$.ajax({
+		   url: "/event_mailing_lists/receive_false",
+		   dataType:'json',
+		   data: {event_receive_user_id: event_receive_user_id},
+		   type:'PUT',
+		   success: function(data){
+		   		var id = data.event_receive_user_id;
+		   		$("#receive_true_" + id).hide();
+		   		$("#receive_false_" + id).show();
+		   }
+		});
+		
 	}
 </script>
