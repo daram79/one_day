@@ -9,6 +9,7 @@
 
 Gemfile.lock
 /config/database.yml
+/config/environments/production.rb
 /public/uploads/*
 /test
 
