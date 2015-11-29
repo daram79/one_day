@@ -27,6 +27,12 @@ class NoticeMailer < ActionMailer::Base
       @event_ary = Event.get_naver_sg_data(event_site_id)
     when 6
       @event_ary = Event.get_coex_data(event_site_id)
+    when 7
+      @event_ary = Event.get_tmon_todays_hot_area(event_site_id)
+    when 8
+      @event_ary = Event.get_shocking_deal_best_main(event_site_id)
+    when 9
+      @event_ary = Event.get_shocking_deal_today(event_site_id)
     else
       return
     end
