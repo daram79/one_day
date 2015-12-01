@@ -22,6 +22,10 @@ Rails.application.routes.draw do
       put "receive_true"
       put "receive_false"
       post "add_event_site"
+      post "create_event_user"
+    end
+    member do
+      post "set_registration_id"
     end
   end
 

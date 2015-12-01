@@ -4,5 +4,6 @@ class CreateEventMailingLists < ActiveRecord::Migration
       t.string  :email
       t.timestamps
     end
+    add_index :event_mailing_lists, :email
   end
 end

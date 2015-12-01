@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151201022635) do
+ActiveRecord::Schema.define(version: 20151201070306) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -72,6 +72,8 @@ ActiveRecord::Schema.define(version: 20151201022635) do
     t.datetime "updated_at"
   end
 
+  add_index "event_mailing_lists", ["email"], name: "index_event_mailing_lists_on_email", using: :btree
+
   create_table "event_receive_users", force: true do |t|
     t.integer  "user_id"
     t.string   "user_email"
@@ -98,6 +100,15 @@ ActiveRecord::Schema.define(version: 20151201022635) do
   end
 
   add_index "event_user_pushes", ["send_flg"], name: "index_event_user_pushes_on_send_flg", using: :btree
+
+  create_table "event_user_registrations", force: true do |t|
+    t.integer  "event_user_id"
+    t.text     "registration_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "event_user_registrations", ["event_user_id"], name: "index_event_user_registrations_on_event_user_id", using: :btree
 
   create_table "events", force: true do |t|
     t.integer  "event_id"
