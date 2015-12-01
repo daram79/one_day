@@ -1,5 +1,17 @@
 Rails.application.routes.draw do
   
+  resources :events do
+    collection do
+      get "get_event"
+    end
+    member do
+      put "show_data"
+      put "hide_data"
+      put "add_push"
+      put "force_data"
+    end
+  end
+  
   resources :event_mailing_lists do
     collection do
       get "all"
@@ -7,6 +19,7 @@ Rails.application.routes.draw do
       post "create_ajax"
       put "receive_true"
       put "receive_false"
+      post "add_event_site"
     end
   end
 

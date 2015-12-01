@@ -211,18 +211,17 @@ class Event < ActiveRecord::Base
       sliders.each do |slider|
         title = slider.search(".tit").text
         ary_price = slider.css(".price").text.split("\n")
-        if ary_price.size > 2
-          event_name = "[티켓 몬스터]" + title + " " + ary_price[2].strip! + " => " + ary_price[0]
-        else
-          event_name = "[티켓 몬스터]" + title + " " + ary_price[0] 
-        end
         
+        event_name = "[티몬]" + title
         link_url = slider.css("a")[0].attributes["href"].value
         event_url = first_url + link_url
         event_id = link_url.split("/")[2]
+        image_url = slider.css(".thum").css("img")[0].attributes["src"].value
+        price = ary_price[0]
+        original_price = ary_price[2] ? ary_price[1].strip! : ""
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         if event.blank?
-          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
+          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           event_ary.push event_hash
         end
@@ -243,14 +242,16 @@ class Event < ActiveRecord::Base
       lis.each do |li|
         title = li.css("strong")[0].children[0].text
         price = li.css(".price_wrap strong").text
+        original_price = li.css(".price_wrap s").text
         discount = li.css(".sale").text
         
         event_id = li.attributes["prdno"].value
-        event_name = "[11번가 쇼킹딜]" + title + " " + discount + " " + price
+        event_name = "[11번가 쇼킹딜]" + title
         event_url = li.css("a")[0].attributes["href"].value
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        image_url = li.css(".thumb_prd").css("img")[0].attributes["src"].value
         if event.blank?
-          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
+          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           event_ary.push event_hash
         end
@@ -272,17 +273,85 @@ class Event < ActiveRecord::Base
       lis.each do |li|
         title = li.css("strong")[0].children[0].text
         price = li.css(".price_wrap strong").text
+        original_price = li.css(".price_wrap s").text
         discount = li.css(".sale").text
         
         event_id = li.attributes["prdno"].value
-        event_name = "[11번가 쇼킹딜]" + title + " " + discount + " " + price
+        event_name = "[11번가 쇼킹딜]" + title
         event_url = li.css("a")[0].attributes["href"].value
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        image_url = li.css(".thumb_prd").css("img")[0].attributes["src"].value
         if event.blank?
-          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
+          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           event_ary.push event_hash
         end
+      end
+      event_ary
+    rescue
+      return event_ary = []
+    end
+  end
+  
+  def self.get_tmon_super_ggul(event_site_id)
+    begin
+      first_url = "http://m.ticketmonster.co.kr"
+      url = "http://m.ticketmonster.co.kr/deal?cat=20070759"
+      html_str = open(url).read
+      doc = Nokogiri::HTML(html_str)
+      # lis = doc.search(".prd_wrap li")
+      
+      event_ary = []
+      # lis.each do |li|
+      title = doc.css(".lst_dl")[0].css(".info")[0].css(".tit").text
+        
+      price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".sale").text
+      original_price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".org").text
+      discount = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".per").text
+        
+      rear_link_url = doc.css(".lst_dl")[0].css("a")[0].attributes["href"].value
+        
+      event_id = rear_link_url.split("/")[3].split("?")[0]
+      event_name = "[티몬 슈퍼꿀딜]" + title
+      event_url = first_url + rear_link_url
+      event = Event.where(event_id: event_id, event_site_id: event_site_id)
+      image_url = doc.css(".lst_dl")[0].css(".thm")[0].css("img")[0].attributes["src"].value
+      if event.blank?
+        Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
+        event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+        event_ary.push event_hash
+      end
+      # end
+      event_ary
+    rescue
+      return event_ary = []
+    end
+  end
+  
+  def self.get_shocking_deal_today(event_site_id)
+    begin
+      url = "http://www.g9.co.kr"
+      browser = Watir::Browser.new
+      browser.goto(url)
+      doc = Nokogiri::HTML.parse(browser.html)
+      browser.close
+      event_ary = []
+      title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
+      price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
+      original_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("del").text
+      discount = doc.css("#flash_deal_goods_list").css(".price_info").css(".sale").text
+        
+      rear_link_url = doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"].value
+      tmp_ary = rear_link_url.split("/")
+      event_id = tmp_ary[-1]
+      event_name = "[g9 FLASH DEAL]" + title
+      event_url = url + rear_link_url
+      event = Event.where(event_id: event_id, event_site_id: event_site_id)
+      image_url = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
+      if event.blank?
+        Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
+        event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+        event_ary.push event_hash
       end
       event_ary
     rescue

@@ -5,6 +5,7 @@ class EventMailingListsController < ApplicationController
   # GET /event_mailing_lists.json
   def index
     @event_mailing_list = EventMailingList.new
+    @event_sites = EventSite.all
     # if params[:id]
       # @mail = EventMailingList.find(params[:id])
     # end
@@ -100,6 +101,12 @@ class EventMailingListsController < ApplicationController
   
   def all
     @mails = EventMailingList.all
+  end
+  
+  def add_event_site
+    event_site_name = params[:event_site_name]
+    EventSite.create(site_name: event_site_name)
+    render json: {status: :ok}
   end
 
   private

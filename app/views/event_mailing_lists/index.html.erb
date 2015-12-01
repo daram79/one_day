@@ -4,8 +4,41 @@
 	<input id="event_mailing_list_email" type="text" />
 	<input type="button" id="go" value="메일등록/검색" onclick="go()" />
 </div>
+<div style="margin-top: 40px;">
+	<input id="event_site_name" type="text" />
+	<input type="button" id="go" value="사이트 등록" onclick="add_event_site()" />
+	<table border="1">
+	<% @event_sites.each do |site|%>
+		<tr>
+			<td>id:</td>
+			<td><%= site.id %></td>
+			<td>name:</td>
+			<td><%=site.site_name%></td>
+		</tr>
+	<% end %>
+	</table>
+</div>
+
 <script>
-	
+	function add_event_site() {
+		var event_site_name = $.trim( $("#event_site_name").val() );  
+	  	if ( event_site_name == "" || event_site_name == "" ) {
+	  		alert("사이트 이름 입력해주세요.");
+	  		return false;
+	  	} else {
+	  		// $("#new_event_mailing_list").submit();
+	  		$.ajax({
+			   url: "/event_mailing_lists/add_event_site",
+			   dataType:'json',
+			   type:'POST',
+			   data: {event_site_name: event_site_name},
+			   success: function(data){
+			   	location.reload();
+			   }
+			});
+	  	}
+	}
+
 	function go(){
 		var email = $.trim( $("#event_mailing_list_email").val() );  
 	  	if ( email == "" || email == "" ) {
