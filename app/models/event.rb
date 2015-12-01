@@ -34,7 +34,8 @@ class Event < ActiveRecord::Base
         end
       end
       new_event
-    rescue
+    rescue => e
+      p e.backtrace
       return new_event = []
     end
   end
@@ -63,7 +64,8 @@ class Event < ActiveRecord::Base
         end
       end
       event_ary
-    rescue
+    rescue => e
+      p e.backtrace
       return event_ary = []
     end
   end
@@ -96,7 +98,8 @@ class Event < ActiveRecord::Base
         end
       end
       event_ary
-    rescue
+    rescue => e
+      p e.backtrace
       return event_ary = []
     end
   end
@@ -129,7 +132,8 @@ class Event < ActiveRecord::Base
         end
       end
       event_ary
-    rescue
+    rescue => e
+      p e.backtrace
       return event_ary = []
     end
   end
@@ -165,7 +169,8 @@ class Event < ActiveRecord::Base
         end
       end
       event_ary
-    rescue
+    rescue => e
+      p e.backtrace
       return event_ary = []
     end
   end
@@ -193,7 +198,8 @@ class Event < ActiveRecord::Base
         end
       end
       event_ary
-    rescue
+    rescue => e
+      p e.backtrace
       return event_ary = []
     end
   end
@@ -227,7 +233,8 @@ class Event < ActiveRecord::Base
         end
       end
       event_ary
-    rescue
+    rescue => e
+      p e.backtrace
       return event_ary = []
     end
   end
@@ -257,7 +264,8 @@ class Event < ActiveRecord::Base
         end
       end
       event_ary
-    rescue
+    rescue => e
+      p e.backtrace
       return event_ary = []
     end
   end
@@ -288,7 +296,8 @@ class Event < ActiveRecord::Base
         end
       end
       event_ary
-    rescue
+    rescue => e
+      p e.backtrace
       return event_ary = []
     end
   end
@@ -323,12 +332,13 @@ class Event < ActiveRecord::Base
       end
       # end
       event_ary
-    rescue
+    rescue => e
+      p e.backtrace
       return event_ary = []
     end
   end
   
-  def self.get_shocking_deal_today(event_site_id)
+  def self.get_g9_flash_deal(event_site_id)
     begin
       url = "http://www.g9.co.kr"
       browser = Watir::Browser.new
@@ -354,7 +364,8 @@ class Event < ActiveRecord::Base
         event_ary.push event_hash
       end
       event_ary
-    rescue
+    rescue => e
+      p e.backtrace
       return event_ary = []
     end
   end
