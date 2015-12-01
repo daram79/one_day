@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   resources :events do
     collection do
       get "get_event"
+      get "event_true"
+      get "event_false"
     end
     member do
       put "show_data"
