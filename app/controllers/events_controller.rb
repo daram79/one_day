@@ -64,8 +64,8 @@ class EventsController < ApplicationController
   def get_event
     # @event = Event.where(show_flg: true)
     # @event = Event.all
-    event_site_ids = EventSite.where("id > 6").where(show_flg: true).ids
-    @event = Event.where(event_site_id: event_site_ids).order("id desc")
+    event_site_ids = EventSite.where("id > 6").ids
+    @event = Event.where.where(show_flg: true)(event_site_id: event_site_ids).order("id desc")
     render json: @event
   end
   
