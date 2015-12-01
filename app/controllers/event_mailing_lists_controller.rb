@@ -108,6 +108,25 @@ class EventMailingListsController < ApplicationController
     EventSite.create(site_name: event_site_name)
     render json: {status: :ok}
   end
+  
+  def create_event_user
+    email = params[:user_email]
+    event_user = EventMailingList.find_by_email(email)
+    unless event_user
+      EventMailingList.create(email: email)
+    end
+    render json: {id: event_user.id, email: event_user.email}
+  end
+  
+  def set_registration_id
+    user_id = params[:id]
+    regi_id = params[:registration_id]
+    registrations = EventUserRegistrations.where(event_user_id: params[:id], registration_id: params[:registration_id])
+    if user_id != "" && regi_id != "" && registrations.blank?
+        EventUserRegistrations.create(event_user_id: params[:id], registration_id: params[:registration_id])
+    end
+    render :json => {status: 200}
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

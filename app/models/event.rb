@@ -254,7 +254,7 @@ class Event < ActiveRecord::Base
         
         event_id = li.attributes["prdno"].value
         event_name = "[11번가 쇼킹딜]" + title
-        event_url = li.css("a")[0].attributes["href"].value
+        event_url = li.css("a")[0].attributes["href"].value if li.css("a")[0].attributes["href"]
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         image_url = li.css(".thumb_prd").css("img")[0].attributes["src"].value
         if event.blank?
@@ -286,7 +286,7 @@ class Event < ActiveRecord::Base
         
         event_id = li.attributes["prdno"].value
         event_name = "[11번가 쇼킹딜]" + title
-        event_url = li.css("a")[0].attributes["href"].value
+        event_url = li.css("a")[0].attributes["href"].value if li.css("a")[0].attributes["href"]
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         image_url = li.css(".thumb_prd").css("img")[0].attributes["src"].value
         if event.blank?
