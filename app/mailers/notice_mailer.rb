@@ -33,6 +33,8 @@ class NoticeMailer < ActionMailer::Base
       @event_ary = Event.get_shocking_deal_best_main(event_site_id)
     when 9
       @event_ary = Event.get_shocking_deal_today(event_site_id)
+    when 10
+      @event_ary = Event.get_tmon_super_ggul(event_site_id)
     else
       return
     end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151110122309) do
+ActiveRecord::Schema.define(version: 20151201022635) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -89,16 +89,35 @@ ActiveRecord::Schema.define(version: 20151110122309) do
     t.datetime "updated_at"
   end
 
+  create_table "event_user_pushes", force: true do |t|
+    t.integer  "event_id"
+    t.integer  "event_user_id"
+    t.boolean  "send_flg",      default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "event_user_pushes", ["send_flg"], name: "index_event_user_pushes_on_send_flg", using: :btree
+
   create_table "events", force: true do |t|
     t.integer  "event_id"
+    t.integer  "event_site_id"
     t.string   "event_name"
     t.string   "event_url"
-    t.integer  "event_site_id"
+    t.string   "image_url",      default: ""
+    t.string   "discount",       default: ""
+    t.string   "price",          default: ""
+    t.string   "original_price", default: ""
+    t.boolean  "show_flg",       default: false
+    t.boolean  "push_flg",       default: false
+    t.boolean  "update_flg",     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "events", ["event_id", "event_site_id"], name: "index_events_on_event_id_and_event_site_id", using: :btree
+  add_index "events", ["show_flg", "update_flg"], name: "index_events_on_show_flg_and_update_flg", using: :btree
+  add_index "events", ["show_flg"], name: "index_events_on_show_flg", using: :btree
 
   create_table "feed_photos", force: true do |t|
     t.integer  "feed_id"

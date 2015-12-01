@@ -1,0 +1,91 @@
+<table border=1>
+	<tr>
+		<td>제목</td>
+		<td>할인율</td>
+		<td>가격</td>
+		<td>판매가격</td>
+		<td>버튼</td>
+	</tr>
+	<% @events.each_with_index do |event, i| %>
+	<tr id="<%=event.id%>" style="background-color: <%= i % 2 == 0 ? '#d2d2d2': 'white' %>">
+		<td><a href="<%=event.event_url%>"><%=event.event_name%></a></td>
+		<td><%=event.discount%></td>
+		<td><%=event.original_price%></td>
+		<td><%=event.price%></td>
+		<td>
+			<input onclick="javascript:add_push(<%=event.id%>);" type="button" value="알림보내기" />
+			<input onclick="javascript:show_data(<%=event.id%>);" type="button" value="보여주기" />
+			<input onclick="javascript:hide_data(<%=event.id%>);" type="button" value="숨기기" />
+		</td>
+	</tr>
+	<%end%>
+</table>
+
+<script>
+	function add_push(event_id){
+		$.ajax({
+			   url: "/events/" + event_id + "/add_push",
+			   dataType:'json',
+			   type:'PUT',
+			   success: function(data){
+			   	var flg = data.flg;
+			   	if(flg){
+			   		$("#" + event_id).remove()
+			   	} else {
+			   		alert("aa");
+			   	}
+			   }
+			});
+	}
+	function show_data(event_id){
+		$.ajax({
+			   url: "/events/" + event_id + "/show_data",
+			   dataType:'json',
+			   type:'PUT',
+			   success: function(data){
+			   	var flg = data.flg;
+			   	if(flg){
+			   		$("#" + event_id).remove()
+			   	} else {
+			   		if (confirm("숨긴 데이터입니다. 보여주시겠습니까?") == true){    //확인
+					    force_data(event_id, "show")
+					}else{   //취소
+					    return;
+					}
+			   	}
+			   }
+			});
+	}
+	
+	function hide_data(event_id){
+		$.ajax({
+			   url: "/events/" + event_id + "/hide_data",
+			   dataType:'json',
+			   type:'PUT',
+			   success: function(data){
+			   	var flg = data.flg;
+			   	if(flg){
+			   		$("#" + event_id).remove()
+			   	} else {
+			   		if (confirm("보여지고 있는 데이터입니다. 숨기시겠습니까?") == true){    //확인
+					    force_data(event_id, "hide")
+					}else{   //취소
+					    return;
+					}
+			   	}
+			   }
+			});
+	}
+	
+	function force_data(event_id, flg){
+		$.ajax({
+			   url: "/events/" + event_id + "/force_data",
+			   dataType:'json',
+			   type:'PUT',
+			   data: {flg: flg},
+			   success: function(data){
+			   	$("#" + event_id).remove()
+			   }
+			});
+	}
+</script>
