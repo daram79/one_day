@@ -4,7 +4,7 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @events = Event.where("event_id > 6").where(show_flg: false, update_flg: false).order("id desc")
+    @events = Event.where("event_site_id > 6").where(show_flg: false, update_flg: false).order("id desc")
   end
 
   # GET /events/1
