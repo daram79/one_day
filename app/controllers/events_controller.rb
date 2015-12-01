@@ -6,6 +6,16 @@ class EventsController < ApplicationController
   def index
     @events = Event.where("event_site_id > 6").where(show_flg: false, update_flg: false).order("id desc")
   end
+  
+  def event_true
+    @events = Event.where("event_site_id > 6").where(show_flg: true).order("id desc")
+    render "index"
+  end
+  
+  def event_false
+    @events = Event.where("event_site_id > 6").where(show_flg: false).order("id desc")
+    render "index"
+  end
 
   # GET /events/1
   # GET /events/1.json
@@ -65,7 +75,8 @@ class EventsController < ApplicationController
     # @event = Event.where(show_flg: true)
     # @event = Event.all
     event_site_ids = EventSite.where("id > 6").ids
-    @event = Event.where(show_flg: true).where(event_site_id: event_site_ids).order("id desc")
+    # @event = Event.where(show_flg: true).where(event_site_id: event_site_ids).order("id desc")
+    @event = Event.where(event_site_id: event_site_ids).order("id desc")
     render json: @event
   end
   
