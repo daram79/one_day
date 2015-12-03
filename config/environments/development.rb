@@ -36,6 +36,7 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
   
   config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.smtp_settings = {
     :enable_starttls_auto => true,
@@ -43,7 +44,7 @@ Rails.application.configure do
     :port => '587',
     :domain => 'smtp.gmail.com',
     :authentication => 'plain',
-    :user_name => 'shimtong1004@gmail.com',
-    :password => 'daram5816'
+    :user_name => '',
+    :password => ''
   }
 end
