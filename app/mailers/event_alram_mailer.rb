@@ -132,4 +132,57 @@ class EventAlramMailer < ActionMailer::Base
     end
   end
   
+  def conveni_ministop
+    event_site_id = 3002
+  end
+  
+  def conveni_cu
+    begin
+      url = "http://membership.bgfretail.com/event/event/list.do?viewDiv=1"
+      @title = "편의점 알림"
+      event_site_id = 3003
+      front_url = "http://membership.bgfretail.com/"
+      type = "편의점"
+      
+      html_str = open(url).read
+      doc = Nokogiri::HTML(html_str)
+      trs = doc.css(".list_style01").css("tbody").css("tr")
+      @event_ary = []
+      trs.each do |tr|
+        event_status = tr.css(".ing_ev").css("img").attr("alt").value
+        if event_status.include?("진행")
+          event_id = tr.css("td")[0].text
+          event = Event.where(event_id: event_id, event_site_id: event_site_id)
+          if event.blank?
+            title = tr.css(".txt").text
+            rear_url = tr.css(".img").attr("href").value
+            event_name = "[CU]" + title
+            event_url = front_url + rear_url
+            image_url = tr.css("img").attr("src").value
+              
+            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                            image_url: image_url)
+            event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+            @event_ary.push event_hash
+          end
+        end
+      end
+      email = EventMailingList.all.pluck(:email)
+      return if @event_ary.blank? || email.blank?
+      mail to: email , subject: @title
+      render "event_mailer"
+      
+    rescue => e
+      p e.backtrace
+      @title = "CU error"
+      @event_ary = []
+      @event_ary.push "app/mailers/event_alram.rb"
+      @err_msg = e.backtrace
+      mail to: "shimtong1004@gmail.com" , subject: @title
+      render "event_mailer"
+      #send error mail
+    end
+    
+  end
+  
 end
