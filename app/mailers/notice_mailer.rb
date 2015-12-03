@@ -35,8 +35,8 @@ class NoticeMailer < ActionMailer::Base
       @event_ary = Event.get_shocking_deal_today(event_site_id)
     when 10
       @event_ary = Event.get_tmon_super_ggul(event_site_id)
-    when 11
-      @event_ary = Event.get_g9_flash_deal(event_site_id)
+    # when 11
+      # @event_ary = Event.get_g9_flash_deal(event_site_id)
     else
       return
     end

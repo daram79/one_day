@@ -2,6 +2,22 @@
 require 'open-uri'
 class Event < ActiveRecord::Base
   
+  after_create :send_push
+  after_update :send_push
+  
+  def send_push
+    if self.push_flg
+      Thread.new do
+        gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
+        user_ids = EventMailingList.all.ids
+        option = { :data => {'message' => self.event_name} }
+        registration_ids = EventUserRegistrations.where(event_user_id: user_ids).pluck(:registration_id)
+        gcm.send(registration_ids, option) unless registration_ids.blank?
+      end
+    end
+  end
+  
+  
   def self.get_cgv_data(event_site_id)
     begin
       first_url = "http://www.cgv.co.kr/culture-event/event/"
@@ -343,6 +359,8 @@ class Event < ActiveRecord::Base
       url = "http://www.g9.co.kr"
       browser = Watir::Browser.new
       browser.goto(url)
+      while browser.div(:id=>"bestDealLoding").visible? do sleep 1 end
+      browser.execute_script("window.scrollTo(0, document.body.scrollHeight);\n")
       doc = Nokogiri::HTML.parse(browser.html)
       browser.close
       event_ary = []
@@ -368,6 +386,41 @@ class Event < ActiveRecord::Base
       p e.backtrace
       return event_ary = []
     end
+  end
+  
+  def self.aaa
+    first_url = "http://www.g9.co.kr"
+    url = "http://www.g9.co.kr/Display/TodaysDeal/TodaysDeal"
+    browser = Watir::Browser.new
+      browser.goto(url)
+      while browser.div(:id=>"bestDealLoding").visible? do sleep 1 end
+      # browser.execute_script("window.scrollTo(0, document.body.scrollHeight);\n")
+      doc = Nokogiri::HTML.parse(browser.html)
+      browser.close
+      datas = doc.css(".date_counter")
+      
+      datas.each do |data|
+        title = data.css(".title").text
+        
+        price = data.css(".price").css("em").text + " " + data.css(".price").css("strong").text
+        price.lstrip!
+        original_price = data.css(".price").css("del").text
+        discount = data.css(".price_info").css(".sale").text
+        
+        rear_url = data.css(".tag").attr("href").value
+        event_id = data.css(".tag").attr("href").value.split("/")[-1]
+        event_name = "[G9 베스트]" + title   
+        event_url = first_url + rear_url
+        event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        image_url = data.css(".thumbs").css("img").attr('src').value
+        if event.blank?
+          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
+          event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+          event_ary.push event_hash
+        end
+      end
+      event_ary
+      
   end
   
 end
