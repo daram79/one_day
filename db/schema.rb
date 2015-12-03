@@ -111,17 +111,17 @@ ActiveRecord::Schema.define(version: 20151201070306) do
   add_index "event_user_registrations", ["event_user_id"], name: "index_event_user_registrations_on_event_user_id", using: :btree
 
   create_table "events", force: true do |t|
-    t.integer  "event_id"
+    t.integer  "event_id",       limit: 8
     t.integer  "event_site_id"
     t.string   "event_name"
     t.string   "event_url"
-    t.string   "image_url",      default: ""
-    t.string   "discount",       default: ""
-    t.string   "price",          default: ""
-    t.string   "original_price", default: ""
-    t.boolean  "show_flg",       default: false
-    t.boolean  "push_flg",       default: false
-    t.boolean  "update_flg",     default: false
+    t.string   "image_url",                default: ""
+    t.string   "discount",                 default: ""
+    t.string   "price",                    default: ""
+    t.string   "original_price",           default: ""
+    t.boolean  "show_flg",                 default: false
+    t.boolean  "push_flg",                 default: false
+    t.boolean  "update_flg",               default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

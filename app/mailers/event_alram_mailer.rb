@@ -50,6 +50,9 @@ class EventAlramMailer < ActionMailer::Base
             if price.scan(/\d/).join('').to_i < 10000
               Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                             image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+            elsif ['일본','동경', '오사카', '나고야', '후쿠오카', '중국', '북경', '베이징', '상해', '상하이', '홍콩', '싱가폴', '필리핀', '베트남'].any? { |word| title.include?(word) } && price.scan(/\d/).join('').to_i < 150000
+              Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                            image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
             else
               Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                             image_url: image_url, price: price, original_price: original_price)
@@ -71,6 +74,56 @@ class EventAlramMailer < ActionMailer::Base
     rescue => e
       p e.backtrace
       @title = "티몬 항공권 error"
+      @event_ary = []
+      @event_ary.push "app/mailers/event_alram.rb"
+      @err_msg = e.backtrace
+      mail to: "shimtong1004@gmail.com" , subject: @title
+      #send error mail
+    end
+  end
+  
+  
+  def conveni_event_gs25
+    begin
+      @title = "편의점 알림"
+      event_site_id = 3001
+      front_url = "http://gs25.gsretail.com/"
+      type = "편의점"
+      url = "http://gs25.gsretail.com/gscvs/ko/customer-engagement/event/current-events"
+      browser = Watir::Browser.new
+      browser.goto(url)
+      doc = Nokogiri::HTML.parse(browser.html)
+      browser.close
+      
+      trs = doc.css(".tbl_ltype1").css("tbody").css("tr")
+      
+      @event_ary = []
+      trs.each do |tr|
+        title = "[" + tr.css(".evt_info").css(".evt_type").text + "]" +
+                  tr.css(".evt_info").css(".tit").text +
+                  tr.css(".evt_info").css(".period").text
+        rear_url = tr.css("a").attr("href").value
+        event_id = rear_url.split("/")[-1].split("=")[-1]
+        event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        if event.blank?
+          event_name = title
+          event_url = front_url + rear_url
+          image_url = tr.css("img").attr("src").value
+          
+          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url)
+            
+            
+          event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+          @event_ary.push event_hash
+        end
+      end
+      email = EventMailingList.all.pluck(:email)
+      return if @event_ary.blank? || email.blank?
+      mail to: email , subject: @title
+      
+    rescue => e
+      p e.backtrace
+      @title = "GS25 이벤트 error"
       @event_ary = []
       @event_ary.push "app/mailers/event_alram.rb"
       @err_msg = e.backtrace
