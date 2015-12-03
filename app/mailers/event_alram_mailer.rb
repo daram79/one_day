@@ -183,6 +183,50 @@ class EventAlramMailer < ActionMailer::Base
       #send error mail
     end
     
+    def conveni_event_711
+    begin
+      url = "http://www.7-eleven.co.kr/event/eventList.asp"
+      @title = "편의점 알림"
+      event_site_id = 3004
+      front_url = "http://www.7-eleven.co.kr/"
+      type = "편의점"
+      
+      html_str = open(url).read
+      doc = Nokogiri::HTML(html_str)
+      lis = doc.css("#listUl").css("li")
+      @event_ary = []
+      lis.each do |li|
+          event_id = $1 if li.css(".event_over").css(".btn_event_over").css("a").attr("href").value =~ /'(\w+)'/
+          event = Event.where(event_id: event_id, event_site_id: event_site_id)
+          if event.blank?
+            title = li.css(".event_over").css("dt").text
+            rear_url = lis.css("img").attr("src").value
+            event_name = "[7-ELEVEN]" + title
+            event_url = "http://www.7-eleven.co.kr/event/eventList.asp"
+            image_url = front_url + rear_url
+              
+            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                            image_url: image_url)
+            event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+            @event_ary.push event_hash
+          end
+      end
+      email = EventMailingList.all.pluck(:email)
+      return if @event_ary.blank? || email.blank?
+      mail to: email , subject: @title
+      render "event_mailer"
+      
+    rescue => e
+      p e.backtrace
+      @title = "CU error"
+      @event_ary = []
+      @event_ary.push "app/mailers/event_alram.rb"
+      @err_msg = e.backtrace
+      mail to: "shimtong1004@gmail.com" , subject: @title
+      render "event_mailer"
+      #send error mail
+    end
+    
   end
   
 end
