@@ -14,7 +14,7 @@ class MovieAlramMailer < ActionMailer::Base
   
   def movie_event_cgv
     begin
-      @title = "[CGV 1+1]"
+      @title = "[CGV 이벤트]"
       first_url = "http://www.cgv.co.kr/culture-event/event/"
       url = "http://www.cgv.co.kr/culture-event/event/?menu=2#1"
       event_site_id = 4001
@@ -66,7 +66,7 @@ class MovieAlramMailer < ActionMailer::Base
   
   def movie_event_lotteciname
     begin
-      @title = "롯데시네마 1+1"
+      @title = "[롯데시네마 이벤트]"
       link_url = "http://www.lottecinema.co.kr/LHS/LHFS/Contents/Event/LotteCinemaEventView.aspx?eventId="
       url = "http://www.lottecinema.co.kr/LHS/LHFS/Contents/Event/MovieEventMain.aspx"
       event_site_id = 4002
@@ -101,6 +101,56 @@ class MovieAlramMailer < ActionMailer::Base
     rescue => e
       p e.backtrace
       @title = "롯데시네마 error"
+      @event_ary = []
+      @event_ary.push "app/mailers/movie_alram_mailer.rb"
+      @err_msg = e.backtrace
+      mail to: "shimtong1004@gmail.com" , subject: @title
+      # render "event_mailer"
+      #send error mail
+    end
+  end
+  
+  def movie_event_megabox
+    begin
+      @title = "[메가박스1+1]"
+      url = "http://www.megabox.co.kr/?menuId=store"
+      event_site_id = 4003
+    
+      browser = Watir::Browser.new
+      browser.goto(url)
+      while browser.div(:id=>"bestDealLoding").visible? do sleep 1 end
+      doc = Nokogiri::HTML.parse(browser.html)
+      browser.close
+      lis = doc.css(".store_lst").css("li")
+      @event_ary = []
+      lis.each do |li|
+        event_id = li.css(".blank").attr("data-code").value
+        event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        if event.blank?
+          title = li.css("h5").text
+          price = li.css("b")[0].text
+          price.lstrip!
+          original_price = li.css("s").text
+          event_name = "[메가박스]" + title 
+          event_url = url
+          image_url = li.css(".img_pro").attr("src").value
+        
+          if title.include?("1+1")
+            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
+                            show_flg: true, push_flg: true, update_flg: true)
+          else
+            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
+          end
+          event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+          @event_ary.push event_hash
+        end
+      end
+      email = EventMailingList.all.pluck(:email)
+      return if @event_ary.blank? || email.blank?
+      mail to: email , subject: @title
+    rescue => e
+      p e.backtrace
+      @title = "메가박스 error"
       @event_ary = []
       @event_ary.push "app/mailers/movie_alram_mailer.rb"
       @err_msg = e.backtrace

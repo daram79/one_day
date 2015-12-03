@@ -388,39 +388,40 @@ class Event < ActiveRecord::Base
     end
   end
   
-  def self.aaa
-    first_url = "http://www.g9.co.kr"
-    url = "http://www.g9.co.kr/Display/TodaysDeal/TodaysDeal"
+  def self.megabox
+    url = "http://www.megabox.co.kr/?menuId=store"
+    event_site_id = 4003
+    
     browser = Watir::Browser.new
       browser.goto(url)
       while browser.div(:id=>"bestDealLoding").visible? do sleep 1 end
-      # browser.execute_script("window.scrollTo(0, document.body.scrollHeight);\n")
       doc = Nokogiri::HTML.parse(browser.html)
       browser.close
-      datas = doc.css(".date_counter")
+      lis = doc.css(".store_lst").css("li")
       
-      datas.each do |data|
-        title = data.css(".title").text
-        
-        price = data.css(".price").css("em").text + " " + data.css(".price").css("strong").text
-        price.lstrip!
-        original_price = data.css(".price").css("del").text
-        discount = data.css(".price_info").css(".sale").text
-        
-        rear_url = data.css(".tag").attr("href").value
-        event_id = data.css(".tag").attr("href").value.split("/")[-1]
-        event_name = "[G9 베스트]" + title   
-        event_url = first_url + rear_url
+      lis.each do |li|
+        event_id = li.css(".blank").attr("data-code").value
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
-        image_url = data.css(".thumbs").css("img").attr('src').value
         if event.blank?
-          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
+          title = li.css("h5").text
+          price = li.css("b")[0].text
+          price.lstrip!
+          original_price = li.css("s").text
+          event_name = "[메가박스]" + title 
+          event_url = url
+          image_url = li.css(".img_pro").attr("src").value
+        
+          if title.include?("1+1")
+            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
+                            show_flg: true, push_flg: true, update_flg: true)
+          else
+            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
+          end
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           event_ary.push event_hash
         end
       end
       event_ary
-      
   end
   
 end

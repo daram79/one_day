@@ -170,7 +170,6 @@ class EventAlramMailer < ActionMailer::Base
       email = EventMailingList.all.pluck(:email)
       return if @event_ary.blank? || email.blank?
       mail to: email , subject: @title
-      render "event_mailer"
       
     rescue => e
       p e.backtrace
@@ -179,7 +178,6 @@ class EventAlramMailer < ActionMailer::Base
       @event_ary.push "app/mailers/event_alram.rb"
       @err_msg = e.backtrace
       mail to: "shimtong1004@gmail.com" , subject: @title
-      render "event_mailer"
       #send error mail
     end
   end
@@ -215,7 +213,6 @@ class EventAlramMailer < ActionMailer::Base
       email = EventMailingList.all.pluck(:email)
       return if @event_ary.blank? || email.blank?
       mail to: email , subject: @title
-      render "event_mailer"
       
     rescue => e
       p e.backtrace
@@ -224,7 +221,6 @@ class EventAlramMailer < ActionMailer::Base
       @event_ary.push "app/mailers/event_alram.rb"
       @err_msg = e.backtrace
       mail to: "shimtong1004@gmail.com" , subject: @title
-      render "event_mailer"
       #send error mail
     end
   end
