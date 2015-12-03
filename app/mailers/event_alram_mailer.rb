@@ -132,11 +132,11 @@ class EventAlramMailer < ActionMailer::Base
     end
   end
   
-  def conveni_ministop
+  def conveni_event_ministop
     event_site_id = 3002
   end
   
-  def conveni_cu
+  def conveni_event_cu
     begin
       url = "http://membership.bgfretail.com/event/event/list.do?viewDiv=1"
       @title = "편의점 알림"
