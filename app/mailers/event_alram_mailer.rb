@@ -182,6 +182,7 @@ class EventAlramMailer < ActionMailer::Base
       render "event_mailer"
       #send error mail
     end
+  end
     
     def conveni_event_711
     begin
@@ -226,7 +227,6 @@ class EventAlramMailer < ActionMailer::Base
       render "event_mailer"
       #send error mail
     end
-    
   end
   
 end
