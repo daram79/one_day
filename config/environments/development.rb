@@ -44,7 +44,7 @@ Rails.application.configure do
     :port => '587',
     :domain => 'smtp.gmail.com',
     :authentication => 'plain',
-    :user_name => '',
-    :password => ''
+    :user_name => 'shimtong1004@gmail.com',
+    :password => 'daram5816'
   }
 end
