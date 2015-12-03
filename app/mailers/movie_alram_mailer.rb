@@ -68,6 +68,7 @@ class MovieAlramMailer < ActionMailer::Base
   def movie_event_lotteciname
     begin
       @title = "[롯데시네마 이벤트]"
+      first_url = "http://www.lottecinema.co.kr/"
       link_url = "http://www.lottecinema.co.kr/LHS/LHFS/Contents/Event/LotteCinemaEventView.aspx?eventId="
       url = "http://www.lottecinema.co.kr/LHS/LHFS/Contents/Event/MovieEventMain.aspx"
       event_site_id = 4002
@@ -84,7 +85,7 @@ class MovieAlramMailer < ActionMailer::Base
         event_id = li.css("a")[0].attributes["href"].value.split("(")[1].split(",")[0].gsub('"', '').to_i
         event_name = li.css("dl dt a")[0].children[1].text
         event_url = link_url + event_id.to_s
-        image_url = li.css("img").attr("src").value
+        image_url = first_url + li.css("img").attr("src").value
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         if event.blank?
           if event_name.include?("1+1")
