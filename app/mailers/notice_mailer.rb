@@ -15,10 +15,10 @@ class NoticeMailer < ActionMailer::Base
     @title = "#{site_name} 이벤트 알림"
     @event_ary = []
     case event_site_id
-    when 1  
-      @event_ary = Event.get_cgv_data(event_site_id)
-    when 2
-      @event_ary = Event.get_lotteciname_data(event_site_id)
+    # when 1  
+      # @event_ary = Event.get_cgv_data(event_site_id)
+    # when 2
+      # @event_ary = Event.get_lotteciname_data(event_site_id)
     when 3
       @event_ary = Event.get_clien_sale_data(event_site_id)
     when 4
