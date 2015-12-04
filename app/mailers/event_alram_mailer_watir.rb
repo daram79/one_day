@@ -38,15 +38,18 @@ class EventAlramMailerWatir < ActionMailer::Base
               if "위메프".eql?(original_site)
                 event_url = "http://www.wemakeprice.com/search?search_keyword=" + title
               elsif "티몬".eql?(original_site)
-                event_url = "http://www.wemakeprice.com/search?search_keyword=" + title
+                event_url = "http://www.wemakeprice.com/search?search_keyword=" + title.split('/')[0]
               elsif "쿠팡".eql?(original_site)
                 event_url = "http://m.coupang.com/np/search?q=" + title
+                # event_url = "http://www.coupang.com/np/search?q=" + title
               elsif "G마켓".eql?(original_site)
                 event_url = "http://gtour.gmarket.co.kr/TourLP/Search?selecturl=total&keyword=" + title
               elsif "옥션".eql?(original_site)
                 event_url = "http://stores.auction.co.kr/mrtour/List?keyword=" + title
               elsif "여행박사".eql?(original_site)
                 event_url = "http://www.wemakeprice.com/search?search_keyword=" + title
+              else
+                event_url = ""
               end
               
               image_url = hot_clicks[0].css("img").attr("src").value
