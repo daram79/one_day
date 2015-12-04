@@ -12,13 +12,16 @@ class EventAlramMailerWatir < ActionMailer::Base
       url = "http://m.coocha.co.kr/search/search.do?keyword=%EC%98%A4%EC%82%AC%EC%B9%B4+%ED%95%AD%EA%B3%B5%EA%B6%8C&menuCid=&cCate0=&cCate1=&cCate2=&cCate3=&searchCateName=&cid=&cSido=&searchAreas=&searchAreasName=&storesNationwide=&marketCurPageNo=&shopCode=&shopName=&curPageNo=1&orderbyGubun=&searchGubun=&minPrice=-1&maxPrice=-1&searchDate=&inner_keyword=&originCid=1&recmdDataList=&solrDataType=mall&solrDataIndex=1&searchSolr=on&searchTabIndex=0&mdRcmdId=0&anchor_did="
       # browser = Watir::Browser.new
       # browser.goto(url)
-      browser = Watir::Browser.start url
-      begin
-        browser.link(:onclick=>"footerBannerClose();").click
-      rescue
-      end
-      doc = Nokogiri::HTML.parse(browser.html)
-      browser.close
+      headless = Headless.new
+      headless.start
+        browser = Watir::Browser.start url
+        begin
+          browser.link(:onclick=>"footerBannerClose();").click
+        rescue
+        end
+        doc = Nokogiri::HTML.parse(browser.html)
+        browser.close
+      headless.destroy
       
       hot_clicks = doc.css("#section_hotclick").css(".list-item")
       @event_ary = []
