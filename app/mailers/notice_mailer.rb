@@ -41,7 +41,8 @@ class NoticeMailer < ActionMailer::Base
       return
     end
     
-    email = EventReceiveUser.where(event_site_id: event_site_id, is_receive: true).pluck(:user_email)
+    # email = EventReceiveUser.where(event_site_id: event_site_id, is_receive: true).pluck(:user_email)
+    email = EventMailingList.all.pluck(:email)
     
     return if @event_ary.blank? || email.blank?
     mail to: email , subject: @title

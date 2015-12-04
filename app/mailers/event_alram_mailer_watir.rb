@@ -12,20 +12,23 @@ class EventAlramMailerWatir < ActionMailer::Base
       url = "http://m.coocha.co.kr/search/search.do?keyword=%EC%98%A4%EC%82%AC%EC%B9%B4+%ED%95%AD%EA%B3%B5%EA%B6%8C&menuCid=&cCate0=&cCate1=&cCate2=&cCate3=&searchCateName=&cid=&cSido=&searchAreas=&searchAreasName=&storesNationwide=&marketCurPageNo=&shopCode=&shopName=&curPageNo=1&orderbyGubun=&searchGubun=&minPrice=-1&maxPrice=-1&searchDate=&inner_keyword=&originCid=1&recmdDataList=&solrDataType=mall&solrDataIndex=1&searchSolr=on&searchTabIndex=0&mdRcmdId=0&anchor_did="
       # browser = Watir::Browser.new
       # browser.goto(url)
-      browser = Watir::Browser.start url
-      begin
-        browser.link(:onclick=>"footerBannerClose();").click
-      rescue
-      end
-      doc = Nokogiri::HTML.parse(browser.html)
-      browser.close
+      headless = Headless.new
+      headless.start
+        browser = Watir::Browser.start url
+        begin
+          browser.link(:onclick=>"footerBannerClose();").click
+        rescue
+        end
+        doc = Nokogiri::HTML.parse(browser.html)
+        browser.close
+      headless.destroy
       
       hot_clicks = doc.css("#section_hotclick").css(".list-item")
       @event_ary = []
       unless hot_clicks.blank?
         hot_clicks.each do |hot|
           original_site = hot.css(".areas").css(".area-info").text.delete!("\n").delete!("\t").strip!
-          title = "[" + hot.css(".areas").css(".area-info").text.delete!("\n").delete!("\t").strip! + "]" +  hot.css(".areas").css(".area-title").text
+          title = hot.css(".areas").css(".area-title").text
           if title.include?(type)
             rear_url = ""
             event_id = hot.attr("data-did")
@@ -35,15 +38,18 @@ class EventAlramMailerWatir < ActionMailer::Base
               if "위메프".eql?(original_site)
                 event_url = "http://www.wemakeprice.com/search?search_keyword=" + title
               elsif "티몬".eql?(original_site)
-                event_url = "http://www.wemakeprice.com/search?search_keyword=" + title
+                event_url = "http://www.wemakeprice.com/search?search_keyword=" + title.split('/')[0]
               elsif "쿠팡".eql?(original_site)
                 event_url = "http://m.coupang.com/np/search?q=" + title
+                # event_url = "http://www.coupang.com/np/search?q=" + title
               elsif "G마켓".eql?(original_site)
                 event_url = "http://gtour.gmarket.co.kr/TourLP/Search?selecturl=total&keyword=" + title
               elsif "옥션".eql?(original_site)
                 event_url = "http://stores.auction.co.kr/mrtour/List?keyword=" + title
               elsif "여행박사".eql?(original_site)
                 event_url = "http://www.wemakeprice.com/search?search_keyword=" + title
+              else
+                event_url = ""
               end
               
               image_url = hot_clicks[0].css("img").attr("src").value
@@ -51,7 +57,7 @@ class EventAlramMailerWatir < ActionMailer::Base
               original_price = hot.css(".areas").css(".price-origin").text.delete!("\n").delete!("\t").strip!
               
               #항공권이 15,000원 이하면 바로 푸시
-              if price.scan(/\d/).join('').to_i < 15000
+              if price.scan(/\d/).join('').to_i < 150000
                 Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                               image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
               else
