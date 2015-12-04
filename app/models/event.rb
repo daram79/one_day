@@ -342,7 +342,8 @@ class Event < ActiveRecord::Base
       event = Event.where(event_id: event_id, event_site_id: event_site_id)
       image_url = doc.css(".lst_dl")[0].css(".thm")[0].css("img")[0].attributes["src"].value
       if event.blank?
-        Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
+        Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+                        price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
         event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
         event_ary.push event_hash
       end
