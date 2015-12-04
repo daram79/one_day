@@ -54,7 +54,7 @@ class EventAlramMailerWatir < ActionMailer::Base
               original_price = hot.css(".areas").css(".price-origin").text.delete!("\n").delete!("\t").strip!
               
               #항공권이 15,000원 이하면 바로 푸시
-              if price.scan(/\d/).join('').to_i < 15000
+              if price.scan(/\d/).join('').to_i < 150000
                 Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                               image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
               else
