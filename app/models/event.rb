@@ -251,6 +251,7 @@ class Event < ActiveRecord::Base
   
   def self.get_tmon_super_ggul(event_site_id)
     begin
+      event_site_id = 9001
       first_url = "http://m.ticketmonster.co.kr"
       url = "http://m.ticketmonster.co.kr/deal?cat=20070759"
       html_str = open(url).read
@@ -288,6 +289,7 @@ class Event < ActiveRecord::Base
   
   def self.get_g9_flash_deal(event_site_id)
     begin
+      event_site_id = 9002
       url = "http://www.g9.co.kr"
       browser = Watir::Browser.new
       browser.goto(url)
@@ -309,7 +311,8 @@ class Event < ActiveRecord::Base
       event = Event.where(event_id: event_id, event_site_id: event_site_id)
       image_url = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
       if event.blank?
-        Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
+        Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+                      price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
         event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
         event_ary.push event_hash
       end
