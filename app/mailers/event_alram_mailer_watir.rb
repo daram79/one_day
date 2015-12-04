@@ -196,7 +196,7 @@ class EventAlramMailerWatir < ActionMailer::Base
   
   def get_g9_flash_deal
     begin
-      event_site_id = 11
+      event_site_id = 9002
       headless = Headless.new
       headless.start
         url = "http://www.g9.co.kr"
