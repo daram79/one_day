@@ -3,25 +3,11 @@ require 'open-uri'
 class EventAlramMailerWatir < ActionMailer::Base
   default :from => "shimtong1004@gmail.com"
   
-  def airticket_coocha_osaka
+  def airticket_coocha_osaka(doc)
     begin
       @title = "항공권 알림"
       event_site_id = 2002
-      front_url = ""
       type = "항공권"
-      url = "http://m.coocha.co.kr/search/search.do?keyword=%EC%98%A4%EC%82%AC%EC%B9%B4+%ED%95%AD%EA%B3%B5%EA%B6%8C&menuCid=&cCate0=&cCate1=&cCate2=&cCate3=&searchCateName=&cid=&cSido=&searchAreas=&searchAreasName=&storesNationwide=&marketCurPageNo=&shopCode=&shopName=&curPageNo=1&orderbyGubun=&searchGubun=&minPrice=-1&maxPrice=-1&searchDate=&inner_keyword=&originCid=1&recmdDataList=&solrDataType=mall&solrDataIndex=1&searchSolr=on&searchTabIndex=0&mdRcmdId=0&anchor_did="
-      # browser = Watir::Browser.new
-      # browser.goto(url)
-      headless = Headless.new
-      headless.start
-        browser = Watir::Browser.start url
-        begin
-          browser.link(:onclick=>"footerBannerClose();").click
-        rescue
-        end
-        doc = Nokogiri::HTML.parse(browser.html)
-        browser.close
-      headless.destroy
       
       hot_clicks = doc.css("#section_hotclick").css(".list-item")
       @event_ary = []
@@ -47,7 +33,7 @@ class EventAlramMailerWatir < ActionMailer::Base
               elsif "옥션".eql?(original_site)
                 event_url = "http://stores.auction.co.kr/mrtour/List?keyword=" + title
               elsif "여행박사".eql?(original_site)
-                event_url = "http://www.wemakeprice.com/search?search_keyword=" + title
+                event_url = ""
               else
                 event_url = ""
               end
@@ -89,22 +75,12 @@ class EventAlramMailerWatir < ActionMailer::Base
     end
   end
   
-  def conveni_event_gs25
+  def conveni_event_gs25(doc)
     begin
       @title = "편의점 알림"
       event_site_id = 3001
       front_url = "http://gs25.gsretail.com/"
       type = "편의점"
-      url = "http://gs25.gsretail.com/gscvs/ko/customer-engagement/event/current-events"
-
-      headless = Headless.new
-      headless.start
-        # browser = Watir::Browser.new
-        # browser.goto(url)
-        browser = Watir::Browser.start url
-        doc = Nokogiri::HTML.parse(browser.html)
-        browser.close
-      headless.destroy
 
       trs = doc.css(".tbl_ltype1").css("tbody").css("tr")
       
@@ -140,20 +116,11 @@ class EventAlramMailerWatir < ActionMailer::Base
     end
   end
   
-  def movie_event_megabox
+  def movie_event_megabox(doc)
     begin
-      @title = "[메가박스]"
       url = "http://www.megabox.co.kr/?menuId=store"
+      @title = "[메가박스]"
       event_site_id = 4003
-      
-      headless = Headless.new
-      headless.start
-        # browser = Watir::Browser.new
-        # browser.goto(url)
-        browser = Watir::Browser.start url
-        doc = Nokogiri::HTML.parse(browser.html)
-        browser.close
-      headless.destroy
 
       lis = doc.css(".store_lst").css("li")
       @event_ary = []
@@ -194,17 +161,10 @@ class EventAlramMailerWatir < ActionMailer::Base
     end
   end
   
-  def get_g9_flash_deal
+  def get_g9_flash_deal(doc)
     begin
       event_site_id = 9002
-      headless = Headless.new
-      headless.start
-        url = "http://www.g9.co.kr"
-        browser = Watir::Browser.start url
-        doc = Nokogiri::HTML.parse(browser.html)
-        browser.close
-      headless.destroy
-
+      @title = "G9 FLASH DEAL"
       @event_ary = []
       unless doc.css("#flash_deal_goods_list").blank?
         title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
