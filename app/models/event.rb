@@ -261,23 +261,24 @@ class Event < ActiveRecord::Base
       event_ary = []
       # lis.each do |li|
       title = doc.css(".lst_dl")[0].css(".info")[0].css(".tit").text
-        
-      price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".sale").text
-      original_price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".org").text
-      discount = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".per").text
-        
-      rear_link_url = doc.css(".lst_dl")[0].css("a")[0].attributes["href"].value
-        
-      event_id = rear_link_url.split("/")[3].split("?")[0]
-      event_name = "[티몬 슈퍼꿀딜]" + title
-      event_url = first_url + rear_link_url
-      event = Event.where(event_id: event_id, event_site_id: event_site_id)
-      image_url = doc.css(".lst_dl")[0].css(".thm")[0].css("img")[0].attributes["src"].value
-      if event.blank?
-        Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
-                        price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
-        event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
-        event_ary.push event_hash
+      if title.include?("슈퍼") && title.include?("꿀딜")
+        price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".sale").text
+        original_price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".org").text
+        discount = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".per").text
+          
+        rear_link_url = doc.css(".lst_dl")[0].css("a")[0].attributes["href"].value
+          
+        event_id = rear_link_url.split("/")[3].split("?")[0]
+        event_name = title
+        event_url = first_url + rear_link_url
+        event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        image_url = doc.css(".lst_dl")[0].css(".thm")[0].css("img")[0].attributes["src"].value
+        if event.blank?
+          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+                          price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
+          event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+          event_ary.push event_hash
+        end
       end
       # end
       event_ary
