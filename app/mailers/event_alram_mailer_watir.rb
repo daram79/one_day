@@ -3,25 +3,11 @@ require 'open-uri'
 class EventAlramMailerWatir < ActionMailer::Base
   default :from => "shimtong1004@gmail.com"
   
-  def airticket_coocha_osaka
+  def airticket_coocha(doc, site_id)
     begin
       @title = "항공권 알림"
-      event_site_id = 2002
-      front_url = ""
+      event_site_id = site_id
       type = "항공권"
-      url = "http://m.coocha.co.kr/search/search.do?keyword=%EC%98%A4%EC%82%AC%EC%B9%B4+%ED%95%AD%EA%B3%B5%EA%B6%8C&menuCid=&cCate0=&cCate1=&cCate2=&cCate3=&searchCateName=&cid=&cSido=&searchAreas=&searchAreasName=&storesNationwide=&marketCurPageNo=&shopCode=&shopName=&curPageNo=1&orderbyGubun=&searchGubun=&minPrice=-1&maxPrice=-1&searchDate=&inner_keyword=&originCid=1&recmdDataList=&solrDataType=mall&solrDataIndex=1&searchSolr=on&searchTabIndex=0&mdRcmdId=0&anchor_did="
-      # browser = Watir::Browser.new
-      # browser.goto(url)
-      headless = Headless.new
-      headless.start
-        browser = Watir::Browser.start url
-        begin
-          browser.link(:onclick=>"footerBannerClose();").click
-        rescue
-        end
-        doc = Nokogiri::HTML.parse(browser.html)
-        browser.close
-      headless.destroy
       
       hot_clicks = doc.css("#section_hotclick").css(".list-item")
       @event_ary = []
@@ -44,25 +30,59 @@ class EventAlramMailerWatir < ActionMailer::Base
                 # event_url = "http://www.coupang.com/np/search?q=" + title
               elsif "G마켓".eql?(original_site)
                 event_url = "http://gtour.gmarket.co.kr/TourLP/Search?selecturl=total&keyword=" + title
-              elsif "옥션".eql?(original_site)
+              elsif "옥션 올킬".eql?(original_site)
                 event_url = "http://stores.auction.co.kr/mrtour/List?keyword=" + title
               elsif "여행박사".eql?(original_site)
-                event_url = "http://www.wemakeprice.com/search?search_keyword=" + title
+                event_url = ""
               else
                 event_url = ""
               end
               
-              image_url = hot_clicks[0].css("img").attr("src").value
+              image_url = hot.css("img").attr("src").value
               price = hot.css(".areas").css(".price-custom").text.delete!("\n").delete!("\t").strip!
               original_price = hot.css(".areas").css(".price-origin").text.delete!("\n").delete!("\t").strip!
               
               #항공권이 15,000원 이하면 바로 푸시
-              if price.scan(/\d/).join('').to_i < 150000
-                Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
-                              image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
-              else
-                Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
-                              image_url: image_url, price: price, original_price: original_price)
+              if title.include?("오사카")
+                if price.scan(/\d/).join('').to_i < 150000
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+                else
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price)
+                end
+              elsif title.include?("동경") || title.include?("도쿄")
+                if price.scan(/\d/).join('').to_i < 200000
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+                else
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price)
+                end
+              elsif title.include?("상해") || title.include?("상하이")
+                if price.scan(/\d/).join('').to_i < 180000
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+                else
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price)
+                end
+              elsif title.include?("북경") || title.include?("베이징")
+                if price.scan(/\d/).join('').to_i < 170000
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+                else
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price)
+                end
+              elsif title.include?("홍콩")
+                if price.scan(/\d/).join('').to_i < 170000
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+                else
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price)
+                end
               end
               
               # ['alo','hola','test'].any? { |word| str.include?(word) } #문자에 배열중에 같은 값을 포하고 있는지 비교
@@ -74,6 +94,97 @@ class EventAlramMailerWatir < ActionMailer::Base
             end
           end
         end
+        
+        lists = doc.css("#id_deal_list").css(".list-item")
+        lists.each do |list|
+          original_site = list.css(".areas").css(".area-info").text
+          # list.css(".areas").css(".area-info").text.delete!("\n").delete!("\t").strip!
+          original_site = list.css(".areas").css(".area-info").text
+          original_site.delete!("\n").strip! if original_site.include?("\n")
+          original_site.delete!("\t").strip! if original_site.include?("\t")
+          
+          title = list.css(".areas").css(".area-title").text
+          if title.include?(type)
+            rear_url = ""
+            event_id = list.attr("data-did")
+            event = Event.where(event_id: event_id, event_site_id: event_site_id)
+            event_name = "[" + original_site + "]" +  title
+            if event.blank?
+              if "위메프".eql?(original_site)
+                event_url = "http://www.wemakeprice.com/search?search_keyword=" + title
+              elsif "티몬".eql?(original_site)
+                event_url = "http://www.wemakeprice.com/search?search_keyword=" + title.split('/')[0]
+              elsif "쿠팡".eql?(original_site)
+                event_url = "http://m.coupang.com/np/search?q=" + title
+                  # event_url = "http://www.coupang.com/np/search?q=" + title
+              elsif "G마켓".eql?(original_site)
+                event_url = "http://gtour.gmarket.co.kr/TourLP/Search?selecturl=total&keyword=" + title
+              elsif "옥션 올킬".eql?(original_site)
+                event_url = "http://stores.auction.co.kr/mrtour/List?keyword=" + title
+              elsif "여행박사".eql?(original_site)
+                event_url = ""
+              else
+                event_url = ""
+              end
+                
+              image_url = list.css("img").attr("src").value
+              price = list.css(".areas").css(".price-custom").text.delete!("\n").delete!("\t").strip!
+              original_price = list.css(".areas").css(".price-origin").text.delete!("\n").delete!("\t").strip!
+                
+              #항공권이 15,000원 이하면 바로 푸시
+              if title.include?("오사카")
+                if price.scan(/\d/).join('').to_i < 150000
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+                else
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price)
+                end
+              elsif title.include?("동경") || title.include?("도쿄")
+                if price.scan(/\d/).join('').to_i < 200000
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+                else
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price)
+                end
+              elsif title.include?("상해") || title.include?("상하이")
+                if price.scan(/\d/).join('').to_i < 180000
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+                else
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price)
+                end
+              elsif title.include?("북경") || title.include?("베이징")
+                if price.scan(/\d/).join('').to_i < 170000
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+                else
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price)
+                end
+              elsif title.include?("홍콩")
+                if price.scan(/\d/).join('').to_i < 170000
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
+                else
+                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                                image_url: image_url, price: price, original_price: original_price)
+                end
+              end
+                
+                # ['alo','hola','test'].any? { |word| str.include?(word) } #문자에 배열중에 같은 값을 포하고 있는지 비교
+                # a.scan(/\d/).join('')  #문자&숫자에서 숫자만 가져옴
+                
+                
+              event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+              @event_ary.push event_hash
+            end
+          end
+        end
+        
+        
         email = EventMailingList.all.pluck(:email)
         return if @event_ary.blank? || email.blank?
         mail to: email , subject: @title
@@ -89,22 +200,12 @@ class EventAlramMailerWatir < ActionMailer::Base
     end
   end
   
-  def conveni_event_gs25
+  def conveni_event_gs25(doc)
     begin
       @title = "편의점 알림"
       event_site_id = 3001
       front_url = "http://gs25.gsretail.com/"
       type = "편의점"
-      url = "http://gs25.gsretail.com/gscvs/ko/customer-engagement/event/current-events"
-
-      headless = Headless.new
-      headless.start
-        # browser = Watir::Browser.new
-        # browser.goto(url)
-        browser = Watir::Browser.start url
-        doc = Nokogiri::HTML.parse(browser.html)
-        browser.close
-      headless.destroy
 
       trs = doc.css(".tbl_ltype1").css("tbody").css("tr")
       
@@ -140,20 +241,11 @@ class EventAlramMailerWatir < ActionMailer::Base
     end
   end
   
-  def movie_event_megabox
+  def movie_event_megabox(doc)
     begin
-      @title = "[메가박스]"
       url = "http://www.megabox.co.kr/?menuId=store"
+      @title = "[메가박스]"
       event_site_id = 4003
-      
-      headless = Headless.new
-      headless.start
-        # browser = Watir::Browser.new
-        # browser.goto(url)
-        browser = Watir::Browser.start url
-        doc = Nokogiri::HTML.parse(browser.html)
-        browser.close
-      headless.destroy
 
       lis = doc.css(".store_lst").css("li")
       @event_ary = []
@@ -194,17 +286,10 @@ class EventAlramMailerWatir < ActionMailer::Base
     end
   end
   
-  def get_g9_flash_deal
+  def get_g9_flash_deal(doc)
     begin
-      event_site_id = 11
-      headless = Headless.new
-      headless.start
-        url = "http://www.g9.co.kr"
-        browser = Watir::Browser.start url
-        doc = Nokogiri::HTML.parse(browser.html)
-        browser.close
-      headless.destroy
-
+      event_site_id = 9002
+      @title = "G9 FLASH DEAL"
       @event_ary = []
       unless doc.css("#flash_deal_goods_list").blank?
         title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")

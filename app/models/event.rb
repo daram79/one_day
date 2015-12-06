@@ -261,23 +261,24 @@ class Event < ActiveRecord::Base
       event_ary = []
       # lis.each do |li|
       title = doc.css(".lst_dl")[0].css(".info")[0].css(".tit").text
-        
-      price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".sale").text
-      original_price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".org").text
-      discount = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".per").text
-        
-      rear_link_url = doc.css(".lst_dl")[0].css("a")[0].attributes["href"].value
-        
-      event_id = rear_link_url.split("/")[3].split("?")[0]
-      event_name = "[티몬 슈퍼꿀딜]" + title
-      event_url = first_url + rear_link_url
-      event = Event.where(event_id: event_id, event_site_id: event_site_id)
-      image_url = doc.css(".lst_dl")[0].css(".thm")[0].css("img")[0].attributes["src"].value
-      if event.blank?
-        Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
-                        price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
-        event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
-        event_ary.push event_hash
+      if title.include?("슈퍼") && title.include?("꿀딜")
+        price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".sale").text
+        original_price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".org").text
+        discount = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".per").text
+          
+        rear_link_url = doc.css(".lst_dl")[0].css("a")[0].attributes["href"].value
+          
+        event_id = rear_link_url.split("/")[3].split("?")[0]
+        event_name = title
+        event_url = first_url + rear_link_url
+        event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        image_url = doc.css(".lst_dl")[0].css(".thm")[0].css("img")[0].attributes["src"].value
+        if event.blank?
+          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+                          price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
+          event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+          event_ary.push event_hash
+        end
       end
       # end
       event_ary
@@ -287,76 +288,78 @@ class Event < ActiveRecord::Base
     end
   end
   
-  def self.get_g9_flash_deal(event_site_id)
-    begin
-      event_site_id = 9002
-      url = "http://www.g9.co.kr"
-      browser = Watir::Browser.new
-      browser.goto(url)
-      while browser.div(:id=>"bestDealLoding").visible? do sleep 1 end
-      browser.execute_script("window.scrollTo(0, document.body.scrollHeight);\n")
-      doc = Nokogiri::HTML.parse(browser.html)
-      browser.close
-      event_ary = []
-      title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
-      price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
-      original_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("del").text
-      discount = doc.css("#flash_deal_goods_list").css(".price_info").css(".sale").text
-        
-      rear_link_url = doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"].value
-      tmp_ary = rear_link_url.split("/")
-      event_id = tmp_ary[-1]
-      event_name = "[g9 FLASH DEAL]" + title
-      event_url = url + rear_link_url
-      event = Event.where(event_id: event_id, event_site_id: event_site_id)
-      image_url = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
-      if event.blank?
-        Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
-                      price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
-        event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
-        event_ary.push event_hash
-      end
-      event_ary
-    rescue => e
-      p e.backtrace
-      return event_ary = []
-    end
-  end
+  # move => event_alram_mailer_watir
+  # def self.get_g9_flash_deal(event_site_id)
+    # begin
+      # event_site_id = 9002
+      # url = "http://www.g9.co.kr"
+      # browser = Watir::Browser.new
+      # browser.goto(url)
+      # while browser.div(:id=>"bestDealLoding").visible? do sleep 1 end
+      # browser.execute_script("window.scrollTo(0, document.body.scrollHeight);\n")
+      # doc = Nokogiri::HTML.parse(browser.html)
+      # browser.close
+      # event_ary = []
+      # title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
+      # price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
+      # original_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("del").text
+      # discount = doc.css("#flash_deal_goods_list").css(".price_info").css(".sale").text
+#         
+      # rear_link_url = doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"].value
+      # tmp_ary = rear_link_url.split("/")
+      # event_id = tmp_ary[-1]
+      # event_name = "[g9 FLASH DEAL]" + title
+      # event_url = url + rear_link_url
+      # event = Event.where(event_id: event_id, event_site_id: event_site_id)
+      # image_url = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
+      # if event.blank?
+        # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+                      # price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
+        # event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+        # event_ary.push event_hash
+      # end
+      # event_ary
+    # rescue => e
+      # p e.backtrace
+      # return event_ary = []
+    # end
+  # end
   
-  def self.megabox
-    url = "http://www.megabox.co.kr/?menuId=store"
-    event_site_id = 4003
-    
-    browser = Watir::Browser.new
-      browser.goto(url)
-      while browser.div(:id=>"bestDealLoding").visible? do sleep 1 end
-      doc = Nokogiri::HTML.parse(browser.html)
-      browser.close
-      lis = doc.css(".store_lst").css("li")
-      
-      lis.each do |li|
-        event_id = li.css(".blank").attr("data-code").value
-        event = Event.where(event_id: event_id, event_site_id: event_site_id)
-        if event.blank?
-          title = li.css("h5").text
-          price = li.css("b")[0].text
-          price.lstrip!
-          original_price = li.css("s").text
-          event_name = "[메가박스]" + title 
-          event_url = url
-          image_url = li.css(".img_pro").attr("src").value
-        
-          if title.include?("1+1")
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
-                            show_flg: true, push_flg: true, update_flg: true)
-          else
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
-          end
-          event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
-          event_ary.push event_hash
-        end
-      end
-      event_ary
-  end
+  # move => event_alram_mailer_watir
+  # def self.megabox
+    # url = "http://www.megabox.co.kr/?menuId=store"
+    # event_site_id = 4003
+#     
+    # browser = Watir::Browser.new
+      # browser.goto(url)
+      # while browser.div(:id=>"bestDealLoding").visible? do sleep 1 end
+      # doc = Nokogiri::HTML.parse(browser.html)
+      # browser.close
+      # lis = doc.css(".store_lst").css("li")
+#       
+      # lis.each do |li|
+        # event_id = li.css(".blank").attr("data-code").value
+        # event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        # if event.blank?
+          # title = li.css("h5").text
+          # price = li.css("b")[0].text
+          # price.lstrip!
+          # original_price = li.css("s").text
+          # event_name = "[메가박스]" + title 
+          # event_url = url
+          # image_url = li.css(".img_pro").attr("src").value
+#         
+          # if title.include?("1+1")
+            # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
+                            # show_flg: true, push_flg: true, update_flg: true)
+          # else
+            # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
+          # end
+          # event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+          # event_ary.push event_hash
+        # end
+      # end
+      # event_ary
+  # end
   
 end
