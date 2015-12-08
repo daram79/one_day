@@ -8,7 +8,7 @@ browser = Watir::Browser.new
     search_key = DealSearchWord.all.pluck(:word)
     
     # #위메프
-    p "start 1"
+    p "위메프"
     DealItem.add_wemakeprice(browser, search_key)
   end
 browser.close
