@@ -13,6 +13,7 @@ class DealItem < ActiveRecord::Base
         rescue
         end
         search_key.each do |key|
+          p "위메프 데이터 수집중 #{key}"
           browser.text_field(:id => 'searchKeyword').set key
           browser.span(:onclick=>"$('#top_search_form').submit();").click
           browser.a(:href=>"javascript:dealsort('#{key}','open');").click
@@ -59,6 +60,7 @@ class DealItem < ActiveRecord::Base
       browser.goto url
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
+        p "쿠팡 데이터 수집중 #{key}"
         browser.text_field(:id => 'headerSearchKeyword').set key
         browser.a(:id => "headerSearchBtn").click
         browser.a(:text => "최신순").click
@@ -132,6 +134,7 @@ class DealItem < ActiveRecord::Base
       
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
+        p "지구 데이터 수집중 #{key}"
         browser.text_field(:id => 'txtSearchKeyword').set key
         browser.input(:id => "btnSearchKeyword").click
         browser.a(:text => "최신순").click
@@ -196,6 +199,7 @@ class DealItem < ActiveRecord::Base
       browser.goto url
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
+        p "쇼킹딜 데이터 수집중 #{key}"
         browser.text_field(:id => 'tSearch').set key
         browser.button(:onclick=>"ShockingDeal.common.goSearch('tSearch');doCommonStat('DEA0102');return false;").click
         browser.a(:text => "신규오픈").click
@@ -260,6 +264,7 @@ class DealItem < ActiveRecord::Base
       browser.link(:onclick=>"hideSubscribe();return false;").click
       isFirst = true
       search_key.each do |key|
+        p "티몬 데이터 수집중 #{key}"
         if isFirst
           browser.text_field(:id => 'search_keyword').set key
           browser.a(:id => "search_submit").click
