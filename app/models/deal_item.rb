@@ -106,6 +106,30 @@ class DealItem < ActiveRecord::Base
       url = "http://www.g9.co.kr"
       site_id = 3
       browser.goto url
+      
+      #플레쉬딜
+      doc = Nokogiri::HTML.parse(browser.html)
+      unless doc.css("#flash_deal_goods_list").blank?
+        deal_title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
+        deal_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
+        deal_original_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("del").text
+        discount = doc.css("#flash_deal_goods_list").css(".price_info").css(".sale").text
+        if doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"] 
+          rear_link_url = doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"].value
+          tmp_ary = rear_link_url.split("/")
+          item_id = tmp_ary[-1]
+          deal_url = url + rear_link_url
+          event = Event.where(event_id: event_id, event_site_id: event_site_id)
+          deal_image = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
+          if event.blank?
+            DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, discount: discount, deal_original_price: deal_original_price,
+                                  deal_title: deal_title, deal_price: deal_price)
+                                  
+          end
+        end
+      end
+      
+      
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
         browser.text_field(:id => 'txtSearchKeyword').set key
@@ -291,6 +315,25 @@ class DealItem < ActiveRecord::Base
       return
     end
     
+  end
+  
+  def self.get_g9_flash_deal(browser)
+    begin
+      event_site_id = 9002
+      @title = "G9 FLASH DEAL"
+      @event_ary = []
+      
+      email = EventMailingList.all.pluck(:email)
+      return if @event_ary.blank? || email.blank?
+      mail to: email , subject: @title
+    rescue => e
+      p e.backtrace
+      @title = "지구 플레쉬딜 error"
+      @event_ary = []
+      @event_ary.push "app/mailers/event_alram_mailer_watir.rb"
+      @err_msg = e.backtrace
+      mail to: "shimtong1004@gmail.com" , subject: @title
+    end
   end
   
   
