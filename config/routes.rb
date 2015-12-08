@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
   
+  resources :deal_search_words do
+    collection do
+      post "add_word"
+    end
+  end
+  
   resources :events do
     collection do
       get "get_event"
