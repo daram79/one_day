@@ -7,7 +7,10 @@ class DealItem < ActiveRecord::Base
       # headless = Headless.new
       # headless.start
       browser.goto url
-      browser.link(:onclick=>"close_regpop();").click
+      begin
+        browser.link(:onclick=>"close_regpop();").click
+      rescue
+      end
       search_key.each do |key|
         browser.text_field(:id => 'searchKeyword').set key
         browser.span(:onclick=>"$('#top_search_form').submit();").click
