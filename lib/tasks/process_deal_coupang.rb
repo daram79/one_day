@@ -6,10 +6,8 @@ headless.start
 browser = Watir::Browser.new
   while 1
     search_key = DealSearchWord.all.pluck(:word)
-    
-    #G9
-    p "G9"
-    DealItem.add_g9(browser, search_key)
+    p "쿠팡"
+    DealItem.add_coupang(browser, search_key)
   end
 browser.close
 headless.destroy

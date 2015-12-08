@@ -4,8 +4,8 @@ require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 
 
 
-# headless = Headless.new
-# headless.start
+headless = Headless.new
+headless.start
 browser = Watir::Browser.new
   while 1
     # p "start add key 1"
@@ -14,11 +14,11 @@ browser = Watir::Browser.new
     # p "start add key 2"
     # DealSearchWord.add_key_coupang(browser)
     
-    search_key = DealSearchWord.all.pluck(:word)
+    # search_key = DealSearchWord.all.pluck(:word)
     
     # #위메프
-    p "start 1"
-    DealItem.add_wemakeprice(browser, search_key)
+    # p "start 1"
+    # DealItem.add_wemakeprice(browser, search_key)
     
     # #쿠팡
     # p "start 2"
@@ -36,12 +36,12 @@ browser = Watir::Browser.new
     # p "start 5"
     # DealItem.add_tmon(browser, search_key)
 #     
-    # p "start megabox"
-    # DealItem.movie_event_megabox(browser)
+    p "megabox"
+    DealItem.movie_event_megabox(browser)
     
   end
 browser.close
-# headless.destroy
+headless.destroy
 
 
 

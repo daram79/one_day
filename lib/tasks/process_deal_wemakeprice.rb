@@ -7,9 +7,9 @@ browser = Watir::Browser.new
   while 1
     search_key = DealSearchWord.all.pluck(:word)
     
-    #G9
-    p "G9"
-    DealItem.add_g9(browser, search_key)
+    # #위메프
+    p "start 1"
+    DealItem.add_wemakeprice(browser, search_key)
   end
 browser.close
 headless.destroy
