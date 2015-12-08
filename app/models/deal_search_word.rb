@@ -3,7 +3,10 @@ class DealSearchWord < ActiveRecord::Base
   def self.add_key_wemakeprice(browser)
     url = "http://www.wemakeprice.com"
     browser.goto url
-    browser.link(:onclick=>"close_regpop();").click
+    begin
+      browser.link(:onclick=>"close_regpop();").click
+    rescue
+    end
     
     doc = Nokogiri::HTML.parse(browser.html)
     key_list = doc.css(".list-top-searches").css("li")
