@@ -97,8 +97,9 @@ class DealItem < ActiveRecord::Base
           end
         end
       end
+      return true
     rescue
-      return
+      return false
     end
     
   end
@@ -186,8 +187,9 @@ class DealItem < ActiveRecord::Base
           
         end
       end
+      return true
     rescue
-      return
+      return false
     end
     
   end
@@ -250,8 +252,9 @@ class DealItem < ActiveRecord::Base
           
         end
       end
+      return true
     rescue
-      return
+      return false
     end
     
   end
@@ -317,8 +320,9 @@ class DealItem < ActiveRecord::Base
           
         end
       end
+      return true
     rescue
-      return
+      return false
     end
     
   end
@@ -353,7 +357,9 @@ class DealItem < ActiveRecord::Base
           end
         end
       end
+      return true
     rescue => e
+      return false
     end
   end
 end

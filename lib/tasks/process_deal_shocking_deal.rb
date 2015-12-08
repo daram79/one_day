@@ -9,7 +9,14 @@ browser = Watir::Browser.new
     
     #쇼킹딜
     p "쇼킹딜"
-    DealItem.add_shocking_deal(browser, search_key)
+    ret = DealItem.add_shocking_deal(browser, search_key)
+    
+    unless ret
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+    end
   end
-browser.close
-headless.destroy

@@ -9,11 +9,18 @@ browser = Watir::Browser.new
     
     #티몬
     p "티몬"
-    DealItem.add_tmon(browser, search_key)
+    ret = DealItem.add_tmon(browser, search_key)
+    
+    unless ret
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+    end
+    
   end
-browser.close
-headless.destroy
-
 
 
 
