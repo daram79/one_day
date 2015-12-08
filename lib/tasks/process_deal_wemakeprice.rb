@@ -8,11 +8,18 @@ browser = Watir::Browser.new
     search_key = DealSearchWord.all.pluck(:word)
     
     # #위메프
-    p "위메프"
-    DealItem.add_wemakeprice(browser, search_key)
+    ret = DealItem.add_wemakeprice(browser, search_key)
+    unless ret
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+    end
   end
-browser.close
-headless.destroy
+# browser.close
+# headless.destroy
 
 
 

@@ -47,8 +47,9 @@ class DealItem < ActiveRecord::Base
             end
           end
         end
+        return true
       rescue
-        return
+        return false
       end
     
   end
