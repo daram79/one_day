@@ -317,4 +317,37 @@ class DealItem < ActiveRecord::Base
     
   end
   
+  def self.movie_event_megabox(browser)
+    begin
+      url = "http://www.megabox.co.kr/?menuId=store"
+      browser.goto url
+      @title = "[메가박스]"
+      event_site_id = 4003
+      
+      doc = Nokogiri::HTML.parse(browser.html)
+      lis = doc.css(".store_lst").css("li")
+      @event_ary = []
+      lis.each do |li|
+        event_id = li.css(".blank").attr("data-code").value
+        event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        if event.blank?
+          title = li.css("h5").text
+          price = li.css("b")[0].text
+          price.lstrip!
+          original_price = li.css("s").text
+          event_name = "[메가박스]" + title 
+          event_url = url
+          image_url = li.css(".img_pro").attr("src").value
+        
+          if title.include?("1+1")
+            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
+                            show_flg: true, push_flg: true, update_flg: true)
+          else
+            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
+          end
+        end
+      end
+    rescue => e
+    end
+  end
 end
