@@ -3,272 +3,292 @@ class DealItem < ActiveRecord::Base
   
   def self.add_wemakeprice(browser, search_key)
     #위메프
-    url = "http://www.wemakeprice.com"
-      # headless = Headless.new
-      # headless.start
-      browser.goto url
-      begin
-        browser.link(:onclick=>"close_regpop();").click
-      rescue
-      end
-      search_key.each do |key|
-        browser.text_field(:id => 'searchKeyword').set key
-        browser.span(:onclick=>"$('#top_search_form').submit();").click
-        browser.a(:href=>"javascript:dealsort('#{key}','open');").click
-        (1..50).each{|num|
-          browser.execute_script("window.scrollBy(0,1000)")
-        }
-        doc = Nokogiri::HTML.parse(browser.html)
-        lis = doc.css(".section_list").css("li")
-        lis.each do |li|
-          item_id = li.attr("deal_id")
-          site_id = 1
-          deal_item = DealItem.where(item_id: item_id, site_id: site_id)
-          if deal_item.blank?
-            deal_url = url + li.css(".link").css(".type03").css("a").attr("href").value
-            deal_image = li.css("span").css(".box_thumb").css(".lazy").attr("src").value
-            deal_description = li.css(".link").css(".type03").css("a").css(".box_desc").css(".standardinfo").text
-            deal_title = li.css(".link").css(".type03").css("a").css(".box_desc").css(".tit_desc").text
-            deal_price = li.css(".link").css(".type03").css("a").css(".box_desc").css(".txt_info").css(".sale").text.scan(/\d/).join('').to_i
-            deal_count = li.css(".link").css(".type03").css("a").css(".box_desc").css(".point").text.scan(/\d/).join('').to_i
-            #이자
-            card_interest_description = li.css(".link").css(".type03").css(".bl").text
-            #배송
-            deliver_charge_description = li.css(".link").css(".type03").css(".gr").text
-            
-            deal_start = Date.today if li.css(".link").css(".type03").css(".box_sticker").css(".ico_comm").text == "오늘오픈"
-            
-            ActiveRecord::Base.transaction do
-              DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start, 
-                                deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+    begin
+      url = "http://www.wemakeprice.com"
+        # headless = Headless.new
+        # headless.start
+        browser.goto url
+        begin
+          browser.link(:onclick=>"close_regpop();").click
+        rescue
+        end
+        search_key.each do |key|
+          browser.text_field(:id => 'searchKeyword').set key
+          browser.span(:onclick=>"$('#top_search_form').submit();").click
+          browser.a(:href=>"javascript:dealsort('#{key}','open');").click
+          (1..50).each{|num|
+            browser.execute_script("window.scrollBy(0,1000)")
+          }
+          doc = Nokogiri::HTML.parse(browser.html)
+          lis = doc.css(".section_list").css("li")
+          lis.each do |li|
+            item_id = li.attr("deal_id")
+            site_id = 1
+            deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+            if deal_item.blank?
+              deal_url = url + li.css(".link").css(".type03").css("a").attr("href").value
+              deal_image = li.css("span").css(".box_thumb").css(".lazy").attr("src").value
+              deal_description = li.css(".link").css(".type03").css("a").css(".box_desc").css(".standardinfo").text
+              deal_title = li.css(".link").css(".type03").css("a").css(".box_desc").css(".tit_desc").text
+              deal_price = li.css(".link").css(".type03").css("a").css(".box_desc").css(".txt_info").css(".sale").text.scan(/\d/).join('').to_i
+              deal_count = li.css(".link").css(".type03").css("a").css(".box_desc").css(".point").text.scan(/\d/).join('').to_i
+              #이자
+              card_interest_description = li.css(".link").css(".type03").css(".bl").text
+              #배송
+              deliver_charge_description = li.css(".link").css(".type03").css(".gr").text
+              
+              deal_start = Date.today if li.css(".link").css(".type03").css(".box_sticker").css(".ico_comm").text == "오늘오픈"
+              
+              ActiveRecord::Base.transaction do
+                DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start, 
+                                  deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+              end
             end
           end
         end
+      rescue
+        return
       end
     
   end
   
   def self.add_coupang(browser, search_key)
-    url = "http://www.coupang.com"
-    site_id = 2
-    browser.goto url
-    # browser.link(:onclick=>"close_regpop();").click
-    search_key.each do |key|
-      browser.text_field(:id => 'headerSearchKeyword').set key
-      browser.a(:id => "headerSearchBtn").click
-      browser.a(:text => "최신순").click
-      
-      doc = Nokogiri::HTML.parse(browser.html)
-      product_info = doc.css("#productList").attr("data-products").value
-      hash_product_info = JSON.parse product_info
-      page_size = hash_product_info["productSizePerPage"]
-      
-      ids = hash_product_info["indexes"]
-      ids.each do |id|
-        item_id = id
-        deal_item = DealItem.where(item_id: item_id, site_id: site_id)
-        if deal_item.blank?
-          li = doc.css("##{id}")
-          deal_url = url + li.css(".detail-link").attr("href").value
-          deal_image = li.css(".detail-link").css("img").attr("src").value
-          deal_description = ""
-          deal_title = li.css(".detail-link").css(".title").css("em").text
-          deal_price = li.css(".detail-link").css(".price").css("em").text.scan(/\d/).join('').to_i
-          deal_count = li.css(".detail-link").css(".condition").css("em")[1].text if li.css(".detail-link").css(".condition").css("em").size > 1
-          
-          card_interest_description = ""
-          deliver_charge_description = li.css(".delivery-9800").text
-          deliver_charge_description = li.css(".delivery-free").text if deliver_charge_description == ""
-          
-          deal_start = Date.today if li.css(".today-open").text != ""
-          
-          ActiveRecord::Base.transaction do
-            DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start,
-                                deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+    begin
+      url = "http://www.coupang.com"
+      site_id = 2
+      browser.goto url
+      # browser.link(:onclick=>"close_regpop();").click
+      search_key.each do |key|
+        browser.text_field(:id => 'headerSearchKeyword').set key
+        browser.a(:id => "headerSearchBtn").click
+        browser.a(:text => "최신순").click
+        
+        doc = Nokogiri::HTML.parse(browser.html)
+        product_info = doc.css("#productList").attr("data-products").value
+        hash_product_info = JSON.parse product_info
+        page_size = hash_product_info["productSizePerPage"]
+        
+        ids = hash_product_info["indexes"]
+        ids.each do |id|
+          item_id = id
+          deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+          if deal_item.blank?
+            li = doc.css("##{id}")
+            deal_url = url + li.css(".detail-link").attr("href").value
+            deal_image = li.css(".detail-link").css("img").attr("src").value
+            deal_description = ""
+            deal_title = li.css(".detail-link").css(".title").css("em").text
+            deal_price = li.css(".detail-link").css(".price").css("em").text.scan(/\d/).join('').to_i
+            deal_count = li.css(".detail-link").css(".condition").css("em")[1].text if li.css(".detail-link").css(".condition").css("em").size > 1
+            
+            card_interest_description = ""
+            deliver_charge_description = li.css(".delivery-9800").text
+            deliver_charge_description = li.css(".delivery-free").text if deliver_charge_description == ""
+            
+            deal_start = Date.today if li.css(".today-open").text != ""
+            
+            ActiveRecord::Base.transaction do
+              DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start,
+                                  deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+            end
           end
         end
       end
+    rescue
+      return
     end
     
   end
   
   
   def self.add_g9(browser, search_key)
-    url = "http://www.g9.co.kr"
-    site_id = 3
-    browser.goto url
-    # browser.link(:onclick=>"close_regpop();").click
-    search_key.each do |key|
-      browser.text_field(:id => 'txtSearchKeyword').set key
-      browser.input(:id => "btnSearchKeyword").click
-      browser.a(:text => "최신순").click
-      
-      (1..50).each{|num|
-        browser.execute_script("window.scrollBy(0,1000)")
-      }
-      
-      doc = Nokogiri::HTML.parse(browser.html)
-      g9_item_list = doc.css("#searchItemList").css("li")
-      g9_item_list.each do |item|
-        item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
-        deal_item = DealItem.where(item_id: item_id, site_id: site_id)
-        if deal_item.blank?
-          deal_url = url + item.css(".tag").attr("href").value
-          deal_image = item.css("#img#{item_id}").attr("src").value
-          
-          deal_description = item.css(".tag").css(".title").css("em").text
-          begin
-            deal_title = item.css(".tag").css(".title").text.delete!("\t").delete!("\n").delete(deal_description)
-          rescue
-            title = item.css(".tag").css(".title").to_s
-            title_s_index = title.index("</em>") + 5
-            title_e_index = title.size
-            deal_title = title[title_s_index..title_e_index].delete!("\t").delete!("\n").delete("</span>")
-          end
-          deal_price = item.css(".price_info").css(".price").css("strong").text.scan(/\d/).join('').to_i
-          deal_original_price = item.css(".price_info").css(".price").css("del").text.scan(/\d/).join('').to_i
-          special_price = item.css(".price_info").css(".price").css("em").text
-          discount = item.css(".price_info").css(".sale").text.scan(/\d/).join('').to_i
-          
-          like_count = item.css("#fcnt#{item_id}").text.scan(/\d/).join('').to_i
-          deal_count = deal_price = item.css(".count_item").css("strong").text
-          
-          card_interest_description = ""
-          deliver_charge_description = item.css(".ico_tag4").text
-          
-          deal_start = Date.today if item.css(".ico_tag2").text != ""
-          
-          ActiveRecord::Base.transaction do
-            DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
-                                like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
-                                deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
-          end
-        else
-              
-        end
+    begin
+      url = "http://www.g9.co.kr"
+      site_id = 3
+      browser.goto url
+      # browser.link(:onclick=>"close_regpop();").click
+      search_key.each do |key|
+        browser.text_field(:id => 'txtSearchKeyword').set key
+        browser.input(:id => "btnSearchKeyword").click
+        browser.a(:text => "최신순").click
         
+        (1..50).each{|num|
+          browser.execute_script("window.scrollBy(0,1000)")
+        }
+        
+        doc = Nokogiri::HTML.parse(browser.html)
+        g9_item_list = doc.css("#searchItemList").css("li")
+        g9_item_list.each do |item|
+          item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
+          deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+          if deal_item.blank?
+            deal_url = url + item.css(".tag").attr("href").value
+            deal_image = item.css("#img#{item_id}").attr("src").value
+            
+            deal_description = item.css(".tag").css(".title").css("em").text
+            begin
+              deal_title = item.css(".tag").css(".title").text.delete!("\t").delete!("\n").delete(deal_description)
+            rescue
+              title = item.css(".tag").css(".title").to_s
+              title_s_index = title.index("</em>") + 5
+              title_e_index = title.size
+              deal_title = title[title_s_index..title_e_index].delete!("\t").delete!("\n").delete("</span>")
+            end
+            deal_price = item.css(".price_info").css(".price").css("strong").text.scan(/\d/).join('').to_i
+            deal_original_price = item.css(".price_info").css(".price").css("del").text.scan(/\d/).join('').to_i
+            special_price = item.css(".price_info").css(".price").css("em").text
+            discount = item.css(".price_info").css(".sale").text.scan(/\d/).join('').to_i
+            
+            like_count = item.css("#fcnt#{item_id}").text.scan(/\d/).join('').to_i
+            deal_count = deal_price = item.css(".count_item").css("strong").text
+            
+            card_interest_description = ""
+            deliver_charge_description = item.css(".ico_tag4").text
+            
+            deal_start = Date.today if item.css(".ico_tag2").text != ""
+            
+            ActiveRecord::Base.transaction do
+              DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+                                  like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
+                                  deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+            end
+          else
+                
+          end
+          
+        end
       end
+    rescue
+      return
     end
     
   end
   
   #쇼킹딜
   def self.add_shocking_deal(browser, search_key)
-    url = "http://deal.11st.co.kr"
-    site_id = 4
-    browser.goto url
-    # browser.link(:onclick=>"close_regpop();").click
-    search_key.each do |key|
-      browser.text_field(:id => 'tSearch').set key
-      browser.button(:onclick=>"ShockingDeal.common.goSearch('tSearch');doCommonStat('DEA0102');return false;").click
-      browser.a(:text => "신규오픈").click
-      
-      (1..50).each{|num|
-        browser.execute_script("window.scrollBy(0,1000)")
-      }
-      
-      doc = Nokogiri::HTML.parse(browser.html)
-      item_list = doc.css("#prd_list").css("li")
-      item_list.each do |item|
-        item_id = item.attr("prdno").to_i
-        deal_item = DealItem.where(item_id: item_id, site_id: site_id)
-        if deal_item.blank?
-          deal_url = item.css("a").attr("href").value
-          deal_image = item.css(".thumb_prd").css("img").attr("src").value
-          
-          if item.css("a").css("p").size > 1 && !(item.css("a").css("p")[1].include?("개 리뷰"))
-            deal_description = item.css("a").css("p")[1].text
-          end
-           
-          deal_title = item.css("strong")[0].text
-          
-          deal_price = item.css(".price_wrap").css("strong").text.scan(/\d/).join('').to_i
-          deal_original_price = item.css(".price_wrap").css("s").text.scan(/\d/).join('').to_i
-          deal_original_price = nil if deal_original_price == 0
-          special_price = item.css(".sale").css(".special_price").text
-          
-          discount = item.css(".sale").text.scan(/\d/).join('').to_i if special_price == ""
-          
-          like_count =  item.css(".like_this").css("button").text.scan(/\d/).join('').to_i
-          deal_count = item.css(".buying_desc").text.scan(/\d/).join('').to_i
-          
-          card_interest_description = ""
-          deliver_charge_description = item.css(".ico_deliver1").text
-          
-          deal_start = Date.today if item.css(".ico_today_open").text != ""
-          
-          ActiveRecord::Base.transaction do
-            DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
-                                like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
-                                deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
-          end
-        else
-              
-        end
+    begin
+      url = "http://deal.11st.co.kr"
+      site_id = 4
+      browser.goto url
+      # browser.link(:onclick=>"close_regpop();").click
+      search_key.each do |key|
+        browser.text_field(:id => 'tSearch').set key
+        browser.button(:onclick=>"ShockingDeal.common.goSearch('tSearch');doCommonStat('DEA0102');return false;").click
+        browser.a(:text => "신규오픈").click
         
+        (1..50).each{|num|
+          browser.execute_script("window.scrollBy(0,1000)")
+        }
+        
+        doc = Nokogiri::HTML.parse(browser.html)
+        item_list = doc.css("#prd_list").css("li")
+        item_list.each do |item|
+          item_id = item.attr("prdno").to_i
+          deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+          if deal_item.blank?
+            deal_url = item.css("a").attr("href").value
+            deal_image = item.css(".thumb_prd").css("img").attr("src").value
+            
+            if item.css("a").css("p").size > 1 && !(item.css("a").css("p")[1].include?("개 리뷰"))
+              deal_description = item.css("a").css("p")[1].text
+            end
+             
+            deal_title = item.css("strong")[0].text
+            
+            deal_price = item.css(".price_wrap").css("strong").text.scan(/\d/).join('').to_i
+            deal_original_price = item.css(".price_wrap").css("s").text.scan(/\d/).join('').to_i
+            deal_original_price = nil if deal_original_price == 0
+            special_price = item.css(".sale").css(".special_price").text
+            
+            discount = item.css(".sale").text.scan(/\d/).join('').to_i if special_price == ""
+            
+            like_count =  item.css(".like_this").css("button").text.scan(/\d/).join('').to_i
+            deal_count = item.css(".buying_desc").text.scan(/\d/).join('').to_i
+            
+            card_interest_description = ""
+            deliver_charge_description = item.css(".ico_deliver1").text
+            
+            deal_start = Date.today if item.css(".ico_today_open").text != ""
+            
+            ActiveRecord::Base.transaction do
+              DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+                                  like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
+                                  deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+            end
+          else
+                
+          end
+          
+        end
       end
+    rescue
+      return
     end
     
   end
   
   #티몬
   def self.add_tmon(browser, search_key)
-    url = "http://www.ticketmonster.co.kr"
-    site_id = 5
-    browser.goto url
-    browser.link(:onclick=>"hideSubscribe();return false;").click
-    isFirst = true
-    search_key.each do |key|
-      if isFirst
-        browser.text_field(:id => 'search_keyword').set key
-        browser.a(:id => "search_submit").click
-        isFirst = false
-      else
-        browser.text_field(:id => 'top_srch').set key
-        browser.button(:class => "btn_search").click
-      end
-      
-      browser.a(:text => "최신순").click
-      
-      (1..50).each{|num|
-        browser.execute_script("window.scrollBy(0,1000)")
-      }
-      doc = Nokogiri::HTML.parse(browser.html)
-      item_list = doc.css("#_resultDeals").css("li")
-      item_list.each do |item|
-        item_id = item.css(".deal_item_anchor").attr("href").value.split("?")[0].split("/")[-1].to_i
-        deal_item = DealItem.where(item_id: item_id, site_id: site_id)
-        if deal_item.blank?
-          deal_url = item.css(".deal_item_anchor").attr("href").value
-          deal_image = item.css(".deal_item_thumb").css("img").attr("src").value
-          deal_description = item.css(".deal_item_body_top").css(".deal_item_subtitle").text
-          deal_title = item.css(".deal_item_body_top").css(".deal_item_title").text.delete!("\n").delete!("\t")
-          
-          deal_price = item.css(".deal_item_price").css("em")[0].text.scan(/\d/).join('').to_i
-          deal_original_price = item.css(".normal_price").css("em").text.scan(/\d/).join('').to_i
-          deal_original_price = nil if deal_original_price == 0
-          # special_price = item.css(".sale").css(".special_price").text
-          
-          discount = item.css(".discount_sale").css(".deal_item_discount").text.scan(/\d/).join('').to_i if item.css(".discount_sale").css(".deal_item_discount").text != ""
-          
-          # like_count =  item.css(".like_this").css("button").text.scan(/\d/).join('').to_i
-          deal_count = item.css(".deal_item_purchase").css("em").text.scan(/\d/).join('').to_i
-          
-          card_interest_description = ""
-          deliver_charge_description = item.css(".deal_item_sticker_bottom").css(".delivery").text
-          
-          deal_start = Date.today if item.css(".deal_item_sticker_bottom").css(".open_today").text != ""
-          
-          ActiveRecord::Base.transaction do
-            DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
-                                discount: discount, deal_original_price: deal_original_price, deal_start: deal_start,
-                                deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
-          end
+    begin
+      url = "http://www.ticketmonster.co.kr"
+      site_id = 5
+      browser.goto url
+      browser.link(:onclick=>"hideSubscribe();return false;").click
+      isFirst = true
+      search_key.each do |key|
+        if isFirst
+          browser.text_field(:id => 'search_keyword').set key
+          browser.a(:id => "search_submit").click
+          isFirst = false
         else
-              
+          browser.text_field(:id => 'top_srch').set key
+          browser.button(:class => "btn_search").click
         end
         
+        browser.a(:text => "최신순").click
+        
+        (1..50).each{|num|
+          browser.execute_script("window.scrollBy(0,1000)")
+        }
+        doc = Nokogiri::HTML.parse(browser.html)
+        item_list = doc.css("#_resultDeals").css("li")
+        item_list.each do |item|
+          item_id = item.css(".deal_item_anchor").attr("href").value.split("?")[0].split("/")[-1].to_i
+          deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+          if deal_item.blank?
+            deal_url = item.css(".deal_item_anchor").attr("href").value
+            deal_image = item.css(".deal_item_thumb").css("img").attr("src").value
+            deal_description = item.css(".deal_item_body_top").css(".deal_item_subtitle").text
+            deal_title = item.css(".deal_item_body_top").css(".deal_item_title").text.delete!("\n").delete!("\t")
+            
+            deal_price = item.css(".deal_item_price").css("em")[0].text.scan(/\d/).join('').to_i
+            deal_original_price = item.css(".normal_price").css("em").text.scan(/\d/).join('').to_i
+            deal_original_price = nil if deal_original_price == 0
+            # special_price = item.css(".sale").css(".special_price").text
+            
+            discount = item.css(".discount_sale").css(".deal_item_discount").text.scan(/\d/).join('').to_i if item.css(".discount_sale").css(".deal_item_discount").text != ""
+            
+            # like_count =  item.css(".like_this").css("button").text.scan(/\d/).join('').to_i
+            deal_count = item.css(".deal_item_purchase").css("em").text.scan(/\d/).join('').to_i
+            
+            card_interest_description = ""
+            deliver_charge_description = item.css(".deal_item_sticker_bottom").css(".delivery").text
+            
+            deal_start = Date.today if item.css(".deal_item_sticker_bottom").css(".open_today").text != ""
+            
+            ActiveRecord::Base.transaction do
+              DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+                                  discount: discount, deal_original_price: deal_original_price, deal_start: deal_start,
+                                  deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+            end
+          else
+                
+          end
+          
+        end
       end
+    rescue
+      return
     end
     
   end
