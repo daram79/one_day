@@ -317,26 +317,4 @@ class DealItem < ActiveRecord::Base
     
   end
   
-  def self.get_g9_flash_deal(browser)
-    begin
-      event_site_id = 9002
-      @title = "G9 FLASH DEAL"
-      @event_ary = []
-      
-      email = EventMailingList.all.pluck(:email)
-      return if @event_ary.blank? || email.blank?
-      mail to: email , subject: @title
-    rescue => e
-      p e.backtrace
-      @title = "지구 플레쉬딜 error"
-      @event_ary = []
-      @event_ary.push "app/mailers/event_alram_mailer_watir.rb"
-      @err_msg = e.backtrace
-      mail to: "shimtong1004@gmail.com" , subject: @title
-    end
-  end
-  
-  
-  
-  
 end
