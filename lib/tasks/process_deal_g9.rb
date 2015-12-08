@@ -13,16 +13,16 @@ browser = Watir::Browser.new
 #     
     # p "start add key 2"
     # DealSearchWord.add_key_coupang(browser)
-    
+#     
     search_key = DealSearchWord.all.pluck(:word)
-    
-    # #위메프
-    p "start 1"
-    DealItem.add_wemakeprice(browser, search_key)
-    
-    # #쿠팡
+#     
+    # # #위메프
+    # p "start 1"
+    # DealItem.add_wemakeprice(browser, search_key)
+#     
+    # # #쿠팡
     # p "start 2"
-    # DealItem.add_coupang(browser, search_key)
+    DealItem.add_coupang(browser, search_key)
 #     
     # # #G9
     # p "start 3"
@@ -35,7 +35,7 @@ browser = Watir::Browser.new
     # # #티몬
     # p "start 5"
     # DealItem.add_tmon(browser, search_key)
-#     
+    
     # p "start megabox"
     # DealItem.movie_event_megabox(browser)
     
