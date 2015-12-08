@@ -1,0 +1,17 @@
+<%= form_for(@deal_search_word) do |f| %>
+  <% if @deal_search_word.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@deal_search_word.errors.count, "error") %> prohibited this deal_search_word from being saved:</h2>
+
+      <ul>
+      <% @deal_search_word.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
