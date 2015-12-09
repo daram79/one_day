@@ -7,7 +7,8 @@ end
 
 
 # DealSearchResult.joins(:deal_item).where(deal_search_word: key).where(deal_item: {"deal_count > 100"})
-# DealSearchResult.joins(:deal_items).where(deal_search_word: key)
+# DealSearchResult.joins(:deal_item).where(deal_search_word: key).where("deal_items.deal_count > 1000")
+
 
 # User.joins(:posts).where(posts: { id: 1 })
 # 
