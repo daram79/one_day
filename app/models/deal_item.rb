@@ -109,7 +109,7 @@ class DealItem < ActiveRecord::Base
   
   def self.add_g9(browser)
     begin
-      search_key = DealSearchWord.all.pluck(:word)
+      search_key = DealSearchWord.all
       url = "http://www.g9.co.kr"
       site_id = 3
       browser.goto url
@@ -200,7 +200,7 @@ class DealItem < ActiveRecord::Base
   #쇼킹딜
   def self.add_shocking_deal(browser)
     begin
-      search_key = DealSearchWord.all.pluck(:word)
+      search_key = DealSearchWord.all
       url = "http://deal.11st.co.kr"
       site_id = 4
       browser.goto url
@@ -266,7 +266,7 @@ class DealItem < ActiveRecord::Base
   #티몬
   def self.add_tmon(browser)
     begin
-      search_key = DealSearchWord.all.pluck(:word)
+      search_key = DealSearchWord.all
       url = "http://www.ticketmonster.co.kr"
       site_id = 5
       browser.goto url

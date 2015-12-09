@@ -66,6 +66,32 @@ ActiveRecord::Schema.define(version: 20151206151659) do
 
   add_index "comments", ["feed_id"], name: "index_comments_on_feed_id", using: :btree
 
+  create_table "deal_items", force: true do |t|
+    t.integer  "deal_search_word_id"
+    t.integer  "item_id",                    limit: 8
+    t.integer  "site_id"
+    t.text     "deal_url"
+    t.string   "deal_image"
+    t.string   "deal_description"
+    t.string   "deal_title"
+    t.integer  "deal_price"
+    t.integer  "deal_original_price"
+    t.integer  "discount"
+    t.string   "special_price"
+    t.date     "deal_start"
+    t.integer  "deal_count"
+    t.integer  "like_count"
+    t.string   "card_interest_description"
+    t.string   "deliver_charge_description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "deal_items", ["deal_description"], name: "index_deal_items_on_deal_description", using: :btree
+  add_index "deal_items", ["deal_title"], name: "index_deal_items_on_deal_title", using: :btree
+  add_index "deal_items", ["site_id", "item_id"], name: "index_deal_items_on_site_id_and_item_id", using: :btree
+  add_index "deal_items", ["site_id"], name: "index_deal_items_on_site_id", using: :btree
+
   create_table "deal_search_words", force: true do |t|
     t.string   "word"
     t.text     "nick"
