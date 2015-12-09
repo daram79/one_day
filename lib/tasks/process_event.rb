@@ -9,7 +9,10 @@ keys.each do |key|
   datas.each do |data|
     word_data = DealSearchWord.find_by_word(data.deal_search_word)
     event = Event.where(event_id: data.deal_item.item_id, event_site_id: word_data.id)
-    Event.create(event_id: data.deal_item.item_id, event_name: data.deal_item.deal_title, event_url: data.deal_item.deal_url, event_site_id: word_data.id, show_flg: true) if event.blank?
+    Event.create(event_id: data.deal_item.item_id, event_name: data.deal_item.deal_title, event_url: data.deal_item.deal_url,
+                  price: data.deal_item.deal_price, original_price: data.deal_item.deal_original_price, discount: data.deal_item.discount,  
+                  image_url: data.deal_item.deal_image, event_site_id: word_data.id, show_flg: true) if event.blank?
+                                                                                                                              
   end
 end
   
