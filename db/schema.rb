@@ -101,7 +101,7 @@ ActiveRecord::Schema.define(version: 20151209092335) do
     t.datetime "updated_at"
   end
 
-  add_index "deal_search_results", ["deal_search_word"], name: "index_deal_search_results_on_deal_search_word", using: :btree
+  add_index "deal_search_results", ["deal_item_id", "deal_search_word"], name: "index_deal_search_results_on_deal_item_id_and_deal_search_word", using: :btree
 
   create_table "deal_search_words", force: true do |t|
     t.string   "word"
