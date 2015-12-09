@@ -1,9 +1,10 @@
 #encoding: utf-8
 class DealItem < ActiveRecord::Base
   
-  def self.add_wemakeprice(browser, search_key)
+  def self.add_wemakeprice(browser)
     #위메프
     begin
+      search_key = DealSearchWord.all
       url = "http://www.wemakeprice.com"
         # headless = Headless.new
         # headless.start
@@ -13,10 +14,10 @@ class DealItem < ActiveRecord::Base
         rescue
         end
         search_key.each do |key|
-          p "위메프 데이터 수집중 #{key}"
-          browser.text_field(:id => 'searchKeyword').set key
+          p "위메프 데이터 수집중 #{key.word}"
+          browser.text_field(:id => 'searchKeyword').set key.word
           browser.span(:onclick=>"$('#top_search_form').submit();").click
-          browser.a(:href=>"javascript:dealsort('#{key}','open');").click
+          browser.a(:href=>"javascript:dealsort('#{key.word}','open');").click
           (1..50).each{|num|
             browser.execute_script("window.scrollBy(0,1000)")
           }
@@ -41,7 +42,7 @@ class DealItem < ActiveRecord::Base
               deal_start = Date.today if li.css(".link").css(".type03").css(".box_sticker").css(".ico_comm").text == "오늘오픈"
               
               ActiveRecord::Base.transaction do
-                DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start, 
+                DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start, 
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
               end
             end
@@ -54,15 +55,16 @@ class DealItem < ActiveRecord::Base
     
   end
   
-  def self.add_coupang(browser, search_key)
+  def self.add_coupang(browser)
     begin
+      search_key = DealSearchWord.all
       url = "http://www.coupang.com"
       site_id = 2
       browser.goto url
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
-        p "쿠팡 데이터 수집중 #{key}"
-        browser.text_field(:id => 'headerSearchKeyword').set key
+        p "쿠팡 데이터 수집중 #{key.word}"
+        browser.text_field(:id => 'headerSearchKeyword').set key.word
         browser.a(:id => "headerSearchBtn").click
         browser.a(:text => "최신순").click
         
@@ -91,7 +93,7 @@ class DealItem < ActiveRecord::Base
             deal_start = Date.today if li.css(".today-open").text != ""
             
             ActiveRecord::Base.transaction do
-              DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start,
+              DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start,
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
             end
           end
@@ -105,8 +107,9 @@ class DealItem < ActiveRecord::Base
   end
   
   
-  def self.add_g9(browser, search_key)
+  def self.add_g9(browser)
     begin
+      search_key = DealSearchWord.all.pluck(:word)
       url = "http://www.g9.co.kr"
       site_id = 3
       browser.goto url
@@ -136,8 +139,8 @@ class DealItem < ActiveRecord::Base
       
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
-        p "지구 데이터 수집중 #{key}"
-        browser.text_field(:id => 'txtSearchKeyword').set key
+        p "지구 데이터 수집중 #{key.word}"
+        browser.text_field(:id => 'txtSearchKeyword').set key.word
         browser.input(:id => "btnSearchKeyword").click
         browser.a(:text => "최신순").click
         
@@ -177,7 +180,7 @@ class DealItem < ActiveRecord::Base
             deal_start = Date.today if item.css(".ico_tag2").text != ""
             
             ActiveRecord::Base.transaction do
-              DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+              DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
                                   like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
             end
@@ -195,15 +198,16 @@ class DealItem < ActiveRecord::Base
   end
   
   #쇼킹딜
-  def self.add_shocking_deal(browser, search_key)
+  def self.add_shocking_deal(browser)
     begin
+      search_key = DealSearchWord.all.pluck(:word)
       url = "http://deal.11st.co.kr"
       site_id = 4
       browser.goto url
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
-        p "쇼킹딜 데이터 수집중 #{key}"
-        browser.text_field(:id => 'tSearch').set key
+        p "쇼킹딜 데이터 수집중 #{key.word}"
+        browser.text_field(:id => 'tSearch').set key.word
         browser.button(:onclick=>"ShockingDeal.common.goSearch('tSearch');doCommonStat('DEA0102');return false;").click
         browser.a(:text => "신규오픈").click
         
@@ -242,7 +246,7 @@ class DealItem < ActiveRecord::Base
             deal_start = Date.today if item.css(".ico_today_open").text != ""
             
             ActiveRecord::Base.transaction do
-              DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+              DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
                                   like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
             end
@@ -260,21 +264,22 @@ class DealItem < ActiveRecord::Base
   end
   
   #티몬
-  def self.add_tmon(browser, search_key)
+  def self.add_tmon(browser)
     begin
+      search_key = DealSearchWord.all.pluck(:word)
       url = "http://www.ticketmonster.co.kr"
       site_id = 5
       browser.goto url
       browser.link(:onclick=>"hideSubscribe();return false;").click
       isFirst = true
       search_key.each do |key|
-        p "티몬 데이터 수집중 #{key}"
+        p "티몬 데이터 수집중 #{key.word}"
         if isFirst
-          browser.text_field(:id => 'search_keyword').set key
+          browser.text_field(:id => 'search_keyword').set key.word
           browser.a(:id => "search_submit").click
           isFirst = false
         else
-          browser.text_field(:id => 'top_srch').set key
+          browser.text_field(:id => 'top_srch').set key.word
           browser.button(:class => "btn_search").click
         end
         
@@ -310,7 +315,7 @@ class DealItem < ActiveRecord::Base
             deal_start = Date.today if item.css(".deal_item_sticker_bottom").css(".open_today").text != ""
             
             ActiveRecord::Base.transaction do
-              DealItem.create!(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+              DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
                                   discount: discount, deal_original_price: deal_original_price, deal_start: deal_start,
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
             end

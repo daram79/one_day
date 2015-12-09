@@ -8,18 +8,19 @@ headless = Headless.new
 headless.start
 browser = Watir::Browser.new
   while 1
+    s = Time.now
+    p "process start #{s}"
     # p "start add key 1"
     # DealSearchWord.add_key_wemakeprice(browser)
 #     
     # p "start add key 2"
     # DealSearchWord.add_key_coupang(browser)
     
-    search_key = DealSearchWord.all.pluck(:word)
-    
     #위메프
     p "위메프"
-    ret = DealItem.add_wemakeprice(browser, search_key)
+    ret = DealItem.add_wemakeprice(browser)
     unless ret
+      p "위메프 error"
       browser.close
       headless.destroy
       
@@ -30,8 +31,9 @@ browser = Watir::Browser.new
     
     #쿠팡
     p "쿠팡"
-    ret = DealItem.add_coupang(browser, search_key)
+    ret = DealItem.add_coupang(browser)
     unless ret
+      p "쿠팡 error"
       browser.close
       headless.destroy
       
@@ -42,8 +44,9 @@ browser = Watir::Browser.new
     
     #G9
     p "G9"
-    ret = DealItem.add_g9(browser, search_key)
+    ret = DealItem.add_g9(browser)
     unless ret
+      p "G9 error"
       browser.close
       headless.destroy
       
@@ -54,8 +57,9 @@ browser = Watir::Browser.new
     
     #쇼킹딜
     p "쇼킹딜"
-    ret = DealItem.add_shocking_deal(browser, search_key)
+    ret = DealItem.add_shocking_deal(browser)
     unless ret
+      p "쇼킹딜 error"
       browser.close
       headless.destroy
       
@@ -66,8 +70,9 @@ browser = Watir::Browser.new
     
     #티몬
     p "티몬"
-    ret = DealItem.add_tmon(browser, search_key)
+    ret = DealItem.add_tmon(browser)
     unless ret
+      p "티몬 error"
       browser.close
       headless.destroy
       
@@ -79,6 +84,7 @@ browser = Watir::Browser.new
     p "메가박스"
     ret = DealItem.movie_event_megabox(browser)
     unless ret
+      p "메가박스 error"
       browser.close
       headless.destroy
       
@@ -86,11 +92,9 @@ browser = Watir::Browser.new
       headless.start
       browser = Watir::Browser.new
     end
+    e = Time.now
+    p "process end #{e}"
+    p "걸린 시간: #{e - s}"
     
   end
-
-
-
-
-
-
+  
