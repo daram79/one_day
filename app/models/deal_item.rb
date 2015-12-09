@@ -346,7 +346,9 @@ class DealItem < ActiveRecord::Base
             is_closed = false
             is_closed = true if item.css("deal_item_thumb_info").css(".soldout").text != ""
             
-            is_closed  = true if item.css(".deal_item_sticker_top").css("img").attr("src").value == "http://img1.tmon.kr/deals/sticker/sticker_7ee62.png"
+            unless item.css(".deal_item_sticker_top").css("img").blank?
+              is_closed  = true if item.css(".deal_item_sticker_top").css("img").attr("src").value == "http://img1.tmon.kr/deals/sticker/sticker_7ee62.png"
+            end
             
             
             
