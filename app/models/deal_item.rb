@@ -1,5 +1,6 @@
 #encoding: utf-8
 class DealItem < ActiveRecord::Base
+  has_many :deal_search_results
   
   def self.add_wemakeprice(browser)
     #위메프
@@ -48,13 +49,14 @@ class DealItem < ActiveRecord::Base
                 deal_start = Date.today if li.css(".link").css(".type03").css(".box_sticker").css(".ico_comm").text == "오늘오픈"
                 
                 # ActiveRecord::Base.transaction do
-                  DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start, 
+                deal_item = DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start, 
                                     deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
                 # end
-                
-                search_result = DealSearchResult.where(deal_item_id: item_id, deal_search_word: key.word)
-                DealSearchResult.create(deal_item_id: item_id, deal_search_word: key.word) if search_result.blank?
-                
+                search_result = DealSearchResult.where(deal_item_id: deal_item.id, deal_search_word: key.word)
+                DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
+              else
+                search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
+                DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
               end
             end
           end
@@ -94,6 +96,7 @@ class DealItem < ActiveRecord::Base
           ids.each do |id|
             item_id = id
             deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+            
             if deal_item.blank?
               li = doc.css("##{id}")
               deal_url = url + li.css(".detail-link").attr("href").value
@@ -110,11 +113,14 @@ class DealItem < ActiveRecord::Base
               deal_start = Date.today if li.css(".today-open").text != ""
               
               # ActiveRecord::Base.transaction do
-                DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start,
+              deal_item = DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start,
                                     deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
               # end
-              search_result = DealSearchResult.where(deal_item_id: item_id, deal_search_word: key.word)
-              DealSearchResult.create(deal_item_id: item_id, deal_search_word: key.word) if search_result.blank?
+              search_result = DealSearchResult.where(deal_item_id: deal_item.id, deal_search_word: key.word)
+              DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
+            else
+              search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
+              DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
             end
           end
         end
@@ -173,6 +179,7 @@ class DealItem < ActiveRecord::Base
         g9_item_list.each do |item|
           item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
           deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+          
           if deal_item.blank?
             deal_url = url + item.css(".tag").attr("href").value
             deal_image = item.css("#img#{item_id}").attr("src").value
@@ -200,17 +207,16 @@ class DealItem < ActiveRecord::Base
             deal_start = Date.today if item.css(".ico_tag2").text != ""
             
             # ActiveRecord::Base.transaction do
-              DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+            deal_item = DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
                                   like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
-
-              search_result = DealSearchResult.where(deal_item_id: item_id, deal_search_word: key.word)
-              DealSearchResult.create(deal_item_id: item_id, deal_search_word: key.word) if search_result.blank?
             # end
+            search_result = DealSearchResult.where(deal_item_id: deal_item.id, deal_search_word: key.word)
+            DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
           else
-                
+            search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
+            DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
           end
-          
         end
       end
       return true
@@ -248,6 +254,7 @@ class DealItem < ActiveRecord::Base
           item_list.each do |item|
             item_id = item.attr("prdno").to_i
             deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+            
             if deal_item.blank?
               deal_url = item.css("a").attr("href").value
               deal_image = item.css(".thumb_prd").css("img").attr("src").value
@@ -274,17 +281,17 @@ class DealItem < ActiveRecord::Base
               deal_start = Date.today if item.css(".ico_today_open").text != ""
               
               # ActiveRecord::Base.transaction do
-                DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+              deal_item = DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
                                     like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
                                     deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
-              
-                search_result = DealSearchResult.where(deal_item_id: item_id, deal_search_word: key.word)
-                DealSearchResult.create(deal_item_id: item_id, deal_search_word: key.word) if search_result.blank?
-              # end
-            else
-                  
-            end
             
+              # end
+              search_result = DealSearchResult.where(deal_item_id: deal_item.id, deal_search_word: key.word)
+              DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
+            else
+              search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
+              DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
+            end
           end
         end
       end
@@ -332,6 +339,7 @@ class DealItem < ActiveRecord::Base
             item_id = item.css(".deal_item_thumb").css("img").attr("src").value.split("_")[0].split("/")[-2].to_i
           end
           deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+          
           if deal_item.blank?
             deal_url = item.css(".deal_item_anchor").attr("href").value
             if deal_url.include?("#none")
@@ -365,17 +373,17 @@ class DealItem < ActiveRecord::Base
             
             
             # ActiveRecord::Base.transaction do
-              DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, is_closed: is_closed, 
+            deal_item = DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, is_closed: is_closed, 
                                   discount: discount, deal_original_price: deal_original_price, deal_start: deal_start,
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
               
-              search_result = DealSearchResult.where(deal_item_id: item_id, deal_search_word: key.word)
-              DealSearchResult.create(deal_item_id: item_id, deal_search_word: key.word) if search_result.blank?
             # end
+            search_result = DealSearchResult.where(deal_item_id: deal_item.id, deal_search_word: key.word)
+            DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
           else
-                
-          end
-          
+            search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
+            DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
+          end          
         end
       end
       return true
