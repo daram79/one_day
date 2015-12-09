@@ -48,6 +48,7 @@ class DealItem < ActiveRecord::Base
                 deal_start = Date.today if li.css(".link").css(".type03").css(".box_sticker").css(".ico_comm").text == "오늘오픈"
                 
                 ActiveRecord::Base.transaction do
+                  DealSearchResult.create!(deal_item_id: item_id, deal_search_word: key.word)
                   DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start, 
                                     deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
                 end
@@ -106,6 +107,7 @@ class DealItem < ActiveRecord::Base
               deal_start = Date.today if li.css(".today-open").text != ""
               
               ActiveRecord::Base.transaction do
+                DealSearchResult.create!(deal_item_id: item_id, deal_search_word: key.word)
                 DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, deal_start: deal_start,
                                     deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
               end
@@ -194,6 +196,7 @@ class DealItem < ActiveRecord::Base
             deal_start = Date.today if item.css(".ico_tag2").text != ""
             
             ActiveRecord::Base.transaction do
+              DealSearchResult.create!(deal_item_id: item_id, deal_search_word: key.word)
               DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
                                   like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
@@ -265,6 +268,7 @@ class DealItem < ActiveRecord::Base
               deal_start = Date.today if item.css(".ico_today_open").text != ""
               
               ActiveRecord::Base.transaction do
+                DealSearchResult.create!(deal_item_id: item_id, deal_search_word: key.word)
                 DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
                                     like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
                                     deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
@@ -353,6 +357,7 @@ class DealItem < ActiveRecord::Base
             
             
             ActiveRecord::Base.transaction do
+              DealSearchResult.create!(deal_item_id: item_id, deal_search_word: key.word)
               DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, is_closed: is_closed, 
                                   discount: discount, deal_original_price: deal_original_price, deal_start: deal_start,
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
