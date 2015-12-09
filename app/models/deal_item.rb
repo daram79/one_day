@@ -1,9 +1,10 @@
 #encoding: utf-8
 class DealItem < ActiveRecord::Base
   
-  def self.add_wemakeprice(browser, search_key)
+  def self.add_wemakeprice(browser)
     #위메프
     begin
+      search_key = DealSearchWord.all.pluck(:word)
       url = "http://www.wemakeprice.com"
         # headless = Headless.new
         # headless.start
@@ -54,8 +55,9 @@ class DealItem < ActiveRecord::Base
     
   end
   
-  def self.add_coupang(browser, search_key)
+  def self.add_coupang(browser)
     begin
+      search_key = DealSearchWord.all.pluck(:word)
       url = "http://www.coupang.com"
       site_id = 2
       browser.goto url
@@ -105,8 +107,9 @@ class DealItem < ActiveRecord::Base
   end
   
   
-  def self.add_g9(browser, search_key)
+  def self.add_g9(browser)
     begin
+      search_key = DealSearchWord.all.pluck(:word)
       url = "http://www.g9.co.kr"
       site_id = 3
       browser.goto url
@@ -195,8 +198,9 @@ class DealItem < ActiveRecord::Base
   end
   
   #쇼킹딜
-  def self.add_shocking_deal(browser, search_key)
+  def self.add_shocking_deal(browser)
     begin
+      search_key = DealSearchWord.all.pluck(:word)
       url = "http://deal.11st.co.kr"
       site_id = 4
       browser.goto url
@@ -260,8 +264,9 @@ class DealItem < ActiveRecord::Base
   end
   
   #티몬
-  def self.add_tmon(browser, search_key)
+  def self.add_tmon(browser)
     begin
+      search_key = DealSearchWord.all.pluck(:word)
       url = "http://www.ticketmonster.co.kr"
       site_id = 5
       browser.goto url
