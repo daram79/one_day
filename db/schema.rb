@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151206151659) do
+ActiveRecord::Schema.define(version: 20151209092335) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -94,12 +94,24 @@ ActiveRecord::Schema.define(version: 20151206151659) do
   add_index "deal_items", ["site_id", "item_id"], name: "index_deal_items_on_site_id_and_item_id", using: :btree
   add_index "deal_items", ["site_id"], name: "index_deal_items_on_site_id", using: :btree
 
-  create_table "deal_search_words", force: true do |t|
-    t.string   "word"
-    t.text     "nick"
+  create_table "deal_search_results", force: true do |t|
+    t.integer  "deal_item_id"
+    t.string   "deal_search_word"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "deal_search_results", ["deal_search_word"], name: "index_deal_search_results_on_deal_search_word", using: :btree
+
+  create_table "deal_search_words", force: true do |t|
+    t.string   "word"
+    t.text     "nick"
+    t.boolean  "is_on",      default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "deal_search_words", ["is_on"], name: "index_deal_search_words_on_is_on", using: :btree
 
   create_table "event_mailing_lists", force: true do |t|
     t.string   "email"
