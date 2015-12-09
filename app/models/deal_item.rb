@@ -186,7 +186,7 @@ class DealItem < ActiveRecord::Base
             discount = item.css(".price_info").css(".sale").text.scan(/\d/).join('').to_i
             
             like_count = item.css("#fcnt#{item_id}").text.scan(/\d/).join('').to_i
-            deal_count = deal_price = item.css(".count_item").css("strong").text
+            deal_count = item.css(".count_item").css("strong").text
             
             card_interest_description = ""
             deliver_charge_description = item.css(".ico_tag4").text
