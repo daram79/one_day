@@ -292,9 +292,15 @@ class DealItem < ActiveRecord::Base
         item_list = doc.css("#_resultDeals").css("li")
         item_list.each do |item|
           item_id = item.css(".deal_item_anchor").attr("href").value.split("?")[0].split("/")[-1].to_i
+          if item_id == 0
+            item_id = item.css(".deal_item_thumb").css("img").attr("src").value.split("_")[0].split("/")[-1].to_i
+          end
           deal_item = DealItem.where(item_id: item_id, site_id: site_id)
           if deal_item.blank?
             deal_url = item.css(".deal_item_anchor").attr("href").value
+            if deal_url.include?("#none")
+              deal_url = "http://www.ticketmonster.co.kr/deal/#{item_id}?keyword"
+            end
             deal_image = item.css(".deal_item_thumb").css("img").attr("src").value
             deal_description = item.css(".deal_item_body_top").css(".deal_item_subtitle").text
             deal_title = item.css(".deal_item_body_top").css(".deal_item_title").text.delete!("\n").delete!("\t")
