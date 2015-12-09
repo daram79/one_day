@@ -56,7 +56,7 @@ class DealItem < ActiveRecord::Base
                 DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
               else
                 search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
-                DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?  
+                DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
               end
             end
           end
@@ -120,7 +120,7 @@ class DealItem < ActiveRecord::Base
               DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
             else
               search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
-              DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?  
+              DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
             end
           end
         end
@@ -215,7 +215,7 @@ class DealItem < ActiveRecord::Base
             DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
           else
             search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
-            DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?  
+            DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
           end
         end
       end
@@ -290,7 +290,7 @@ class DealItem < ActiveRecord::Base
               DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
             else
               search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
-              DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?  
+              DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
             end
           end
         end
@@ -382,7 +382,7 @@ class DealItem < ActiveRecord::Base
             DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
           else
             search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
-            DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?  
+            DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
           end          
         end
       end
