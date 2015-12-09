@@ -293,7 +293,7 @@ class DealItem < ActiveRecord::Base
         item_list.each do |item|
           item_id = item.css(".deal_item_anchor").attr("href").value.split("?")[0].split("/")[-1].to_i
           if item_id == 0
-            item_id = item.css(".deal_item_thumb").css("img").attr("src").value.split("_")[0].split("/")[-1].to_i
+            item_id = item.css(".deal_item_thumb").css("img").attr("src").value.split("_")[0].split("/")[-2].to_i
           end
           deal_item = DealItem.where(item_id: item_id, site_id: site_id)
           if deal_item.blank?
