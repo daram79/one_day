@@ -83,12 +83,14 @@ ActiveRecord::Schema.define(version: 20151206151659) do
     t.integer  "like_count"
     t.string   "card_interest_description"
     t.string   "deliver_charge_description"
+    t.boolean  "is_closed",                            default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "deal_items", ["deal_description"], name: "index_deal_items_on_deal_description", using: :btree
   add_index "deal_items", ["deal_title"], name: "index_deal_items_on_deal_title", using: :btree
+  add_index "deal_items", ["is_closed"], name: "index_deal_items_on_is_closed", using: :btree
   add_index "deal_items", ["site_id", "item_id"], name: "index_deal_items_on_site_id_and_item_id", using: :btree
   add_index "deal_items", ["site_id"], name: "index_deal_items_on_site_id", using: :btree
 

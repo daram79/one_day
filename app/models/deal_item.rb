@@ -319,9 +319,15 @@ class DealItem < ActiveRecord::Base
             deliver_charge_description = item.css(".deal_item_sticker_bottom").css(".delivery").text
             
             deal_start = Date.today if item.css(".deal_item_sticker_bottom").css(".open_today").text != ""
+            is_closed = false
+            is_closed = true if item.css("deal_item_thumb_info").css(".soldout").text != ""
+            
+            is_closed  = true if item.css(".deal_item_sticker_top").css("img").attr("src").value == "http://img1.tmon.kr/deals/sticker/sticker_7ee62.png"
+            
+            
             
             ActiveRecord::Base.transaction do
-              DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+              DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, is_closed: is_closed, 
                                   discount: discount, deal_original_price: deal_original_price, deal_start: deal_start,
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
             end

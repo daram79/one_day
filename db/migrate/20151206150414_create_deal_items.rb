@@ -20,11 +20,14 @@ class CreateDealItems < ActiveRecord::Migration
       t.integer :like_count
       t.string :card_interest_description
       t.string :deliver_charge_description
+      t.boolean :is_closed, default: false
       t.timestamps
     end
     add_index :deal_items, [:site_id, :item_id]
     add_index :deal_items, :site_id
     add_index :deal_items, :deal_description
     add_index :deal_items, :deal_title
+    add_index :deal_items, :is_closed
+    
   end
 end
