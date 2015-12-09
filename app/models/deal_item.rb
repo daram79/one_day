@@ -109,7 +109,7 @@ class DealItem < ActiveRecord::Base
   
   def self.add_g9(browser)
     begin
-      search_key = DealSearchWord.all.pluck(:word)
+      search_key = DealSearchWord.all
       url = "http://www.g9.co.kr"
       site_id = 3
       browser.goto url
@@ -200,7 +200,7 @@ class DealItem < ActiveRecord::Base
   #쇼킹딜
   def self.add_shocking_deal(browser)
     begin
-      search_key = DealSearchWord.all.pluck(:word)
+      search_key = DealSearchWord.all
       url = "http://deal.11st.co.kr"
       site_id = 4
       browser.goto url
@@ -266,7 +266,7 @@ class DealItem < ActiveRecord::Base
   #티몬
   def self.add_tmon(browser)
     begin
-      search_key = DealSearchWord.all.pluck(:word)
+      search_key = DealSearchWord.all
       url = "http://www.ticketmonster.co.kr"
       site_id = 5
       browser.goto url
@@ -292,9 +292,15 @@ class DealItem < ActiveRecord::Base
         item_list = doc.css("#_resultDeals").css("li")
         item_list.each do |item|
           item_id = item.css(".deal_item_anchor").attr("href").value.split("?")[0].split("/")[-1].to_i
+          if item_id == 0
+            item_id = item.css(".deal_item_thumb").css("img").attr("src").value.split("_")[0].split("/")[-2].to_i
+          end
           deal_item = DealItem.where(item_id: item_id, site_id: site_id)
           if deal_item.blank?
             deal_url = item.css(".deal_item_anchor").attr("href").value
+            if deal_url.include?("#none")
+              deal_url = "http://www.ticketmonster.co.kr/deal/#{item_id}?keyword"
+            end
             deal_image = item.css(".deal_item_thumb").css("img").attr("src").value
             deal_description = item.css(".deal_item_body_top").css(".deal_item_subtitle").text
             deal_title = item.css(".deal_item_body_top").css(".deal_item_title").text.delete!("\n").delete!("\t")
@@ -313,9 +319,15 @@ class DealItem < ActiveRecord::Base
             deliver_charge_description = item.css(".deal_item_sticker_bottom").css(".delivery").text
             
             deal_start = Date.today if item.css(".deal_item_sticker_bottom").css(".open_today").text != ""
+            is_closed = false
+            is_closed = true if item.css("deal_item_thumb_info").css(".soldout").text != ""
+            
+            is_closed  = true if item.css(".deal_item_sticker_top").css("img").attr("src").value == "http://img1.tmon.kr/deals/sticker/sticker_7ee62.png"
+            
+            
             
             ActiveRecord::Base.transaction do
-              DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+              DealItem.create!(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, is_closed: is_closed, 
                                   discount: discount, deal_original_price: deal_original_price, deal_start: deal_start,
                                   deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
             end

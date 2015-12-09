@@ -1,9 +1,6 @@
 #encoding: utf-8
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 
-
-
-
 headless = Headless.new
 headless.start
 browser = Watir::Browser.new
