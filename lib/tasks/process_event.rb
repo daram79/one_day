@@ -4,7 +4,7 @@ require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 keys = DealSearchResult.all.group("deal_search_word").pluck(:deal_search_word)
 
 keys.each do |key|
-  datas = DealSearchResult.joins(:deal_item).where(deal_search_word: key).where("deal_items.deal_count > 5000")
+  datas = DealSearchResult.joins(:deal_item).where(deal_search_word: key).where("deal_items.deal_count > 1000")
 
   datas.each do |data|
     word_data = DealSearchWord.find_by_word(data.deal_search_word)
