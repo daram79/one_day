@@ -5,7 +5,7 @@ class DealItem < ActiveRecord::Base
   def self.add_wemakeprice(browser)
     #위메프
     begin
-      search_key = DealSearchWord.all
+      search_key = DealSearchWord.where(is_on: true)
       url = "http://www.wemakeprice.com"
         # headless = Headless.new
         # headless.start
@@ -70,7 +70,7 @@ class DealItem < ActiveRecord::Base
   
   def self.add_coupang(browser)
     begin
-      search_key = DealSearchWord.all
+      search_key = DealSearchWord.where(is_on: true)
       url = "http://www.coupang.com"
       site_id = 2
       browser.goto url
@@ -135,13 +135,14 @@ class DealItem < ActiveRecord::Base
   
   def self.add_g9(browser)
     begin
-      search_key = DealSearchWord.all
+      search_key = DealSearchWord.where(is_on: true)
       url = "http://www.g9.co.kr"
       site_id = 3
       browser.goto url
       
       #플레쉬딜
       doc = Nokogiri::HTML.parse(browser.html)
+      debugger
       unless doc.css("#flash_deal_goods_list").blank?
         deal_title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
         deal_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
@@ -152,11 +153,14 @@ class DealItem < ActiveRecord::Base
           tmp_ary = rear_link_url.split("/")
           item_id = tmp_ary[-1]
           deal_url = url + rear_link_url
-          event = Event.where(event_id: event_id, event_site_id: event_site_id)
+          event = Event.where(event_id: item_id, event_site_id: site_id)
           deal_image = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
           if event.blank?
             DealItem.create(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, discount: discount, deal_original_price: deal_original_price,
                                   deal_title: deal_title, deal_price: deal_price)
+                                  
+            Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: site_id, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
+                            discount: discount, show_flg: true, push_flg: true, update_flg: true)
                                   
           end
         end
@@ -229,13 +233,16 @@ class DealItem < ActiveRecord::Base
   #쇼킹딜
   def self.add_shocking_deal(browser)
     begin
-      search_key = DealSearchWord.all
+      search_key = DealSearchWord.where(is_on: true)
       url = "http://deal.11st.co.kr"
       site_id = 4
       browser.goto url
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
         p "쇼킹딜 데이터 수집중 #{key.word}"
+        browser.text_field(:id => 'tSearch').set key.word
+        browser.button(:onclick=>"ShockingDeal.common.goSearch('tSearch');doCommonStat('DEA0102');return false;").click
+#       커서 문제로 두번 검색
         browser.text_field(:id => 'tSearch').set key.word
         browser.button(:onclick=>"ShockingDeal.common.goSearch('tSearch');doCommonStat('DEA0102');return false;").click
         begin
@@ -305,7 +312,7 @@ class DealItem < ActiveRecord::Base
   #티몬
   def self.add_tmon(browser)
     begin
-      search_key = DealSearchWord.all
+      search_key = DealSearchWord.where(is_on: true)
       url = "http://www.ticketmonster.co.kr"
       site_id = 5
       browser.goto url
