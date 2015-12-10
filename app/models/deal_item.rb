@@ -142,7 +142,6 @@ class DealItem < ActiveRecord::Base
       
       #플레쉬딜
       doc = Nokogiri::HTML.parse(browser.html)
-      debugger
       unless doc.css("#flash_deal_goods_list").blank?
         deal_title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
         deal_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
