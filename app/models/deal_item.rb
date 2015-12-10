@@ -32,7 +32,7 @@ class DealItem < ActiveRecord::Base
             lis = doc.css(".section_list").css("li")
             lis.each do |li|
               item_id = li.attr("deal_id")
-              site_id = 1
+              site_id = 1001
               deal_item = DealItem.where(item_id: item_id, site_id: site_id)
               if deal_item.blank?
                 deal_url = url + li.css(".link").css(".type03").css("a").attr("href").value
@@ -72,7 +72,7 @@ class DealItem < ActiveRecord::Base
     begin
       search_key = DealSearchWord.where(is_on: true)
       url = "http://www.coupang.com"
-      site_id = 2
+      site_id = 1002
       browser.goto url
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
@@ -137,12 +137,11 @@ class DealItem < ActiveRecord::Base
     begin
       search_key = DealSearchWord.where(is_on: true)
       url = "http://www.g9.co.kr"
-      site_id = 3
+      site_id = 1003
       browser.goto url
       
       #플레쉬딜
       doc = Nokogiri::HTML.parse(browser.html)
-      debugger
       unless doc.css("#flash_deal_goods_list").blank?
         deal_title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
         deal_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
@@ -235,7 +234,7 @@ class DealItem < ActiveRecord::Base
     begin
       search_key = DealSearchWord.where(is_on: true)
       url = "http://deal.11st.co.kr"
-      site_id = 4
+      site_id = 1004
       browser.goto url
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
@@ -314,7 +313,7 @@ class DealItem < ActiveRecord::Base
     begin
       search_key = DealSearchWord.where(is_on: true)
       url = "http://www.ticketmonster.co.kr"
-      site_id = 5
+      site_id = 1005
       browser.goto url
       browser.link(:onclick=>"hideSubscribe();return false;").click
       isFirst = true
