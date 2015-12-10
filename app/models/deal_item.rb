@@ -238,6 +238,9 @@ class DealItem < ActiveRecord::Base
         p "쇼킹딜 데이터 수집중 #{key.word}"
         browser.text_field(:id => 'tSearch').set key.word
         browser.button(:onclick=>"ShockingDeal.common.goSearch('tSearch');doCommonStat('DEA0102');return false;").click
+#       커서 문제로 두번 검색
+        browser.text_field(:id => 'tSearch').set key.word
+        browser.button(:onclick=>"ShockingDeal.common.goSearch('tSearch');doCommonStat('DEA0102');return false;").click
         begin
           browser.a(:text => "신규오픈").click
         rescue
