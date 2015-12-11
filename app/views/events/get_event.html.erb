@@ -1,7 +1,7 @@
 <div>
-	<div style="width: 500px; margin: 0 auto;">
-		<div style="position:fixed; width: 500px; height:50px; background-color: #F3D407; font-size: 20px; color: white; line-height: 50px; text-align: center;">꿀가득</div>
-		<div style="position:fixed; width: 500px; height:50px; background-color: green; margin-top:50px;">
+	<div style="width:100%; margin: 0 auto;">
+		<div style="position:fixed; width: 100%; height:50px; background-color: #F3D407; font-size: 20px; color: white; line-height: 50px; text-align: center;">꿀가득</div>
+		<div style="position:fixed; width: 100%; height:50px; background-color: green; margin-top:50px;">
 			<table style="width: 100%; height: 100%;" border="1">
 				<tr>
 					<td id="eat" style="width: 50%; text-align: center; font-size: 16px;"><%= link_to "먹자", get_event_eat_events_path, style:"text-decoration: none;  color: white;" %></td>
@@ -14,7 +14,7 @@
 		<% @event.each do |event| %>
 		<div>
 			<a style="text-decoration: none; color: black;" href="<%=event.event_url%>">
-				<img style="width: 500px" src="<%= event.image_url %>">
+				<img style="width: 100%" src="<%= event.image_url %>">
 				<div style="text-align:left; padding:5px 0 0 10px;"><%=event.event_name%></div>
 				<div style="text-align:left; padding:0 0 30px 10px;"><%= event.price.to_s.chars.to_a.reverse.each_slice(3).map(&:join).join(",").reverse %>원</div>
 			</a>
