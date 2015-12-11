@@ -11,6 +11,8 @@ Rails.application.routes.draw do
       get "get_event"
       get "event_true"
       get "event_false"
+      get "get_event_eat"
+      get "get_event_play"
     end
     member do
       put "show_data"
@@ -82,7 +84,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
-  root 'feeds#index'
+  root 'events#get_event'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
