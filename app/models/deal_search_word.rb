@@ -1,4 +1,5 @@
 class DealSearchWord < ActiveRecord::Base
+  has_many :deal_location_and_item_types
   
   def self.add_key_wemakeprice(browser)
     url = "http://www.wemakeprice.com"
