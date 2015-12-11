@@ -81,7 +81,7 @@ class EventsController < ApplicationController
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
       format.html { @event }
-      format.json { render @event }
+      format.json { render json: @event }
     end
     # render json: @event
   end
@@ -90,7 +90,7 @@ class EventsController < ApplicationController
     @event = Event.where(show_flg: true, item_type_code: 0).where("event_site_id > 1000").order("id desc")
     respond_to do |format|
       format.html { render "get_event" }
-      format.json { render @event }
+      format.json { render json: @event }
     end
   end
   
@@ -101,7 +101,7 @@ class EventsController < ApplicationController
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
       format.html { render "get_event" }
-      format.json { render @event }
+      format.json { render json: @event }
     end
   end
   
