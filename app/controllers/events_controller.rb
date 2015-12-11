@@ -79,8 +79,30 @@ class EventsController < ApplicationController
     # @event = Event.where(event_site_id: event_site_ids).order("id desc")
     @event = Event.where(show_flg: true).where("event_site_id > 1000").order("id desc")
     # @event = Event.where(show_flg: true).order("id desc")
-    
-    render json: @event
+    respond_to do |format|
+      format.html { @event }
+      format.json { render @event }
+    end
+    # render json: @event
+  end
+  
+  def get_event_eat
+    @event = Event.where(show_flg: true, item_type_code: 0).where("event_site_id > 1000").order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render @event }
+    end
+  end
+  
+  def get_event_play
+    event_site_ids = EventSite.where("id > 6").ids
+    # @event = Event.where(event_site_id: event_site_ids).order("id desc")
+    @event = Event.where(show_flg: true, item_type_code: 1).where("event_site_id > 1000").order("id desc")
+    # @event = Event.where(show_flg: true).order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render @event }
+    end
   end
   
   def show_data
