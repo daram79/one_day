@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151209092335) do
+ActiveRecord::Schema.define(version: 20151211071750) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -94,6 +94,21 @@ ActiveRecord::Schema.define(version: 20151209092335) do
   add_index "deal_items", ["site_id", "item_id"], name: "index_deal_items_on_site_id_and_item_id", using: :btree
   add_index "deal_items", ["site_id"], name: "index_deal_items_on_site_id", using: :btree
 
+  create_table "deal_location_and_item_types", force: true do |t|
+    t.integer  "deal_search_word_id"
+    t.integer  "item_type_code"
+    t.string   "item_type_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deal_location_keys", force: true do |t|
+    t.integer  "deal_location_and_item_type_id"
+    t.string   "key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "deal_search_results", force: true do |t|
     t.integer  "deal_item_id"
     t.string   "deal_search_word"
@@ -158,22 +173,26 @@ ActiveRecord::Schema.define(version: 20151209092335) do
   add_index "event_user_registrations", ["event_user_id"], name: "index_event_user_registrations_on_event_user_id", using: :btree
 
   create_table "events", force: true do |t|
-    t.integer  "event_id",       limit: 8
+    t.integer  "event_id",            limit: 8
     t.integer  "event_site_id"
     t.string   "event_name"
     t.string   "event_url"
-    t.string   "image_url",                default: ""
-    t.string   "discount",                 default: ""
-    t.string   "price",                    default: ""
-    t.string   "original_price",           default: ""
-    t.boolean  "show_flg",                 default: false
-    t.boolean  "push_flg",                 default: false
-    t.boolean  "update_flg",               default: false
+    t.string   "image_url",                     default: ""
+    t.string   "discount",                      default: ""
+    t.string   "price",                         default: ""
+    t.string   "original_price",                default: ""
+    t.boolean  "show_flg",                      default: false
+    t.boolean  "push_flg",                      default: false
+    t.boolean  "update_flg",                    default: false
+    t.integer  "deal_search_word_id"
+    t.integer  "item_type_code"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "events", ["deal_search_word_id"], name: "index_events_on_deal_search_word_id", using: :btree
   add_index "events", ["event_id", "event_site_id"], name: "index_events_on_event_id_and_event_site_id", using: :btree
+  add_index "events", ["item_type_code"], name: "index_events_on_item_type_code", using: :btree
   add_index "events", ["show_flg", "update_flg"], name: "index_events_on_show_flg_and_update_flg", using: :btree
   add_index "events", ["show_flg"], name: "index_events_on_show_flg", using: :btree
 

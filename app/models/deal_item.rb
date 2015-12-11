@@ -18,11 +18,11 @@ class DealItem < ActiveRecord::Base
           p "위메프 데이터 수집중 #{key.word}"
           browser.text_field(:id => 'searchKeyword').set key.word
           browser.span(:onclick=>"$('#top_search_form').submit();").click
-          begin
-            browser.a(:href=>"javascript:dealsort('#{key.word}','open');").click
-          rescue
-            next
-          end
+          # begin
+            # browser.a(:href=>"javascript:dealsort('#{key.word}','open');").click
+          # rescue
+            # next
+          # end
           (1..50).each{|num|
             browser.execute_script("window.scrollBy(0,1000)")
           }
@@ -79,11 +79,11 @@ class DealItem < ActiveRecord::Base
         p "쿠팡 데이터 수집중 #{key.word}"
         browser.text_field(:id => 'headerSearchKeyword').set key.word
         browser.a(:id => "headerSearchBtn").click
-        begin
-            browser.a(:text => "최신순").click
-        rescue
-          next
-        end
+        # begin
+            # browser.a(:text => "최신순").click
+        # rescue
+          # next
+        # end
         
         
         doc = Nokogiri::HTML.parse(browser.html)
@@ -173,9 +173,9 @@ class DealItem < ActiveRecord::Base
         browser.input(:id => "btnSearchKeyword").click
         browser.a(:text => "최신순").click
         
-        (1..50).each{|num|
-          browser.execute_script("window.scrollBy(0,1000)")
-        }
+        # (1..50).each{|num|
+          # browser.execute_script("window.scrollBy(0,1000)")
+        # }
         
         doc = Nokogiri::HTML.parse(browser.html)
         g9_item_list = doc.css("#searchItemList").css("li")
@@ -244,11 +244,11 @@ class DealItem < ActiveRecord::Base
 #       커서 문제로 두번 검색
         browser.text_field(:id => 'tSearch').set key.word
         browser.button(:onclick=>"ShockingDeal.common.goSearch('tSearch');doCommonStat('DEA0102');return false;").click
-        begin
-          browser.a(:text => "신규오픈").click
-        rescue
-          next
-        end
+        # begin
+          # browser.a(:text => "신규오픈").click
+        # rescue
+          # next
+        # end
         
         (1..50).each{|num|
           browser.execute_script("window.scrollBy(0,1000)")
@@ -328,11 +328,11 @@ class DealItem < ActiveRecord::Base
           browser.button(:class => "btn_search").click
         end
         
-        begin
-          browser.a(:text => "최신순").click
-        rescue
-          next
-        end
+        # begin
+          # browser.a(:text => "최신순").click
+        # rescue
+          # next
+        # end
         
         (1..50).each{|num|
           browser.execute_script("window.scrollBy(0,1000)")
