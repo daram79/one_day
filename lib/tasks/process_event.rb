@@ -19,16 +19,16 @@ require "#{File.dirname(__FILE__)}/../../config/environment.rb"
       if event.blank?
         discount = item.discount == nil ? "" : item.discount
         deal_original_price = item.deal_original_price  == nil ? "" : item.deal_original_price
-        
-        if lo.any? { |word| item.deal_title.include?(word) }
-          Event.create(event_id: item.item_id, event_name: item.deal_title, event_url: item.deal_url,
-                    price: item.deal_price, original_price: deal_original_price, discount: discount,  
-                    image_url: item.deal_image, event_site_id: item.site_id, show_flg: true, deal_search_word_id: deal_search_word.id, item_type_code: 0)
           
-        elsif ty.any? { |word| item.deal_title.include?(word) } && !(["키자니아", "뽀로로", "롯데월드앞", "롯데월드5분"].any? { |word| item.deal_title.include?(word) })
+        if ty.any? { |word| item.deal_title.include?(word) } && !(["키자니아", "뽀로로", "롯데월드앞", "롯데월드5분"].any? { |word| item.deal_title.include?(word) })
           Event.create(event_id: item.item_id, event_name: item.deal_title, event_url: item.deal_url,
                     price: item.deal_price, original_price: deal_original_price, discount: discount,  
                     image_url: item.deal_image, event_site_id: item.site_id, show_flg: true, deal_search_word_id: deal_search_word.id, item_type_code: 1)
+        
+        elsif lo.any? { |word| item.deal_title.include?(word) }
+          Event.create(event_id: item.item_id, event_name: item.deal_title, event_url: item.deal_url,
+                    price: item.deal_price, original_price: deal_original_price, discount: discount,  
+                    image_url: item.deal_image, event_site_id: item.site_id, show_flg: true, deal_search_word_id: deal_search_word.id, item_type_code: 0)                    
           
         end
       end
