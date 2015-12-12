@@ -1,6 +1,7 @@
 #encoding: utf-8
 class DealItem < ActiveRecord::Base
   has_many :deal_search_results
+  belongs_to :deal_search_word
   
   def self.add_wemakeprice(browser)
     #위메프

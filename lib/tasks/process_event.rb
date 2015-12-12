@@ -9,17 +9,18 @@ require "#{File.dirname(__FILE__)}/../../config/environment.rb"
   # datas = DealSearchResult.joins(:deal_item).where(deal_search_word: key)
   deal_search_words = DealSearchWord.where(is_on: true)
   deal_search_words.each do |deal_search_word|
-    lo = deal_search_word.deal_location_and_item_types[0].deal_location_keys.pluck(:key)
-    ty = deal_search_word.deal_location_and_item_types[1].deal_location_keys.pluck(:key)
-  
-  
     deal_items = DealItem.all
     deal_items.each do |item|
+      lo = item.deal_search_word.deal_location_and_item_types[0].deal_location_keys.pluck(:key)
+      ty = item.deal_search_word.deal_location_and_item_types[1].deal_location_keys.pluck(:key)
+      
       event = Event.where(event_id: item.item_id, event_site_id: item.site_id)
       if event.blank?
         discount = item.discount == nil ? "" : item.discount
         deal_original_price = item.deal_original_price  == nil ? "" : item.deal_original_price
-          
+        if item.deal_search_word_id == 2
+          debugger
+        end
         if ty.any? { |word| item.deal_title.include?(word) } && !(["키자니아", "뽀로로", "롯데월드앞", "롯데월드5분"].any? { |word| item.deal_title.include?(word) })
           Event.create(event_id: item.item_id, event_name: item.deal_title, event_url: item.deal_url,
                     price: item.deal_price, original_price: deal_original_price, discount: discount,  
