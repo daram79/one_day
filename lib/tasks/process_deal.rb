@@ -68,6 +68,7 @@ browser = Watir::Browser.new
     #티몬
     p "티몬"
     ret = DealItem.add_tmon(browser)
+    @@isFirst = true
     unless ret
       p "티몬 error"
       browser.close

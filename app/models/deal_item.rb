@@ -1,5 +1,7 @@
 #encoding: utf-8
 class DealItem < ActiveRecord::Base
+  @@isFirst = true
+  
   has_many :deal_search_results
   belongs_to :deal_search_word
   
@@ -316,14 +318,16 @@ class DealItem < ActiveRecord::Base
       url = "http://www.ticketmonster.co.kr"
       site_id = 1005
       browser.goto url
-      browser.link(:onclick=>"hideSubscribe();return false;").click
-      isFirst = true
+      begin
+      rescue
+        browser.link(:onclick=>"hideSubscribe();return false;").click
+      end
       search_key.each do |key|
         p "티몬 데이터 수집중 #{key.word}"
-        if isFirst
+        if @@isFirst
           browser.text_field(:id => 'search_keyword').set key.word
           browser.a(:id => "search_submit").click
-          isFirst = false
+          @@isFirst = false
         else
           browser.text_field(:id => 'top_srch').set key.word
           browser.button(:class => "btn_search").click
@@ -374,7 +378,7 @@ class DealItem < ActiveRecord::Base
             is_closed = true if item.css(".deal_item_thumb_info").css(".soldout").text != ""
             
             unless is_closed && item.css(".deal_item_sticker_top").css("img").blank?
-              is_closed  = true if item.css(".deal_item_sticker_top").css("img").attr("alt").value.include?("매진")
+              is_closed  = true if !item.css(".deal_item_sticker_top").css("img").blank? && item.css(".deal_item_sticker_top").css("img").attr("alt").value.include?("매진")
             end
             
             
