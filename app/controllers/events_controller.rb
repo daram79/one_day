@@ -87,7 +87,18 @@ class EventsController < ApplicationController
   end
   
   def get_event_eat
-    @event = Event.where(show_flg: true, item_type_code: 0).where("event_site_id > 1000").order("id desc")
+    case params[:typeIndex]
+    when "0"
+      @event = Event.where(show_flg: true, item_type_code: 0).where("event_site_id > 1000").order("id desc")  
+    when "1"
+      @event = Event.where(show_flg: true, item_type_code: 0, deal_search_word_id: 1).where("event_site_id > 1000").order("id desc")
+    when "2"
+      @event = Event.where(show_flg: true, item_type_code: 0, deal_search_word_id: 2).where("event_site_id > 1000").order("id desc")
+    else
+      @event = Event.where(show_flg: true, item_type_code: 0).where("event_site_id > 1000").order("id desc")
+    end
+    
+    
     respond_to do |format|
       format.html { render "get_event" }
       format.json { render json: @event }
@@ -95,9 +106,17 @@ class EventsController < ApplicationController
   end
   
   def get_event_play
-    event_site_ids = EventSite.where("id > 6").ids
-    # @event = Event.where(event_site_id: event_site_ids).order("id desc")
-    @event = Event.where(show_flg: true, item_type_code: 1).where("event_site_id > 1000").order("id desc")
+    case params[:typeIndex]
+    when "0"
+      @event = Event.where(show_flg: true, item_type_code: 1).where("event_site_id > 1000").order("id desc")
+    when "1"
+      @event = Event.where(show_flg: true, item_type_code: 1, deal_search_word_id: 1).where("event_site_id > 1000").order("id desc")
+    when "2"
+      @event = Event.where(show_flg: true, item_type_code: 1, deal_search_word_id: 2).where("event_site_id > 1000").order("id desc")
+    else
+      @event = Event.where(show_flg: true, item_type_code: 1).where("event_site_id > 1000").order("id desc")
+    end
+    
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
       format.html { render "get_event" }
