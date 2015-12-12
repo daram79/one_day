@@ -371,7 +371,7 @@ class DealItem < ActiveRecord::Base
             
             deal_start = Date.today if item.css(".deal_item_sticker_bottom").css(".open_today").text != ""
             is_closed = false
-            is_closed = true if item.css("deal_item_thumb_info").css(".soldout").text != ""
+            is_closed = true if item.css(".deal_item_thumb_info").css(".soldout").text != ""
             
             unless is_closed && item.css(".deal_item_sticker_top").css("img").blank?
               is_closed  = true if item.css(".deal_item_sticker_top").css("img").attr("alt").value.include?("매진")
