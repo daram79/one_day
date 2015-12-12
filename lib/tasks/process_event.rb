@@ -7,7 +7,7 @@ require "#{File.dirname(__FILE__)}/../../config/environment.rb"
   # datas = DealSearchResult.joins(:deal_item).where(deal_search_word: key).where("deal_items.deal_count > 1000")
   
   # datas = DealSearchResult.joins(:deal_item).where(deal_search_word: key)
-    deal_items = DealItem.all
+    deal_items = DealItem.where("deal_search_word_id is not null")
     deal_items.each do |item|
       lo = item.deal_search_word.deal_location_and_item_types[0].deal_location_keys.pluck(:key)
       ty = item.deal_search_word.deal_location_and_item_types[1].deal_location_keys.pluck(:key)
