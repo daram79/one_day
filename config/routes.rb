@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       get "get_event"
       get "event_true"
       get "event_false"
+      get "get_event_all"
       get "get_event_eat"
       get "get_event_play"
       get "get_event_movie"

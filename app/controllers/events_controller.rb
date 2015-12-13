@@ -86,6 +86,14 @@ class EventsController < ApplicationController
     # render json: @event
   end
   
+  def get_event_all
+    @event = Event.where(show_flg: true).where("event_site_id > 1000").order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render json: @event }
+    end
+  end
+  
   def get_event_eat
     case params[:typeIndex]
     when "0"
