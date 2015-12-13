@@ -124,6 +124,16 @@ class EventsController < ApplicationController
     end
   end
   
+  def get_event_movie
+    @event = Event.where(show_flg: true, deal_search_word_id: 10001)
+    
+    # @event = Event.where(show_flg: true).order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render json: @event }
+    end
+  end
+  
   def show_data
     event = Event.find(params[:id])
     if event.update_flg && !event.show_flg
