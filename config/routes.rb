@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       get "event_false"
       get "get_event_eat"
       get "get_event_play"
+      get "get_event_movie"
     end
     member do
       put "show_data"
