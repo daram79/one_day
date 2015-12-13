@@ -175,7 +175,6 @@ class DealItem < ActiveRecord::Base
         browser.execute_script("window.scrollBy(0,1000)")
       }
       doc = Nokogiri::HTML.parse(browser.html)
-      debugger
       g9_item_list = doc.css("#searchItemList").css("li")
       g9_item_list.each do |item|
         item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
