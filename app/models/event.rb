@@ -370,9 +370,9 @@ class Event < ActiveRecord::Base
         browser.driver.manage.timeouts.implicit_wait = 3
         doc = Nokogiri::HTML.parse(browser.html)
         if doc.css("#spSoldOutText").attr("style").value.include?("none")
-          g9.update(show_flg: 1)
+          g9.update(show_flg: 1) if g9.show_flg == 0
         else
-          g9.update(show_flg: 0)
+          g9.update(show_flg: 0) if g9.show_flg == 1
         end
       end
       return true
