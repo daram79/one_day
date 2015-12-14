@@ -4,6 +4,7 @@ require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 headless = Headless.new
 headless.start
 browser = Watir::Browser.new
+browser.driver.manage.timeouts.implicit_wait = 3
   while 1
     s = Time.now
     p "process start #{s}"
@@ -24,6 +25,7 @@ browser = Watir::Browser.new
       headless = Headless.new
       headless.start
       browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
     end
     
     #쿠팡
@@ -37,6 +39,7 @@ browser = Watir::Browser.new
       headless = Headless.new
       headless.start
       browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
     end
     
     #G9
@@ -50,6 +53,7 @@ browser = Watir::Browser.new
       headless = Headless.new
       headless.start
       browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
     end
     
     #쇼킹딜
@@ -63,6 +67,7 @@ browser = Watir::Browser.new
       headless = Headless.new
       headless.start
       browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
     end
     
     #티몬
@@ -77,6 +82,7 @@ browser = Watir::Browser.new
       headless = Headless.new
       headless.start
       browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
     end
     
     p "메가박스"
@@ -89,6 +95,7 @@ browser = Watir::Browser.new
       headless = Headless.new
       headless.start
       browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
     end
     e = Time.now
     p "process end #{e}"
@@ -98,6 +105,16 @@ browser = Watir::Browser.new
     s = Time.now
     p "이벤트 체크 start #{s}"
     ret = Event.check_event_data(browser)
+    unless ret
+      p "메가박스 error"
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
+    end
     e = Time.now
     p "이벤트 체크 end #{e}"
     p "이벤트 체크 걸린 시간: #{e - s}"

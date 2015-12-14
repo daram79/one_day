@@ -366,13 +366,17 @@ class Event < ActiveRecord::Base
     begin
       g9s = Event.where(event_site_id: 1003)
       g9s.each do |g9|
-        browser.goto g9.event_url
-        browser.driver.manage.timeouts.implicit_wait = 3
-        doc = Nokogiri::HTML.parse(browser.html)
-        if doc.css("#spSoldOutText").attr("style").value.include?("none")
-          g9.update(show_flg: 1) if g9.show_flg == 0
-        else
-          g9.update(show_flg: 0) if g9.show_flg == 1
+        begin
+          browser.goto g9.event_url
+          doc = Nokogiri::HTML.parse(browser.html)
+          if doc.css("#spSoldOutText").attr("style").value.include?("none")
+            g9.update(show_flg: 1) if g9.show_flg == 0
+          else
+            g9.update(show_flg: 0) if g9.show_flg == 1
+          end
+        rescue
+          p "error #{g9.id}"
+          next
         end
       end
       return true
