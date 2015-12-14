@@ -94,5 +94,15 @@ browser = Watir::Browser.new
     p "process end #{e}"
     p "걸린 시간: #{e - s}"
     
+    #event data check
+    s = Time.now
+    p "이벤트 체크 start #{s}"
+    ret = Event.check_event_data(browser)
+    e = Time.now
+    p "이벤트 체크 end #{e}"
+    p "이벤트 체크 걸린 시간: #{e - s}"
+    
+    
+    
   end
   

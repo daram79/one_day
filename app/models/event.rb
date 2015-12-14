@@ -362,4 +362,22 @@ class Event < ActiveRecord::Base
       # event_ary
   # end
   
+  def self.check_event_data(browser)
+    begin
+      g9s = Event.where(event_site_id: 1003)
+      g9s.each do |g9|
+        browser.goto g9.event_url
+        doc = Nokogiri::HTML.parse(browser.html)
+        if doc.css("#spSoldOutText").attr("style").value.include?("none")
+          g9.update(show_flg: 1)
+        else
+          g9.update(show_flg: 0)
+        end
+      end
+      return true
+    rescue
+      return false
+    end
+  end
+  
 end
