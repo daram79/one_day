@@ -6,7 +6,7 @@ class Event < ActiveRecord::Base
   after_update :send_push
   
   def send_push
-    if self.push_flg
+    if self.push_flg && self.show_flg
       Thread.new do
         gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
         user_ids = EventMailingList.all.ids
