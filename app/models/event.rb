@@ -368,6 +368,7 @@ class Event < ActiveRecord::Base
       g9s.each_with_index do |g9, i|
         begin
           browser.goto g9.event_url
+          browser.div(:class => 'vip_v3_thumb').wait_until_present
           doc = Nokogiri::HTML.parse(browser.html)
           if doc.css("#spSoldOutText").attr("style").value.include?("none")
             g9.update(show_flg: 1) if g9.show_flg == 0
