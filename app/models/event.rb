@@ -375,7 +375,8 @@ class Event < ActiveRecord::Base
             g9.update(show_flg: 0) if g9.show_flg == 1
           end
           p "total #{i+1}/#{g9s.size}"
-        rescue
+        rescue => e
+          p e.backtrace
           p "error #{g9.id}"
           next
         end
