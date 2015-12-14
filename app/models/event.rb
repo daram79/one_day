@@ -365,7 +365,7 @@ class Event < ActiveRecord::Base
   def self.check_event_data(browser)
     begin
       g9s = Event.where(event_site_id: 1003)
-      g9s.each do |g9|
+      g9s.each_with_index do |g9, i|
         begin
           browser.goto g9.event_url
           doc = Nokogiri::HTML.parse(browser.html)
@@ -374,6 +374,7 @@ class Event < ActiveRecord::Base
           else
             g9.update(show_flg: 0) if g9.show_flg == 1
           end
+          p "total #{i+1}/#{g9s.size}"
         rescue
           p "error #{g9.id}"
           next
