@@ -371,9 +371,9 @@ class Event < ActiveRecord::Base
           browser.div(:class => 'vip_v3_thumb').wait_until_present
           doc = Nokogiri::HTML.parse(browser.html)
           if doc.css("#spSoldOutText").attr("style").value.include?("none")
-            g9.update(show_flg: 1) if g9.show_flg == 0
+            g9.update(show_flg: true) if g9.show_flg == false
           else
-            g9.update(show_flg: 0) if g9.show_flg == 1
+            g9.update(show_flg: false) if g9.show_flg == true
           end
           p "total #{i+1}/#{g9s.size}"
         rescue => e
