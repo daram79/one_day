@@ -18,17 +18,14 @@ class DealItem < ActiveRecord::Base
         rescue
         end
         search_key.each do |key|
+          debugger
           p "위메프 데이터 수집중 #{key.word}"
           browser.text_field(:id => 'searchKeyword').set key.word
-          browser.span(:onclick=>"$('#search_keyword_btn').submit();").click
-          # begin
-            # browser.a(:href=>"javascript:dealsort('#{key.word}','open');").click
-          # rescue
-            # next
-          # end
-          (1..50).each{|num|
+          browser.span(:id =>'search_keyword_btn').click
+          (1..50).each do |num|
             browser.execute_script("window.scrollBy(0,1000)")
-          }
+          end
+          
           doc = Nokogiri::HTML.parse(browser.html)
           unless doc.css(".search_result_tit").text.include?("없습니다.")
             
@@ -65,7 +62,8 @@ class DealItem < ActiveRecord::Base
           end
         end
         return true
-      rescue
+      rescue => e
+        p e.backtrace
         return false
       end
     
