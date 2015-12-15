@@ -18,7 +18,6 @@ class DealItem < ActiveRecord::Base
         rescue
         end
         search_key.each do |key|
-          debugger
           p "위메프 데이터 수집중 #{key.word}"
           browser.text_field(:id => 'searchKeyword').set key.word
           browser.span(:id =>'search_keyword_btn').click
