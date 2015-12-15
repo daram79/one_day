@@ -174,7 +174,7 @@ class DealItem < ActiveRecord::Base
       (1..50).each{|num|
         # browser.span(:class => 'thumbs').img.wait_until_present
         browser.execute_script("window.scrollBy(0,1000)")
-        sleep 1
+        # sleep 1
       }
       doc = Nokogiri::HTML.parse(browser.html)
       g9_item_list = doc.css("#searchItemList").css("li")
@@ -231,7 +231,7 @@ class DealItem < ActiveRecord::Base
         (1..50).each{|num|
           # browser.span(:class => 'thumbs').img.wait_until_present
           browser.execute_script("window.scrollBy(0,1000)")
-          sleep 1
+          # sleep 1
         }
         
         doc = Nokogiri::HTML.parse(browser.html)
