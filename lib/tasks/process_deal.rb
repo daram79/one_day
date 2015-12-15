@@ -5,6 +5,7 @@ headless = Headless.new
 headless.start
 browser = Watir::Browser.new
 browser.driver.manage.timeouts.implicit_wait = 3
+i = 0
   while 1
     s = Time.now
     p "process start #{s}"
@@ -102,22 +103,26 @@ browser.driver.manage.timeouts.implicit_wait = 3
     p "걸린 시간: #{e - s}"
     
     #event data check
-    s = Time.now
-    p "이벤트 체크 start #{s}"
-    ret = Event.check_event_data(browser)
-    unless ret
-      p "메가박스 error"
-      browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
-      browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
+    i += 1
+    if i % 10 == 0
+      s = Time.now
+      p "이벤트 체크 start #{s}"
+      ret = Event.check_event_data(browser)
+      unless ret
+        p "메가박스 error"
+        browser.close
+        headless.destroy
+        
+        headless = Headless.new
+        headless.start
+        browser = Watir::Browser.new
+        browser.driver.manage.timeouts.implicit_wait = 3
+      end
+      e = Time.now
+      p "이벤트 체크 end #{e}"
+      p "이벤트 체크 걸린 시간: #{e - s}"
+      i = 0
     end
-    e = Time.now
-    p "이벤트 체크 end #{e}"
-    p "이벤트 체크 걸린 시간: #{e - s}"
     
     
     
