@@ -364,24 +364,42 @@ class Event < ActiveRecord::Base
   
   def self.check_event_data(browser)
     begin
-      g9s = Event.where(event_site_id: 1003)
-      g9s.each_with_index do |g9, i|
+      ids = [1003, 1005]
+      datas = Event.where(event_site_id: ids, show_flg: true).order("id")
+      datas.each_with_index do |data, i|
         begin
-          browser.goto g9.event_url
-          browser.div(:class => 'vip_v3_thumb').wait_until_present
-          doc = Nokogiri::HTML.parse(browser.html)
-          if doc.css("#spSoldOutText").attr("style").value.include?("none")
-            g9.update(show_flg: true) if g9.show_flg == false
+          browser.goto data.event_url
+          flg = true
+          if data.event_site_id == 1003
+            browser.div(:class => 'vip_v3_thumb').wait_until_present
+            doc = Nokogiri::HTML.parse(browser.html)
+            flg = false unless doc.css("#spSoldOutText").attr("style").value.include?("none")
+          elsif data.event_site_id == 1005 && data.event_name.include?("슈퍼꿀딜")
+            doc = Nokogiri::HTML.parse(browser.html)
+            flg = false if doc.css("#btn_buy").text != "매진"
+          elsif data.event_site_id == 1005
+            begin
+              browser.link(:onclick=>"hideSubscribe();return false;").click
+            rescue
+            end
+            doc = Nokogiri::HTML.parse(browser.html)
+            flg = false if doc.css("#buy_button").text == "판매종료" || doc.css(".no_find").text.include?("상품을 찾을 수 없습니다")
           else
-            g9.update(show_flg: false) if g9.show_flg == true
+            next
           end
-          p "total #{i+1}/#{g9s.size}"
+          
+          if flg
+            data.update(show_flg: true) if data.show_flg == false
+          else
+            data.update(show_flg: false) if data.show_flg == true
+          end
+          p "total #{i+1}/#{datas.size}"
         rescue => e
           p e.backtrace
-          p "error #{g9.id}"
+          p "error #{data.id}"
           next
         end
-      end
+      end      
       return true
     rescue
       return false
