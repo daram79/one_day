@@ -153,7 +153,8 @@ class DealItem < ActiveRecord::Base
           item_id = tmp_ary[-1]
           deal_url = url + rear_link_url
           event = Event.where(event_id: item_id, event_site_id: site_id)
-          deal_image = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
+          # deal_image = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
+          deal_image = "image.g9.co.kr/g/" + item_id.to_s + "/o"
           if event.blank?
             DealItem.create(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, discount: discount, deal_original_price: deal_original_price,
                                   deal_title: deal_title, deal_price: deal_price)
@@ -181,7 +182,8 @@ class DealItem < ActiveRecord::Base
           
         if deal_item.blank?
           deal_url = url + item.css(".tag").attr("href").value
-          deal_image = item.css("#img#{item_id}").attr("src").value
+          # deal_image = item.css("#img#{item_id}").attr("src").value
+          deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
             
           deal_description = item.css(".tag").css(".title").css("em").text
           begin
@@ -239,7 +241,8 @@ class DealItem < ActiveRecord::Base
           
           if deal_item.blank?
             deal_url = url + item.css(".tag").attr("href").value
-            deal_image = item.css("#img#{item_id}").attr("src").value
+            # deal_image = item.css("#img#{item_id}").attr("src").value
+            deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
             
             deal_description = item.css(".tag").css(".title").css("em").text
             begin
