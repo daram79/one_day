@@ -172,6 +172,7 @@ class DealItem < ActiveRecord::Base
       browser.text_field(:id => 'txtSearchKeyword').set "영화관람권"
       browser.input(:id => "btnSearchKeyword").click
       (1..50).each{|num|
+        browser.span(:class => 'thumbs').img.wait_until_present
         browser.execute_script("window.scrollBy(0,1000)")
       }
       doc = Nokogiri::HTML.parse(browser.html)
@@ -227,6 +228,7 @@ class DealItem < ActiveRecord::Base
         browser.a(:text => "최신순").click
         
         (1..50).each{|num|
+          browser.span(:class => 'thumbs').img.wait_until_present
           browser.execute_script("window.scrollBy(0,1000)")
         }
         
