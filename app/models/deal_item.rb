@@ -20,7 +20,7 @@ class DealItem < ActiveRecord::Base
         search_key.each do |key|
           p "위메프 데이터 수집중 #{key.word}"
           browser.text_field(:id => 'searchKeyword').set key.word
-          browser.span(:onclick=>"$('#top_search_form').submit();").click
+          browser.span(:onclick=>"$('#search_keyword_btn').submit();").click
           # begin
             # browser.a(:href=>"javascript:dealsort('#{key.word}','open');").click
           # rescue
