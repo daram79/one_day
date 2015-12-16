@@ -365,8 +365,8 @@ class Event < ActiveRecord::Base
   def self.check_event_data(browser)
     begin
       ids = [1001, 1003, 1005, 9001]
-      ids = [1001, 1002, 9001]
-      ids = [9001]
+      ids = [1001, 1002]
+      # ids = [9001]
       datas = Event.where(event_site_id: ids, show_flg: true).order("id")
       datas.each_with_index do |data, i|
         begin
