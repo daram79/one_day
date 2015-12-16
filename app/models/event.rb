@@ -364,7 +364,7 @@ class Event < ActiveRecord::Base
   
   def self.check_event_data(browser)
     begin
-      ids = [1003, 1005, 9001]
+      ids = [1001, 1003, 1005, 9001]
       datas = Event.where(event_site_id: ids, show_flg: true).order("id")
       datas.each_with_index do |data, i|
         begin
@@ -374,9 +374,16 @@ class Event < ActiveRecord::Base
             browser.div(:class => 'vip_v3_thumb').wait_until_present
             doc = Nokogiri::HTML.parse(browser.html)
             flg = false unless doc.css("#spSoldOutText").attr("style").value.include?("none")
+          elsif data.event_site_id == 1001
+            begin
+              browser.link(:onclick=>"close_regpop();").click
+            rescue
+            end
+            doc = Nokogiri::HTML.parse(browser.html)
+            flg = false unless doc.css(".btn_buy_end").text == "판매완료"
           elsif data.event_site_id == 9001
             doc = Nokogiri::HTML.parse(browser.html)
-            flg = false if doc.css("#btn_buy").text != "매진"
+            flg = false if doc.css("#btn_buy").text == "매진"
           elsif data.event_site_id == 1005
             begin
               browser.link(:onclick=>"hideSubscribe();return false;").click
