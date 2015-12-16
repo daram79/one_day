@@ -145,6 +145,7 @@ class DealItem < ActiveRecord::Base
       unless doc.css("#flash_deal_goods_list").blank?
         deal_title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
         deal_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
+        deal_price = deal_price.scan(/\d/).join('').to_i
         deal_original_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("del").text
         discount = doc.css("#flash_deal_goods_list").css(".price_info").css(".sale").text
         if doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"] 

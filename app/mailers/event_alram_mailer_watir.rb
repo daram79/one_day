@@ -40,6 +40,7 @@ class EventAlramMailerWatir < ActionMailer::Base
               
               image_url = hot.css("img").attr("src").value
               price = hot.css(".areas").css(".price-custom").text.delete!("\n").delete!("\t").strip!
+              price = price.scan(/\d/).join('').to_i
               original_price = hot.css(".areas").css(".price-origin").text.delete!("\n").delete!("\t").strip!
               
               #항공권이 15,000원 이하면 바로 푸시
@@ -129,6 +130,7 @@ class EventAlramMailerWatir < ActionMailer::Base
                 
               image_url = list.css("img").attr("src").value
               price = list.css(".areas").css(".price-custom").text.delete!("\n").delete!("\t").strip!
+              price = price.scan(/\d/).join('').to_i
               original_price = list.css(".areas").css(".price-origin").text.delete!("\n").delete!("\t").strip!
                 
               #항공권이 15,000원 이하면 바로 푸시
@@ -256,6 +258,7 @@ class EventAlramMailerWatir < ActionMailer::Base
           title = li.css("h5").text
           price = li.css("b")[0].text
           price.lstrip!
+          price = price.scan(/\d/).join('').to_i
           original_price = li.css("s").text
           event_name = "[메가박스]" + title 
           event_url = url
@@ -294,6 +297,7 @@ class EventAlramMailerWatir < ActionMailer::Base
       unless doc.css("#flash_deal_goods_list").blank?
         title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
         price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
+        price = price.scan(/\d/).join('').to_i
         original_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("del").text
         discount = doc.css("#flash_deal_goods_list").css(".price_info").css(".sale").text
         if doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"] 
