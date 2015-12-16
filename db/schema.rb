@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151211071750) do
+ActiveRecord::Schema.define(version: 20151216062540) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -127,6 +127,24 @@ ActiveRecord::Schema.define(version: 20151211071750) do
   end
 
   add_index "deal_search_words", ["is_on"], name: "index_deal_search_words_on_is_on", using: :btree
+
+  create_table "event_back_ups", force: true do |t|
+    t.integer  "event_id",            limit: 8
+    t.integer  "event_site_id"
+    t.string   "event_name"
+    t.string   "event_url"
+    t.string   "image_url",                     default: ""
+    t.string   "discount",                      default: ""
+    t.string   "price",                         default: ""
+    t.string   "original_price",                default: ""
+    t.boolean  "show_flg",                      default: false
+    t.boolean  "push_flg",                      default: false
+    t.boolean  "update_flg",                    default: false
+    t.integer  "deal_search_word_id"
+    t.integer  "item_type_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "event_mailing_lists", force: true do |t|
     t.string   "email"

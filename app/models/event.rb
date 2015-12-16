@@ -171,6 +171,7 @@ class Event < ActiveRecord::Base
         event_id = link_url.split("/")[2]
         image_url = slider.css(".thum").css("img")[0].attributes["src"].value
         price = ary_price[0]
+        price = price.scan(/\d/).join('').to_i
         original_price = ary_price[2] ? ary_price[1].strip! : ""
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         if event.blank?
@@ -196,6 +197,7 @@ class Event < ActiveRecord::Base
       lis.each do |li|
         title = li.css("strong")[0].children[0].text
         price = li.css(".price_wrap strong").text
+        price = price.scan(/\d/).join('').to_i
         original_price = li.css(".price_wrap s").text
         discount = li.css(".sale").text
         
@@ -228,6 +230,7 @@ class Event < ActiveRecord::Base
       lis.each do |li|
         title = li.css("strong")[0].children[0].text
         price = li.css(".price_wrap strong").text
+        price = price.scan(/\d/).join('').to_i
         original_price = li.css(".price_wrap s").text
         discount = li.css(".sale").text
         
@@ -263,6 +266,7 @@ class Event < ActiveRecord::Base
       title = doc.css(".lst_dl")[0].css(".info")[0].css(".tit").text
       if title.include?("슈퍼") && title.include?("꿀딜")
         price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".sale").text
+        price = price.scan(/\d/).join('').to_i
         original_price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".org").text
         discount = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".per").text
           
