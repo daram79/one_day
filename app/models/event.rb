@@ -6,7 +6,7 @@ class Event < ActiveRecord::Base
   after_update :send_push
   
   def send_push
-    if self.push_flg
+    if self.push_flg && self.show_flg
       Thread.new do
         gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
         user_ids = EventMailingList.all.ids
@@ -361,5 +361,59 @@ class Event < ActiveRecord::Base
       # end
       # event_ary
   # end
+  
+  def self.check_event_data(browser)
+    begin
+      ids = [1001, 1002, 1003, 1005, 9001]
+      datas = Event.where(event_site_id: ids, show_flg: true).order("id")
+      datas.each_with_index do |data, i|
+        begin
+          browser.goto data.event_url
+          flg = true
+          if data.event_site_id == 1003
+            browser.div(:class => 'vip_v3_thumb').wait_until_present
+            doc = Nokogiri::HTML.parse(browser.html)
+            flg = false unless doc.css("#spSoldOutText").attr("style").value.include?("none")
+          elsif data.event_site_id == 1001
+            begin
+              browser.link(:onclick=>"close_regpop();").click
+            rescue
+            end
+            doc = Nokogiri::HTML.parse(browser.html)
+            flg = false if doc.css(".btn_buy_end").text == "판매완료"
+          elsif data.event_site_id == 1002
+            doc = Nokogiri::HTML.parse(browser.html)
+            flg = false if doc.css("#orderButton").text == "판매종료"
+          elsif data.event_site_id == 9001
+            doc = Nokogiri::HTML.parse(browser.html)
+            flg = false if doc.css("#btn_buy").text == "매진"
+          elsif data.event_site_id == 1005
+            begin
+              browser.link(:onclick=>"hideSubscribe();return false;").click
+            rescue
+            end
+            doc = Nokogiri::HTML.parse(browser.html)
+            flg = false if doc.css("#buy_button").text == "판매종료" || doc.css(".no_find").text.include?("상품을 찾을 수 없습니다")
+          else
+            next
+          end
+          
+          if flg
+            data.update(show_flg: true) if data.show_flg == false
+          else
+            data.update(show_flg: false) if data.show_flg == true
+          end
+          p "total #{i+1}/#{datas.size}"
+        rescue => e
+          p e.backtrace
+          p "error #{data.id}"
+          next
+        end
+      end      
+      return true
+    rescue
+      return false
+    end
+  end
   
 end

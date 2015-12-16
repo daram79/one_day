@@ -20,15 +20,11 @@ class DealItem < ActiveRecord::Base
         search_key.each do |key|
           p "위메프 데이터 수집중 #{key.word}"
           browser.text_field(:id => 'searchKeyword').set key.word
-          browser.span(:onclick=>"$('#top_search_form').submit();").click
-          # begin
-            # browser.a(:href=>"javascript:dealsort('#{key.word}','open');").click
-          # rescue
-            # next
-          # end
-          (1..50).each{|num|
+          browser.span(:id =>'search_keyword_btn').click
+          (1..50).each do |num|
             browser.execute_script("window.scrollBy(0,1000)")
-          }
+          end
+          
           doc = Nokogiri::HTML.parse(browser.html)
           unless doc.css(".search_result_tit").text.include?("없습니다.")
             
@@ -65,7 +61,8 @@ class DealItem < ActiveRecord::Base
           end
         end
         return true
-      rescue
+      rescue => e
+        p e.backtrace
         return false
       end
     
@@ -156,7 +153,8 @@ class DealItem < ActiveRecord::Base
           item_id = tmp_ary[-1]
           deal_url = url + rear_link_url
           event = Event.where(event_id: item_id, event_site_id: site_id)
-          deal_image = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
+          # deal_image = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
+          deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
           if event.blank?
             DealItem.create(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, discount: discount, deal_original_price: deal_original_price,
                                   deal_title: deal_title, deal_price: deal_price)
@@ -172,7 +170,9 @@ class DealItem < ActiveRecord::Base
       browser.text_field(:id => 'txtSearchKeyword').set "영화관람권"
       browser.input(:id => "btnSearchKeyword").click
       (1..50).each{|num|
+        # browser.span(:class => 'thumbs').img.wait_until_present
         browser.execute_script("window.scrollBy(0,1000)")
+        # sleep 1
       }
       doc = Nokogiri::HTML.parse(browser.html)
       g9_item_list = doc.css("#searchItemList").css("li")
@@ -182,7 +182,8 @@ class DealItem < ActiveRecord::Base
           
         if deal_item.blank?
           deal_url = url + item.css(".tag").attr("href").value
-          deal_image = item.css("#img#{item_id}").attr("src").value
+          # deal_image = item.css("#img#{item_id}").attr("src").value
+          deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
             
           deal_description = item.css(".tag").css(".title").css("em").text
           begin
@@ -219,6 +220,59 @@ class DealItem < ActiveRecord::Base
       end
       
       
+      #커피
+      url = "http://www.g9.co.kr/Display/Category?lCode=400000082&mCode=500000365"
+      browser.goto url
+      
+      (1..20).each do |num|
+        browser.scroll.to :bottom
+        sleep 0.5
+      end
+      doc = Nokogiri::HTML.parse(browser.html)
+      g9_item_list = doc.css("#categoryDealsItemList").css("li")
+      g9_item_list.each do |item|
+        item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
+        deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+          
+        if deal_item.blank?
+          deal_url = url + item.css(".tag").attr("href").value
+          # deal_image = item.css("#img#{item_id}").attr("src").value
+          deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
+            
+          deal_description = item.css(".tag").css(".title").css("em").text
+          begin
+            deal_title = item.css(".tag").css(".title").text.delete!("\t").delete!("\n").delete(deal_description)
+          rescue
+            title = item.css(".tag").css(".title").to_s
+            title_s_index = title.index("</em>") + 5
+            title_e_index = title.size
+            deal_title = title[title_s_index..title_e_index].delete!("\t").delete!("\n").delete("</span>")
+          end
+          deal_price = item.css(".price_info").css(".price").css("strong").text.scan(/\d/).join('').to_i
+          deal_original_price = item.css(".price_info").css(".price").css("del").text.scan(/\d/).join('').to_i
+          special_price = item.css(".price_info").css(".price").css("em").text
+          discount = item.css(".price_info").css(".sale").text.scan(/\d/).join('').to_i
+            
+          like_count = item.css("#fcnt#{item_id}").text.scan(/\d/).join('').to_i
+          deal_count = item.css(".count_item").css("strong").text
+            
+          card_interest_description = ""
+          deliver_charge_description = item.css(".ico_tag4").text
+            
+          deal_start = Date.today if item.css(".ico_tag2").text != ""
+            
+          # ActiveRecord::Base.transaction do
+          deal_item = DealItem.create(deal_search_word_id: 10002, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+                                like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
+                                deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+          
+          Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: site_id, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
+                          discount: discount, show_flg: true, push_flg: false, update_flg: true, deal_search_word_id: 10002) unless deal_title.include?("첫구매")
+          # end
+        end
+      end
+      
+      
       # browser.link(:onclick=>"close_regpop();").click
       search_key.each do |key|
         p "지구 데이터 수집중 #{key.word}"
@@ -227,7 +281,9 @@ class DealItem < ActiveRecord::Base
         browser.a(:text => "최신순").click
         
         (1..50).each{|num|
+          # browser.span(:class => 'thumbs').img.wait_until_present
           browser.execute_script("window.scrollBy(0,1000)")
+          # sleep 1
         }
         
         doc = Nokogiri::HTML.parse(browser.html)
@@ -238,7 +294,8 @@ class DealItem < ActiveRecord::Base
           
           if deal_item.blank?
             deal_url = url + item.css(".tag").attr("href").value
-            deal_image = item.css("#img#{item_id}").attr("src").value
+            # deal_image = item.css("#img#{item_id}").attr("src").value
+            deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
             
             deal_description = item.css(".tag").css(".title").css("em").text
             begin
