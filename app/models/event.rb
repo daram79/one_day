@@ -364,7 +364,7 @@ class Event < ActiveRecord::Base
   
   def self.check_event_data(browser)
     begin
-      ids = [1001, 1003, 1005, 9001]
+      ids = [1001]
       datas = Event.where(event_site_id: ids, show_flg: true).order("id")
       datas.each_with_index do |data, i|
         begin
@@ -380,7 +380,7 @@ class Event < ActiveRecord::Base
             rescue
             end
             doc = Nokogiri::HTML.parse(browser.html)
-            flg = false unless doc.css(".btn_buy_end").text == "판매완료"
+            flg = false if doc.css(".btn_buy_end").text == "판매완료"
           elsif data.event_site_id == 9001
             doc = Nokogiri::HTML.parse(browser.html)
             flg = false if doc.css("#btn_buy").text == "매진"
