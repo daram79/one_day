@@ -246,7 +246,8 @@ class DealItem < ActiveRecord::Base
           doc = Nokogiri::HTML.parse(browser.html)
           g9_item_list = doc.css(".lst_ecpn3").css("li")
           g9_item_list.each do |item|
-            item_id = item.css(".img_box").css("img").attr("src").value.split("/g/")[1].split('/')[0]
+            # item_id = item.css(".img_box").css("img").attr("src").value.split("/g/")[1].split('/')[0]
+            item_id = item.css(".img_box").css("img")[0].attributes["data-original"].value.split("/")[-2]
             deal_item = DealItem.where(item_id: item_id, site_id: site_id)
               
             if deal_item.blank?
@@ -277,9 +278,12 @@ class DealItem < ActiveRecord::Base
               deal_item = DealItem.create(deal_search_word_id: 10002, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, 
                                     discount: discount, deal_original_price: deal_original_price, special_price: special_price,
                                     deal_title: deal_title, deal_price: deal_price)
+
+              black_list = ["첫구매", "케익", "마카롱", "쿠키", "와플", "파이", "무슈", "머그컵", "캔", "상품권", "스틱커피", "SET", "세트", "브레드", "치즈 번", "오리지날 번", "텀블러", "캡슐커피", "타르트", 
+                              "합격", "클래식가토", "블랙포레스트", "뉴욕치즈케익", "마카롱", "무스", "바게트", "수프", "개입"]
               
               Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: site_id, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
-                              discount: discount, show_flg: true, update_flg: true, deal_search_word_id: 10002) unless deal_title.include?("첫구매")
+                              discount: discount, show_flg: true, update_flg: true, deal_search_word_id: 10002) unless black_list.any? { |word| deal_title.include?(word) }
               # end
             end
           end            
