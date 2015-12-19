@@ -2,6 +2,7 @@
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 
 #deal_item데이터를 필터해서 event에 추가함.
+  while 1
     begin
       # ids = [1001, 1002, 1003, 1005, 9001]
       ids = [1001, 1002, 1005, 9001]
@@ -42,3 +43,4 @@ require "#{File.dirname(__FILE__)}/../../config/environment.rb"
     rescue
       p e.backtrace
     end
+  end
