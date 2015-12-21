@@ -190,7 +190,7 @@ class DealItem < ActiveRecord::Base
       g9_item_list.each do |item|
         item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
         deal_item = DealItem.where(item_id: item_id, site_id: site_id)
-          
+        
         if deal_item.blank?
           deal_url = url + item.css(".tag").attr("href").value
           # deal_image = item.css("#img#{item_id}").attr("src").value
