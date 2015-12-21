@@ -46,42 +46,42 @@ class EventAlramMailerWatir < ActionMailer::Base
               #항공권이 15,000원 이하면 바로 푸시
               if title.include?("오사카")
                 if price.scan(/\d/).join('').to_i < 150000
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
                 else
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price)
                 end
               elsif title.include?("동경") || title.include?("도쿄")
                 if price.scan(/\d/).join('').to_i < 200000
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
                 else
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price)
                 end
               elsif title.include?("상해") || title.include?("상하이")
                 if price.scan(/\d/).join('').to_i < 180000
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
                 else
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price)
                 end
               elsif title.include?("북경") || title.include?("베이징")
                 if price.scan(/\d/).join('').to_i < 170000
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
                 else
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price)
                 end
               elsif title.include?("홍콩")
                 if price.scan(/\d/).join('').to_i < 170000
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
                 else
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price)
                 end
               end
@@ -136,42 +136,42 @@ class EventAlramMailerWatir < ActionMailer::Base
               #항공권이 15,000원 이하면 바로 푸시
               if title.include?("오사카")
                 if price.scan(/\d/).join('').to_i < 150000
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
                 else
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price)
                 end
               elsif title.include?("동경") || title.include?("도쿄")
                 if price.scan(/\d/).join('').to_i < 200000
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
                 else
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price)
                 end
               elsif title.include?("상해") || title.include?("상하이")
                 if price.scan(/\d/).join('').to_i < 180000
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
                 else
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price)
                 end
               elsif title.include?("북경") || title.include?("베이징")
                 if price.scan(/\d/).join('').to_i < 170000
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
                 else
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price)
                 end
               elsif title.include?("홍콩")
                 if price.scan(/\d/).join('').to_i < 170000
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
                 else
-                  Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                  Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                                 image_url: image_url, price: price, original_price: original_price)
                 end
               end
@@ -223,7 +223,7 @@ class EventAlramMailerWatir < ActionMailer::Base
           event_name = title
           event_url = front_url + rear_url
           image_url = tr.css("img").attr("src").value
-          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url)
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url)
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           @event_ary.push event_hash
         end
@@ -265,10 +265,10 @@ class EventAlramMailerWatir < ActionMailer::Base
           image_url = li.css(".img_pro").attr("src").value
         
           if title.include?("1+1")
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
                             show_flg: true, push_flg: true, update_flg: true)
           else
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
           end
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           @event_ary.push event_hash
@@ -309,7 +309,7 @@ class EventAlramMailerWatir < ActionMailer::Base
           event = Event.where(event_id: event_id, event_site_id: event_site_id)
           image_url = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
           if event.blank?
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
                             discount: discount, show_flg: true, push_flg: true, update_flg: true)
             event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
             @event_ary.push event_hash

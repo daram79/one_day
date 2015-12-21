@@ -140,10 +140,10 @@ class MovieAlramMailer < ActionMailer::Base
           # image_url = li.css(".img_pro").attr("src").value
 #         
           # if title.include?("1+1")
-            # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
+            # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
                             # show_flg: true, push_flg: true, update_flg: true)
           # else
-            # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
+            # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
           # end
           # event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           # @event_ary.push event_hash
