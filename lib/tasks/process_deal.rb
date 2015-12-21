@@ -87,7 +87,7 @@ i = 0
     end
     
     p "옥션"
-    ret = DealItem.add_action(browser)
+    ret = DealItem.add_auction(browser)
     unless ret
       p "옥션 error"
       browser.close
