@@ -151,8 +151,10 @@ class DealItem < ActiveRecord::Base
       browser.goto url
       
       #플레쉬딜
+      
       doc = Nokogiri::HTML.parse(browser.html)
       unless doc.css("#flash_deal_goods_list").blank?
+        p "G9 플레쉬딜 정보 수집"
         deal_title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
         deal_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
         deal_price = deal_price.scan(/\d/).join('').to_i
@@ -187,7 +189,7 @@ class DealItem < ActiveRecord::Base
         
         doc = Nokogiri::HTML.parse(browser.html)
         g9_item_list = doc.css("#searchItemList").css("li")
-        p g9.size
+        p "G9 영화티켓 정보 수집"
         g9_item_list.each do |item|
           item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
           deal_item = DealItem.where(item_id: item_id, site_id: site_id)
