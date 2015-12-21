@@ -219,7 +219,7 @@ ActiveRecord::Schema.define(version: 20151220154813) do
     t.string   "event_url"
     t.string   "image_url",           default: ""
     t.string   "discount",            default: ""
-    t.string   "price",               default: ""
+    t.integer  "price"
     t.string   "original_price",      default: ""
     t.boolean  "show_flg",            default: false
     t.boolean  "push_flg",            default: false
