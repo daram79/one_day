@@ -5,6 +5,13 @@ class DealItem < ActiveRecord::Base
   has_many :deal_search_results
   belongs_to :deal_search_word
   
+  def self.wait_auction(browser)
+    while 1
+      tmp = browser.div(:id, "sum_ajax_loading").style 'display'
+      break if tmp == "none"
+    end
+  end
+  
   def self.add_wemakeprice(browser)
     #위메프
     begin
@@ -528,41 +535,44 @@ class DealItem < ActiveRecord::Base
     
   end
   
-  def self.add_action(browser)
+  def self.add_auction(browser)
     begin
       site_id = 1006
       url = "http://listings.auction.co.kr/category/List.aspx?category=86030100"
       browser.goto url
       browser.div(:id => "ucAttributeIndexBox1_rAttributeSet_hdivMoreView_0").click #더보기
             
-      click_ids = [ 
-                    "chkElement__ctl0_-1_19721", #스타벅스0
-                    "chkElement__ctl0_-1_498284", #베네9
-                    "chkElement__ctl0_-1_19728", #투썸5
-                    "chkElement__ctl0_-1_896045", #파스구찌7
-                    "chkElement__ctl0_-1_19725", #엔젤4
-                    "chkElement__ctl0_-1_19723", #할리스8
-                    "chkElement__ctl0_-1_23703", #오설록10
-                    "chkElement__ctl0_-1_19729", #커피빈1
-                    "chkElement__ctl0_-1_1647224", #폴바셋6
-                    "chkElement__ctl0_-1_1647247", #공차2
-                    "" #3
-                  ]
+      # click_ids = [ 
+                    # "chkElement__ctl0_-1_19721", #스타벅스0
+                    # "chkElement__ctl0_-1_498284", #베네9
+                    # "chkElement__ctl0_-1_19728", #투썸5
+                    # "chkElement__ctl0_-1_896045", #파스구찌7
+                    # "chkElement__ctl0_-1_19725", #엔젤4
+                    # "chkElement__ctl0_-1_19723", #할리스8
+                    # "chkElement__ctl0_-1_23703", #오설록10
+                    # "chkElement__ctl0_-1_19729", #커피빈1
+                    # "chkElement__ctl0_-1_1647224", #폴바셋6
+                    # "chkElement__ctl0_-1_1647247", #공차2
+                    # "" #3
+                  # ]
+      cafe_names = ["스타벅스","카페베네","투썸플레이스","파스쿠찌","엔제리너스","할리스커피","오설록","커피빈","폴바셋","공차",""]
       item_type_codes = [0, 9, 5, 7, 4, 8, 10, 1, 6, 2, 3]
-      cafe_names = ["스타벅스","커피빈","공차","이디야","엔젤리너스","투썸","폴바셋","파스구찌","할리스","카페베네","오설록"]
-      click_ids.each_with_index do |click_id, index|
+      cafe_names.each_with_index do |name, index|
         if index == 0
-          browser.checkbox(:id => "chkElement_ucAttributeIndexBox1_-1_19721").click #스타벅스
+          browser.div(:class => "ck_list").label(:text, name).click
         elsif index == 9
           url = "http://through.auction.co.kr/common/SafeRedirect.aspx?cc=0FA0&LPFwc=86030100&next=http://listings.auction.co.kr/category/List.aspx?category=86030300"
           browser.goto url
-          browser.checkbox(:id => "chkElement_ucAttributeIndexBox1_-1_1647247").click #공차
+          browser.div(:class => "ck_list").label(:text, name).click
         elsif index == 10
           browser.text_field(:id => 'keywordRetry').set "이디야"
           browser.input(:class => 'btn_cg_sc').click
         else
-          browser.checkbox(:id => "#{click_id}").click
+          browser.div(:class => "ck_list").label(:text, name).click
         end
+        
+        self.wait_auction(browser)
+        
         while 1
           doc = Nokogiri::HTML.parse(browser.html)
           if doc.css("#ucPager_dListMoreView").blank?
@@ -574,6 +584,7 @@ class DealItem < ActiveRecord::Base
               browser.scroll.to btn
               browser.execute_script("window.scrollBy(0,-200)")
               browser.div(:id => 'ucPager_dListMoreView').click
+              self.wait_auction(browser)
             rescue
               break
             end
@@ -616,8 +627,8 @@ class DealItem < ActiveRecord::Base
         end
         if index != 10
           browser.scroll.to :top
-          browser.checkbox(:id => "#{click_id}").click #클릭 해제
-          sleep 1
+          browser.div(:class => "ck_list").label(:text, name).click
+          self.wait_auction(browser)
         end
       end  
     rescue => e
