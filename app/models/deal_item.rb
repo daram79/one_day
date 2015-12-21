@@ -246,13 +246,14 @@ class DealItem < ActiveRecord::Base
             ]
       cafe_names = ["스타벅스","커피빈","공차","이디야","엔젤리너스","투썸","폴바셋","파스구찌","할리스","카페베네","오설록"]
       urls.each_with_index do |url, url_i|
+        
         browser.goto url
         sleep 1
         doc = Nokogiri::HTML.parse(browser.html)
         pages = doc.css(".page_btnbx").css(".ng-binding.ng-scope")
-        
+        pages = [1] if pages.blank?
         pages.each_with_index do |page, i|
-          browser.span(:text => "#{i+1}").click
+          browser.span(:text => "#{i+1}").click unless pages.size == 1
           doc = Nokogiri::HTML.parse(browser.html)
           g9_item_list = doc.css(".lst_ecpn3").css("li")
           g9_item_list.each do |item|
@@ -360,7 +361,8 @@ class DealItem < ActiveRecord::Base
         end
       end
       return true
-    rescue
+    rescue => e
+      pp e.backtrace
       return false
     end
     
