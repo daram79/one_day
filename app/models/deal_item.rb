@@ -7,7 +7,6 @@ class DealItem < ActiveRecord::Base
   
   def self.wait_auction(browser)
     while 1
-      debugger
       doc = Nokogiri::HTML.parse(browser.html)
       break if doc.css("#sum_ajax_loading").attr("style").value.include?("display: none;")
       # doc.css("#sum_ajax_loading")
@@ -563,6 +562,7 @@ class DealItem < ActiveRecord::Base
       item_type_codes = [0, 9, 5, 7, 4, 8, 10, 1, 6, 2, 3]
       cafe_names.each_with_index do |name, index|
         if index == 0
+          browser.scroll.to :top
           browser.div(:class => "ck_list").label(:text, name).click
         elsif index == 9
           url = "http://through.auction.co.kr/common/SafeRedirect.aspx?cc=0FA0&LPFwc=86030100&next=http://listings.auction.co.kr/category/List.aspx?category=86030300"
