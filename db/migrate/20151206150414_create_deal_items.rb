@@ -2,7 +2,7 @@ class CreateDealItems < ActiveRecord::Migration
   def change
     create_table :deal_items do |t|
       t.integer :deal_search_word_id
-      t.integer :item_id, :limit => 5
+      t.string :item_id
       t.integer :site_id
       t.text :deal_url
       t.string :deal_image

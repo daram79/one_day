@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216064102) do
+ActiveRecord::Schema.define(version: 20151220154813) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -66,7 +66,7 @@ ActiveRecord::Schema.define(version: 20151216064102) do
 
   add_index "comments", ["feed_id"], name: "index_comments_on_feed_id", using: :btree
 
-  create_table "deal_items", force: true do |t|
+  create_table "deal_item_back_ups", force: true do |t|
     t.integer  "deal_search_word_id"
     t.integer  "item_id",                    limit: 8
     t.integer  "site_id"
@@ -84,6 +84,28 @@ ActiveRecord::Schema.define(version: 20151216064102) do
     t.string   "card_interest_description"
     t.string   "deliver_charge_description"
     t.boolean  "is_closed",                            default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "deal_items", force: true do |t|
+    t.integer  "deal_search_word_id"
+    t.string   "item_id"
+    t.integer  "site_id"
+    t.text     "deal_url"
+    t.string   "deal_image"
+    t.string   "deal_description"
+    t.string   "deal_title"
+    t.integer  "deal_price"
+    t.integer  "deal_original_price"
+    t.integer  "discount"
+    t.string   "special_price"
+    t.date     "deal_start"
+    t.integer  "deal_count"
+    t.integer  "like_count"
+    t.string   "card_interest_description"
+    t.string   "deliver_charge_description"
+    t.boolean  "is_closed",                  default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -191,21 +213,21 @@ ActiveRecord::Schema.define(version: 20151216064102) do
   add_index "event_user_registrations", ["event_user_id"], name: "index_event_user_registrations_on_event_user_id", using: :btree
 
   create_table "events", force: true do |t|
-    t.integer  "event_id",            limit: 8
+    t.string   "event_id"
     t.integer  "event_site_id"
     t.string   "event_name"
     t.string   "event_url"
-    t.string   "image_url",                     default: ""
-    t.string   "discount",                      default: ""
-    t.string   "original_price",                default: ""
-    t.boolean  "show_flg",                      default: false
-    t.boolean  "push_flg",                      default: false
-    t.boolean  "update_flg",                    default: false
+    t.string   "image_url",           default: ""
+    t.string   "discount",            default: ""
+    t.string   "price",               default: ""
+    t.string   "original_price",      default: ""
+    t.boolean  "show_flg",            default: false
+    t.boolean  "push_flg",            default: false
+    t.boolean  "update_flg",          default: false
     t.integer  "deal_search_word_id"
     t.integer  "item_type_code"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "price"
   end
 
   add_index "events", ["deal_search_word_id"], name: "index_events_on_deal_search_word_id", using: :btree

@@ -1,8 +1,8 @@
 #encoding: utf-8
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 
-headless = Headless.new
-headless.start
+# headless = Headless.new
+# headless.start
 browser = Watir::Browser.new
 browser.driver.manage.timeouts.implicit_wait = 3
 i = 0
@@ -86,6 +86,21 @@ i = 0
       browser.driver.manage.timeouts.implicit_wait = 3
     end
     
+    p "옥션"
+    ret = DealItem.add_action(browser)
+    unless ret
+      p "옥션 error"
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
+    end
+    
+    
+    
     p "메가박스"
     ret = DealItem.movie_event_megabox(browser)
     unless ret
@@ -109,7 +124,7 @@ i = 0
       p "이벤트 체크 start #{s}"
       ret = Event.check_event_data(browser)
       unless ret
-        p "메가박스 error"
+        p "이벤트 체크 error"
         browser.close
         headless.destroy
         

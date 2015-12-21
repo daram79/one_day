@@ -278,12 +278,9 @@ class DealItem < ActiveRecord::Base
               deal_item = DealItem.create(deal_search_word_id: 10002, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, 
                                     discount: discount, deal_original_price: deal_original_price, special_price: special_price,
                                     deal_title: deal_title, deal_price: deal_price)
-
-              black_list = ["첫구매", "케익", "마카롱", "쿠키", "와플", "파이", "무슈", "머그컵", "캔", "상품권", "스틱커피", "SET", "세트", "브레드", "치즈 번", "오리지날 번", "텀블러", "캡슐커피", "타르트", 
-                              "합격", "클래식가토", "블랙포레스트", "뉴욕치즈케익", "마카롱", "무스", "바게트", "수프", "개입"]
               
               Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: site_id, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
-                              discount: discount, show_flg: true, update_flg: true, deal_search_word_id: 10002) unless black_list.any? { |word| deal_title.include?(word) }
+                              discount: discount, show_flg: true, update_flg: true, deal_search_word_id: 10002, item_type_code: url_i)
               # end
             end
           end            
@@ -529,6 +526,104 @@ class DealItem < ActiveRecord::Base
       return false
     end
     
+  end
+  
+  def self.add_action(browser)
+    begin
+      site_id = 1006
+      url = "http://listings.auction.co.kr/category/List.aspx?category=86030100"
+      browser.goto url
+      browser.div(:id => "ucAttributeIndexBox1_rAttributeSet_hdivMoreView_0").click #더보기
+            
+      click_ids = [ 
+                    "chkElement__ctl0_-1_19721", #스타벅스0
+                    "chkElement__ctl0_-1_498284", #베네9
+                    "chkElement__ctl0_-1_19728", #투썸5
+                    "chkElement__ctl0_-1_896045", #파스구찌7
+                    "chkElement__ctl0_-1_19725", #엔젤4
+                    "chkElement__ctl0_-1_19723", #할리스8
+                    "chkElement__ctl0_-1_23703", #오설록10
+                    "chkElement__ctl0_-1_19729", #커피빈1
+                    "chkElement__ctl0_-1_1647224", #폴바셋6
+                    "chkElement__ctl0_-1_1647247", #공차2
+                    "" #3
+                  ]
+      item_type_codes = [0, 9, 5, 7, 4, 8, 10, 1, 6, 2, 3]
+      cafe_names = ["스타벅스","커피빈","공차","이디야","엔젤리너스","투썸","폴바셋","파스구찌","할리스","카페베네","오설록"]
+      click_ids.each_with_index do |click_id, index|
+        if index == 0
+          browser.checkbox(:id => "chkElement_ucAttributeIndexBox1_-1_19721").click #스타벅스
+        elsif index == 9
+          url = "http://through.auction.co.kr/common/SafeRedirect.aspx?cc=0FA0&LPFwc=86030100&next=http://listings.auction.co.kr/category/List.aspx?category=86030300"
+          browser.goto url
+          browser.checkbox(:id => "chkElement_ucAttributeIndexBox1_-1_1647247").click #공차
+        elsif index == 10
+          browser.text_field(:id => 'keywordRetry').set "이디야"
+          browser.input(:class => 'btn_cg_sc').click
+        else
+          browser.checkbox(:id => "#{click_id}").click
+        end
+        while 1
+          doc = Nokogiri::HTML.parse(browser.html)
+          if doc.css("#ucPager_dListMoreView").blank?
+            browser.scroll.to :bottom
+            break
+          else
+            begin
+              btn = browser.div(:id => "ucPager_dListMoreView")
+              browser.scroll.to btn
+              browser.execute_script("window.scrollBy(0,-200)")
+              browser.div(:id => 'ucPager_dListMoreView').click
+            rescue
+              break
+            end
+          end
+        end
+        doc = Nokogiri::HTML.parse(browser.html)
+        
+        list = doc.css("#ucItemList_listview .list_view")
+        list.each do |item|
+          item_id = item.attr("id").split("_")[1]
+          deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+              
+          if deal_item.blank?
+            deal_url = "http://itempage3.auction.co.kr/DetailView.aspx?ItemNo=" + item_id.to_s
+            deal_image = item.css(".image img").attr("data-original").value
+                  
+            # deal_description = item.css(".tag").css(".title").css("em").text
+            deal_title = item.css(".item_title a").text.delete!("\n").delete!("\t")
+            deal_price = item.css(".item_price").text.scan(/\d/).join('').to_i
+               
+            deal_original_price = item.css(".list_price").text.scan(/\d/).join('').to_i
+            deal_original_price = "" if deal_original_price == 0
+               
+            special_price = ""
+                
+            discount = item.css(".you_save strong").text.scan(/\d/).join('').to_i
+            discount = "" if discount == 0
+            if item.css(".feedback strong").size == 3
+              deal_count = item.css(".feedback strong")[1].text.scan(/\d/).join('').to_i
+            else
+              deal_count = nil
+            end 
+            deal_item = DealItem.create(deal_search_word_id: 10002, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, 
+                                    discount: discount, deal_original_price: deal_original_price, special_price: special_price,
+                                    deal_title: deal_title, deal_price: deal_price)
+                
+            Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: site_id, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
+                              discount: discount, show_flg: true, update_flg: true, deal_search_word_id: 10002, item_type_code: item_type_codes[index])
+          end
+        end
+        if index != 10
+          browser.scroll.to :top
+          browser.checkbox(:id => "#{click_id}").click #클릭 해제
+          sleep 1
+        end
+      end  
+    rescue => e
+      p e.backtrace
+      return false
+    end
   end
   
   def self.movie_event_megabox(browser)
