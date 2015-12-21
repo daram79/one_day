@@ -246,13 +246,14 @@ class DealItem < ActiveRecord::Base
             ]
       cafe_names = ["스타벅스","커피빈","공차","이디야","엔젤리너스","투썸","폴바셋","파스구찌","할리스","카페베네","오설록"]
       urls.each_with_index do |url, url_i|
+        
         browser.goto url
         sleep 1
         doc = Nokogiri::HTML.parse(browser.html)
         pages = doc.css(".page_btnbx").css(".ng-binding.ng-scope")
-        
+        pages = [1] if pages.blank?
         pages.each_with_index do |page, i|
-          browser.span(:text => "#{i+1}").click
+          browser.span(:text => "#{i+1}").click unless pages.size == 1
           doc = Nokogiri::HTML.parse(browser.html)
           g9_item_list = doc.css(".lst_ecpn3").css("li")
           g9_item_list.each do |item|
@@ -360,7 +361,8 @@ class DealItem < ActiveRecord::Base
         end
       end
       return true
-    rescue
+    rescue => e
+      pp e.backtrace
       return false
     end
     
@@ -606,6 +608,8 @@ class DealItem < ActiveRecord::Base
           if deal_item.blank?
             deal_url = "http://itempage3.auction.co.kr/DetailView.aspx?ItemNo=" + item_id.to_s
             deal_image = item.css(".image img").attr("data-original").value
+            
+            deal_image[-5] = "5" if deal_image[-5] == "2"
                   
             # deal_description = item.css(".tag").css(".title").css("em").text
             deal_title = item.css(".item_title a").text.delete!("\n").delete!("\t")
@@ -667,10 +671,10 @@ class DealItem < ActiveRecord::Base
           image_url = li.css(".img_pro").attr("src").value
         
           if title.include?("1+1")
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
                             show_flg: true, push_flg: true, update_flg: true)
           else
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
           end
         end
       end

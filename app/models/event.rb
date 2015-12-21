@@ -38,7 +38,7 @@ class Event < ActiveRecord::Base
           event = Event.where(event_id: event_id, event_site_id: event_site_id)
           
           if event.blank?
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
             event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
             event_ary.push event_hash
           end
@@ -72,7 +72,7 @@ class Event < ActiveRecord::Base
           event = Event.where(event_id: event_id, event_site_id: event_site_id)
           
           if event.blank?
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
             event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
             event_ary.push event_hash
           end
@@ -108,7 +108,7 @@ class Event < ActiveRecord::Base
             event = Event.where(event_id: event_id, event_site_id: event_site_id)
               
             if event.blank?
-              Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
+              Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
               event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
               event_ary.push event_hash
             end
@@ -139,7 +139,7 @@ class Event < ActiveRecord::Base
         event_url = a.attributes["href"].value
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         if event.blank?
-          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id)
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           event_ary.push event_hash
         end
@@ -175,7 +175,7 @@ class Event < ActiveRecord::Base
         original_price = ary_price[2] ? ary_price[1].strip! : ""
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         if event.blank?
-          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           event_ary.push event_hash
         end
@@ -207,7 +207,7 @@ class Event < ActiveRecord::Base
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         image_url = li.css(".thumb_prd").css("img")[0].attributes["src"].value
         if event.blank?
-          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           event_ary.push event_hash
         end
@@ -240,7 +240,7 @@ class Event < ActiveRecord::Base
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         image_url = li.css(".thumb_prd").css("img")[0].attributes["src"].value
         if event.blank?
-          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount)
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           event_ary.push event_hash
         end
@@ -278,7 +278,7 @@ class Event < ActiveRecord::Base
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         image_url = doc.css(".lst_dl")[0].css(".thm")[0].css("img")[0].attributes["src"].value
         if event.blank?
-          Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
                           price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           event_ary.push event_hash
@@ -317,7 +317,7 @@ class Event < ActiveRecord::Base
       # event = Event.where(event_id: event_id, event_site_id: event_site_id)
       # image_url = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
       # if event.blank?
-        # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+        # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
                       # price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
         # event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
         # event_ary.push event_hash
@@ -354,10 +354,10 @@ class Event < ActiveRecord::Base
           # image_url = li.css(".img_pro").attr("src").value
 #         
           # if title.include?("1+1")
-            # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
+            # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
                             # show_flg: true, push_flg: true, update_flg: true)
           # else
-            # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
+            # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
           # end
           # event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           # event_ary.push event_hash

@@ -69,10 +69,10 @@ class EventAlramMailer < ActionMailer::Base
 #               
               # #항공권이 15,000원 이하면 바로 푸시
               # if price.scan(/\d/).join('').to_i < 15000
-                # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                               # image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
               # else
-                # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+                # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                               # image_url: image_url, price: price, original_price: original_price)
               # end
 #               
@@ -128,13 +128,13 @@ class EventAlramMailer < ActionMailer::Base
 #             
             # #항공권이 10,000원 이하면 바로 푸시
             # if price.scan(/\d/).join('').to_i < 10000
-              # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+              # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                             # image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
             # elsif ['일본','동경', '오사카', '나고야', '후쿠오카', '중국', '북경', '베이징', '상해', '상하이', '홍콩', '싱가폴', '필리핀', '베트남'].any? { |word| title.include?(word) } && price.scan(/\d/).join('').to_i < 150000
-              # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+              # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                             # image_url: image_url, price: price, original_price: original_price, show_flg: true, push_flg: true, update_flg: true)
             # else
-              # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+              # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                             # image_url: image_url, price: price, original_price: original_price)
             # end
 #             
@@ -190,7 +190,7 @@ class EventAlramMailer < ActionMailer::Base
           # event_url = front_url + rear_url
           # image_url = tr.css("img").attr("src").value
 #           
-          # Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url)
+          # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url)
 #             
 #             
           # event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
@@ -240,7 +240,7 @@ class EventAlramMailer < ActionMailer::Base
             event_url = front_url + rear_url
             image_url = tr.css("img").attr("src").value
               
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                             image_url: image_url)
             event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
             @event_ary.push event_hash
@@ -284,7 +284,7 @@ class EventAlramMailer < ActionMailer::Base
             event_url = "http://www.7-eleven.co.kr/event/eventList.asp"
             image_url = front_url + rear_url
               
-            Event.create(event_id: event_id.to_i, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
                             image_url: image_url)
             event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
             @event_ary.push event_hash
