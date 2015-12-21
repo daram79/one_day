@@ -1,7 +1,7 @@
 class CreateEvents < ActiveRecord::Migration
   def change
     create_table :events do |t|
-      t.integer :event_id, :limit => 5
+      t.string :event_id
       t.integer :event_site_id
       t.string  :event_name
       t.string  :event_url
