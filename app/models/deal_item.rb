@@ -187,7 +187,9 @@ class DealItem < ActiveRecord::Base
       }
       doc = Nokogiri::HTML.parse(browser.html)
       g9_item_list = doc.css("#searchItemList").css("li")
+      
       g9_item_list.each do |item|
+        
         item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
         deal_item = DealItem.where(item_id: item_id, site_id: site_id)
         
