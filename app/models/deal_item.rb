@@ -606,6 +606,8 @@ class DealItem < ActiveRecord::Base
           if deal_item.blank?
             deal_url = "http://itempage3.auction.co.kr/DetailView.aspx?ItemNo=" + item_id.to_s
             deal_image = item.css(".image img").attr("data-original").value
+            
+            deal_image[-5] = "5" if deal_image[-5] == "2"
                   
             # deal_description = item.css(".tag").css(".title").css("em").text
             deal_title = item.css(".item_title a").text.delete!("\n").delete!("\t")
