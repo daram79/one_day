@@ -7,8 +7,11 @@ class DealItem < ActiveRecord::Base
   
   def self.wait_auction(browser)
     while 1
-      tmp = browser.div(:id, "sum_ajax_loading").style 'display'
-      break if tmp == "none"
+      doc = Nokogiri::HTML.parse(browser.html)
+      break if doc.css("#sum_ajax_loading").attr("style").value.include?("display: none;")
+      # doc.css("#sum_ajax_loading")
+      # tmp = browser.div(:id, "sum_ajax_loading").style 'display'
+      # break if tmp == "none"
     end
   end
   
