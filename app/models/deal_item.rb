@@ -261,7 +261,10 @@ class DealItem < ActiveRecord::Base
         pages = doc.css(".page_btnbx").css(".ng-binding.ng-scope")
         pages = [1] if pages.blank?
         pages.each_with_index do |page, i|
-          browser.span(:text => "#{i+1}").click unless pages.size == 1
+          unless pages.size == 1
+            browser.span(:text => "#{i+1}").click
+            sleep 1
+          end
           doc = Nokogiri::HTML.parse(browser.html)
           g9_item_list = doc.css(".lst_ecpn3").css("li")
           g9_item_list.each do |item|
