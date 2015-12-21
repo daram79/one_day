@@ -95,7 +95,7 @@ class EventsController < ApplicationController
   end
   
   def get_event_cafe
-    @event = Event.where(show_flg: true, deal_search_word_id: 10002).order("price asc")
+    @event = Event.where(show_flg: true, deal_search_word_id: 10002, item_type_code: params[:typeIndex]).order("price asc")
     respond_to do |format|
       format.html { render "get_event" }
       format.json { render json: @event }
