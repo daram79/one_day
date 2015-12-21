@@ -7,6 +7,7 @@ class DealItem < ActiveRecord::Base
   
   def self.wait_auction(browser)
     while 1
+      debugger
       doc = Nokogiri::HTML.parse(browser.html)
       break if doc.css("#sum_ajax_loading").attr("style").value.include?("display: none;")
       # doc.css("#sum_ajax_loading")
@@ -574,7 +575,8 @@ class DealItem < ActiveRecord::Base
           browser.div(:class => "ck_list").label(:text, name).click
         end
         
-        self.wait_auction(browser)
+        # self.wait_auction(browser)
+        sleep 2
         
         while 1
           doc = Nokogiri::HTML.parse(browser.html)
@@ -587,7 +589,8 @@ class DealItem < ActiveRecord::Base
               browser.scroll.to btn
               browser.execute_script("window.scrollBy(0,-200)")
               browser.div(:id => 'ucPager_dListMoreView').click
-              self.wait_auction(browser)
+              # self.wait_auction(browser)
+              sleep 2
             rescue
               break
             end
@@ -631,7 +634,8 @@ class DealItem < ActiveRecord::Base
         if index != 10
           browser.scroll.to :top
           browser.div(:class => "ck_list").label(:text, name).click
-          self.wait_auction(browser)
+          # self.wait_auction(browser)
+          sleep 2
         end
       end  
     rescue => e
