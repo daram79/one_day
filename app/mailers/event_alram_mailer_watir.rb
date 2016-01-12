@@ -2,6 +2,7 @@
 require 'open-uri'
 class EventAlramMailerWatir < ActionMailer::Base
   default :from => "shimtong1004@gmail.com"
+  @@email = ["tellus.event@gmail.com", "goodnews1079@gmail.com"]
   
   def airticket_coocha(doc, site_id)
     begin
@@ -187,9 +188,9 @@ class EventAlramMailerWatir < ActionMailer::Base
         end
         
         
-        email = EventMailingList.all.pluck(:email)
-        return if @event_ary.blank? || email.blank?
-        mail to: email , subject: @title
+        # email = EventMailingList.all.pluck(:email)
+        return if @event_ary.blank?
+        mail to: @@email , subject: @title
       end
     rescue => e
       p e.backtrace
@@ -228,9 +229,9 @@ class EventAlramMailerWatir < ActionMailer::Base
           @event_ary.push event_hash
         end
       end
-      email = EventMailingList.all.pluck(:email)
-      return if @event_ary.blank? || email.blank?
-      mail to: email , subject: @title
+      # email = EventMailingList.all.pluck(:email)
+      return if @event_ary.blank?
+      mail to: @@email , subject: @title
       
     rescue => e
       p e.backtrace
@@ -274,9 +275,9 @@ class EventAlramMailerWatir < ActionMailer::Base
           @event_ary.push event_hash
         end
       end
-      email = EventMailingList.all.pluck(:email)
-      return if @event_ary.blank? || email.blank?
-      mail to: email , subject: @title
+      # email = EventMailingList.all.pluck(:email)
+      return if @event_ary.blank?
+      mail to: @@email , subject: @title
     rescue => e
       p e.backtrace
       @title = "메가박스 error"
@@ -316,9 +317,9 @@ class EventAlramMailerWatir < ActionMailer::Base
           end
         end
       end
-      email = EventMailingList.all.pluck(:email)
-      return if @event_ary.blank? || email.blank?
-      mail to: email , subject: @title
+      # email = EventMailingList.all.pluck(:email)
+      return if @event_ary.blank?
+      mail to: @@email , subject: @title
     rescue => e
       p e.backtrace
       @title = "지구 플레쉬딜 error"

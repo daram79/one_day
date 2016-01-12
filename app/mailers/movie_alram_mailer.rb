@@ -2,6 +2,7 @@
 require 'open-uri'
 class MovieAlramMailer < ActionMailer::Base
   default :from => "shimtong1004@gmail.com"
+  @@email = ["tellus.event@gmail.com", "goodnews1079@gmail.com"]
   #デフォルトのヘッダ情報
   # default to: Proc.new { EventMailingList.where(send_flg: true).pluck(:email) }, from: 'shimtong1004@gmail.com'
   # default to: Proc.new { ["tellus.event@gmail.com"] }, from: 'shimtong1004@gmail.com'
@@ -50,9 +51,9 @@ class MovieAlramMailer < ActionMailer::Base
           end
         end
       end
-      email = EventMailingList.all.pluck(:email)
-      return if @event_ary.blank? || email.blank?
-      mail to: email , subject: @title
+      # email = EventMailingList.all.pluck(:email)
+      return if @event_ary.blank?
+      mail to: @@email , subject: @title
     rescue => e
       p e.backtrace
       @title = "CGV error"
@@ -98,9 +99,9 @@ class MovieAlramMailer < ActionMailer::Base
         end
       end
       
-      email = EventMailingList.all.pluck(:email)
-      return if @event_ary.blank? || email.blank?
-      mail to: email , subject: @title
+      # email = EventMailingList.all.pluck(:email)
+      return if @event_ary.blank?
+      mail to: @@email , subject: @title
     rescue => e
       p e.backtrace
       @title = "롯데시네마 error"
