@@ -2,6 +2,7 @@
 require 'open-uri'
 class NoticeMailer < ActionMailer::Base
   default :from => "shimtong1004@gmail.com"
+  @@email = ["tellus.event@gmail.com", "goodnews1079@gmail.com"]
   #デフォルトのヘッダ情報
   # default to: Proc.new { EventMailingList.where(send_flg: true).pluck(:email) }, from: 'shimtong1004@gmail.com'
   # default to: Proc.new { ["tellus.event@gmail.com"] }, from: 'shimtong1004@gmail.com'
@@ -42,10 +43,10 @@ class NoticeMailer < ActionMailer::Base
     end
     
     # email = EventReceiveUser.where(event_site_id: event_site_id, is_receive: true).pluck(:user_email)
-    email = EventMailingList.all.pluck(:email)
+    # email = EventMailingList.all.pluck(:email)
     
-    return if @event_ary.blank? || email.blank?
-    mail to: email , subject: @title
+    return if @event_ary.blank?
+    mail to: @@email , subject: @title
   end
   
 end
