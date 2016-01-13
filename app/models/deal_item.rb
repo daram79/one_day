@@ -683,13 +683,13 @@ class DealItem < ActiveRecord::Base
         
           if title.include?("1+1")
             Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, 
-                            show_flg: true, push_flg: true, update_flg: true)
+                            show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 10001)
           else
             Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
           end
         else
           unless li.css(".tx_soldout").blank?
-            event.update(show_flg: false)
+            event.update_all(show_flg: false)
           end
             
         end
