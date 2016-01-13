@@ -89,7 +89,7 @@ class MovieAlramMailer < ActionMailer::Base
         image_url = first_url + li.css("img").attr("src").value
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         if event.blank?
-          if event_name.include?("1+1")
+          if event_name.include?("1+1") || event_name.include?("얼리버드")
             Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 10001)
           else
             Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url)
