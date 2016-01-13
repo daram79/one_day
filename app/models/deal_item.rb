@@ -674,8 +674,8 @@ class DealItem < ActiveRecord::Base
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         if event.blank?
           title = li.css("h5").text
-          price = li.css("b")[0].text
-          price.lstrip!
+          price = li.css("b")[0].text.scan(/\d/).join('').to_i
+          # price.lstrip!
           original_price = li.css("s").text
           event_name = "[메가박스]" + title 
           event_url = url
@@ -687,6 +687,11 @@ class DealItem < ActiveRecord::Base
           else
             Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
           end
+        else
+          unless li.css(".tx_soldout").blank?
+            event.update(show_flg: false)
+          end
+            
         end
       end
       return true
