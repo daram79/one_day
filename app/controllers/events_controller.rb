@@ -133,7 +133,7 @@ class EventsController < ApplicationController
   end
   
   def get_event_movie
-    @event = Event.where(show_flg: true, deal_search_word_id: 10001)
+    @event = Event.where(show_flg: true, deal_search_word_id: 10001).order("id desc")
     
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
