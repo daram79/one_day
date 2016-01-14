@@ -178,7 +178,7 @@ class DealItem < ActiveRecord::Base
           end
         else
           event = Event.where(event_site_id: 9002).last
-          event.update(show_flg: false) unless event
+          event.update(show_flg: false) if event
         end
       end
       
