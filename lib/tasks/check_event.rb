@@ -24,7 +24,7 @@ require "#{File.dirname(__FILE__)}/../../config/environment.rb"
             flg = false if doc.css("#buy_button").text == "판매종료" || doc.css(".no_find").text.include?("상품을 찾을 수 없습니다")
           elsif data.event_site_id == 9001
             doc = Nokogiri::HTML(html_str)
-            flg = false if doc.css("#btn_buy").text == "매진"         
+            flg = false if doc.css("#btn_buy").text == "매진" || doc.css("#btn_buy").text == "판매종료" 
           end
           
           if flg
