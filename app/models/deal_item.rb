@@ -180,198 +180,198 @@ class DealItem < ActiveRecord::Base
       end
       
       #영화 예메권
-      begin
-        browser.text_field(:id => 'txtSearchKeyword').set "영화관람권"
-        browser.input(:id => "btnSearchKeyword").click
-        
-        browser.scroll.to :bottom
-        sleep 1
-        
-        doc = Nokogiri::HTML.parse(browser.html)
-        g9_item_list = doc.css("#searchItemList").css("li")
-        p "G9 영화티켓 정보 수집"
-        g9_item_list.each do |item|
-          item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
-          deal_item = DealItem.where(item_id: item_id, site_id: site_id)
-          
-          if deal_item.blank?
-            deal_url = url + item.css(".tag").attr("href").value
-            # deal_image = item.css("#img#{item_id}").attr("src").value
-            deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
-              
-            deal_description = item.css(".tag").css(".title").css("em").text
-            begin
-              deal_title = item.css(".tag").css(".title").text.delete!("\t").delete!("\n").delete(deal_description)
-            rescue
-              title = item.css(".tag").css(".title").to_s
-              title_s_index = title.index("</em>") + 5
-              title_e_index = title.size
-              deal_title = title[title_s_index..title_e_index].delete!("\t").delete!("\n").delete("</span>")
-            end
-            deal_price = item.css(".price_info").css(".price").css("strong").text.scan(/\d/).join('').to_i
-            deal_original_price = item.css(".price_info").css(".price").css("del").text.scan(/\d/).join('').to_i
-            special_price = item.css(".price_info").css(".price").css("em").text
-            discount = item.css(".price_info").css(".sale").text.scan(/\d/).join('').to_i
-              
-            like_count = item.css("#fcnt#{item_id}").text.scan(/\d/).join('').to_i
-            deal_count = item.css(".count_item").css("strong").text
-              
-            card_interest_description = ""
-            deliver_charge_description = item.css(".ico_tag4").text
-              
-            deal_start = Date.today if item.css(".ico_tag2").text != ""
-              
-            # ActiveRecord::Base.transaction do
-            deal_item = DealItem.create(deal_search_word_id: 10001, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
-                                  like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
-                                  deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+      # begin
+        # browser.text_field(:id => 'txtSearchKeyword').set "영화관람권"
+        # browser.input(:id => "btnSearchKeyword").click
+#         
+        # browser.scroll.to :bottom
+        # sleep 1
+#         
+        # doc = Nokogiri::HTML.parse(browser.html)
+        # g9_item_list = doc.css("#searchItemList").css("li")
+        # p "G9 영화티켓 정보 수집"
+        # g9_item_list.each do |item|
+          # item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
+          # deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+#           
+          # if deal_item.blank?
+            # deal_url = url + item.css(".tag").attr("href").value
+            # # deal_image = item.css("#img#{item_id}").attr("src").value
+            # deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
+#               
+            # deal_description = item.css(".tag").css(".title").css("em").text
+            # begin
+              # deal_title = item.css(".tag").css(".title").text.delete!("\t").delete!("\n").delete(deal_description)
+            # rescue
+              # title = item.css(".tag").css(".title").to_s
+              # title_s_index = title.index("</em>") + 5
+              # title_e_index = title.size
+              # deal_title = title[title_s_index..title_e_index].delete!("\t").delete!("\n").delete("</span>")
             # end
-            unless deal_title.include?("지류")
-              Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: site_id, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
-                            discount: discount, show_flg: true, push_flg: false, update_flg: true, deal_search_word_id: 10001)
-            end
-          end
-        end
-        
-      rescue => e
-        pp e.backtrace
-      end
-      
-        
-      #커피
-      urls = [
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/1",#스타벅스 
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/538",#커피빈 
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/3",#공차
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/7410", #이디야
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/5", #엔젤
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/6", #투썸
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/7", #폴바셋
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/8", #파스구찌
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/9", #할리스
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/4", #베네
-              "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/658" #오설록 
-            ]
-      cafe_names = ["스타벅스","커피빈","공차","이디야","엔젤리너스","투썸","폴바셋","파스구찌","할리스","카페베네","오설록"]
-      urls.each_with_index do |url, url_i|
-        
-        browser.goto url
-        sleep 1
-        doc = Nokogiri::HTML.parse(browser.html)
-        pages = doc.css(".page_btnbx").css(".ng-binding.ng-scope")
-        pages = [1] if pages.blank?
-        pages.each_with_index do |page, i|
-          unless pages.size == 1
-            browser.span(:text => "#{i+1}").click
-            sleep 1
-          end
-          doc = Nokogiri::HTML.parse(browser.html)
-          g9_item_list = doc.css(".lst_ecpn3").css("li")
-          g9_item_list.each do |item|
-            # item_id = item.css(".img_box").css("img").attr("src").value.split("/g/")[1].split('/')[0]
-            item_id = item.css(".img_box").css("img")[0].attributes["data-original"].value.split("/")[-2]
-            deal_item = DealItem.where(item_id: item_id, site_id: site_id)
-              
-            if deal_item.blank?
-              deal_url = "http://www.g9.co.kr/Display/VIP/Index/" + item_id.to_s
-              deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
-                
-              # deal_description = item.css(".tag").css(".title").css("em").text
-              deal_title = "[" + cafe_names[url_i] + "] " +  item.css(".tit.ng-binding").text
-              deal_price = item.css(".price.ng-binding").text.scan(/\d/).join('').to_i
-              
-              deal_original_price = item.css(".per_price.ng-binding.ng-scope").text.scan(/\d/).join('').to_i
-              deal_original_price = "" if deal_original_price == 0
-              
-              special_price = item.css(".txt.ng-scope").text
-              
-              discount = item.css(".per.ng-binding.ng-scope").text.scan(/\d/).join('').to_i
-              discount = "" if discount == 0
-                
-              # like_count = item.css("#fcnt#{item_id}").text.scan(/\d/).join('').to_i
-              # deal_count = item.css(".count_item").css("strong").text
-                
-              # card_interest_description = ""
-              # deliver_charge_description = item.css(".ico_tag4").text
-                
-              # deal_start = Date.today if item.css(".ico_tag2").text != ""
-                
-              # ActiveRecord::Base.transaction do
-              deal_item = DealItem.create(deal_search_word_id: 10002, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, 
-                                    discount: discount, deal_original_price: deal_original_price, special_price: special_price,
-                                    deal_title: deal_title, deal_price: deal_price)
-              
-              Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: site_id, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
-                              discount: discount, show_flg: true, update_flg: true, deal_search_word_id: 10002, item_type_code: url_i)
-              # end
-            end
-          end            
-        end
-      end
-      
-      url = "http://www.g9.co.kr"
-      browser.goto url
-      browser.goto url
-      # browser.link(:onclick=>"close_regpop();").click
-      search_key.each do |key|
-        p "지구 데이터 수집중 #{key.word}"
-        browser.text_field(:id => 'txtSearchKeyword').set key.word
-        browser.input(:id => "btnSearchKeyword").click
-        browser.a(:text => "최신순").click
-        
-        (1..50).each{|num|
-          # browser.span(:class => 'thumbs').img.wait_until_present
-          browser.execute_script("window.scrollBy(0,1000)")
-          # sleep 1
-        }
-        
-        doc = Nokogiri::HTML.parse(browser.html)
-        g9_item_list = doc.css("#searchItemList").css("li")
-        g9_item_list.each do |item|
-          item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
-          deal_item = DealItem.where(item_id: item_id, site_id: site_id)
-          
-          if deal_item.blank?
-            deal_url = url + item.css(".tag").attr("href").value
-            # deal_image = item.css("#img#{item_id}").attr("src").value
-            deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
-            
-            deal_description = item.css(".tag").css(".title").css("em").text
-            begin
-              deal_title = item.css(".tag").css(".title").text.delete!("\t").delete!("\n").delete(deal_description)
-            rescue
-              title = item.css(".tag").css(".title").to_s
-              title_s_index = title.index("</em>") + 5
-              title_e_index = title.size
-              deal_title = title[title_s_index..title_e_index].delete!("\t").delete!("\n").delete("</span>")
-            end
-            deal_price = item.css(".price_info").css(".price").css("strong").text.scan(/\d/).join('').to_i
-            deal_original_price = item.css(".price_info").css(".price").css("del").text.scan(/\d/).join('').to_i
-            special_price = item.css(".price_info").css(".price").css("em").text
-            discount = item.css(".price_info").css(".sale").text.scan(/\d/).join('').to_i
-            
-            like_count = item.css("#fcnt#{item_id}").text.scan(/\d/).join('').to_i
-            deal_count = item.css(".count_item").css("strong").text
-            
-            card_interest_description = ""
-            deliver_charge_description = item.css(".ico_tag4").text
-            
-            deal_start = Date.today if item.css(".ico_tag2").text != ""
-            
-            # ActiveRecord::Base.transaction do
-            deal_item = DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
-                                  like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
-                                  deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+            # deal_price = item.css(".price_info").css(".price").css("strong").text.scan(/\d/).join('').to_i
+            # deal_original_price = item.css(".price_info").css(".price").css("del").text.scan(/\d/).join('').to_i
+            # special_price = item.css(".price_info").css(".price").css("em").text
+            # discount = item.css(".price_info").css(".sale").text.scan(/\d/).join('').to_i
+#               
+            # like_count = item.css("#fcnt#{item_id}").text.scan(/\d/).join('').to_i
+            # deal_count = item.css(".count_item").css("strong").text
+#               
+            # card_interest_description = ""
+            # deliver_charge_description = item.css(".ico_tag4").text
+#               
+            # deal_start = Date.today if item.css(".ico_tag2").text != ""
+#               
+            # # ActiveRecord::Base.transaction do
+            # deal_item = DealItem.create(deal_search_word_id: 10001, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+                                  # like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
+                                  # deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+            # # end
+            # unless deal_title.include?("지류")
+              # Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: site_id, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
+                            # discount: discount, show_flg: true, push_flg: false, update_flg: true, deal_search_word_id: 10001)
             # end
-            search_result = DealSearchResult.where(deal_item_id: deal_item.id, deal_search_word: key.word)
-            DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
-          else
-            search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
-            DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
-          end
-        end
-      end
-      return true
+          # end
+        # end
+#         
+      # rescue => e
+        # pp e.backtrace
+      # end
+#       
+#         
+      # #커피
+      # urls = [
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/1",#스타벅스 
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/538",#커피빈 
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/3",#공차
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/7410", #이디야
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/5", #엔젤
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/6", #투썸
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/7", #폴바셋
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/8", #파스구찌
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/9", #할리스
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/4", #베네
+              # "http://m.g9.co.kr/Simple.htm#/Display/ECouponLP/658" #오설록 
+            # ]
+      # cafe_names = ["스타벅스","커피빈","공차","이디야","엔젤리너스","투썸","폴바셋","파스구찌","할리스","카페베네","오설록"]
+      # urls.each_with_index do |url, url_i|
+#         
+        # browser.goto url
+        # sleep 1
+        # doc = Nokogiri::HTML.parse(browser.html)
+        # pages = doc.css(".page_btnbx").css(".ng-binding.ng-scope")
+        # pages = [1] if pages.blank?
+        # pages.each_with_index do |page, i|
+          # unless pages.size == 1
+            # browser.span(:text => "#{i+1}").click
+            # sleep 1
+          # end
+          # doc = Nokogiri::HTML.parse(browser.html)
+          # g9_item_list = doc.css(".lst_ecpn3").css("li")
+          # g9_item_list.each do |item|
+            # # item_id = item.css(".img_box").css("img").attr("src").value.split("/g/")[1].split('/')[0]
+            # item_id = item.css(".img_box").css("img")[0].attributes["data-original"].value.split("/")[-2]
+            # deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+#               
+            # if deal_item.blank?
+              # deal_url = "http://www.g9.co.kr/Display/VIP/Index/" + item_id.to_s
+              # deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
+#                 
+              # # deal_description = item.css(".tag").css(".title").css("em").text
+              # deal_title = "[" + cafe_names[url_i] + "] " +  item.css(".tit.ng-binding").text
+              # deal_price = item.css(".price.ng-binding").text.scan(/\d/).join('').to_i
+#               
+              # deal_original_price = item.css(".per_price.ng-binding.ng-scope").text.scan(/\d/).join('').to_i
+              # deal_original_price = "" if deal_original_price == 0
+#               
+              # special_price = item.css(".txt.ng-scope").text
+#               
+              # discount = item.css(".per.ng-binding.ng-scope").text.scan(/\d/).join('').to_i
+              # discount = "" if discount == 0
+#                 
+              # # like_count = item.css("#fcnt#{item_id}").text.scan(/\d/).join('').to_i
+              # # deal_count = item.css(".count_item").css("strong").text
+#                 
+              # # card_interest_description = ""
+              # # deliver_charge_description = item.css(".ico_tag4").text
+#                 
+              # # deal_start = Date.today if item.css(".ico_tag2").text != ""
+#                 
+              # # ActiveRecord::Base.transaction do
+              # deal_item = DealItem.create(deal_search_word_id: 10002, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, 
+                                    # discount: discount, deal_original_price: deal_original_price, special_price: special_price,
+                                    # deal_title: deal_title, deal_price: deal_price)
+#               
+              # Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: site_id, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
+                              # discount: discount, show_flg: true, update_flg: true, deal_search_word_id: 10002, item_type_code: url_i)
+              # # end
+            # end
+          # end            
+        # end
+      # end
+#       
+      # url = "http://www.g9.co.kr"
+      # browser.goto url
+      # browser.goto url
+      # # browser.link(:onclick=>"close_regpop();").click
+      # search_key.each do |key|
+        # p "지구 데이터 수집중 #{key.word}"
+        # browser.text_field(:id => 'txtSearchKeyword').set key.word
+        # browser.input(:id => "btnSearchKeyword").click
+        # browser.a(:text => "최신순").click
+#         
+        # (1..50).each{|num|
+          # # browser.span(:class => 'thumbs').img.wait_until_present
+          # browser.execute_script("window.scrollBy(0,1000)")
+          # # sleep 1
+        # }
+#         
+        # doc = Nokogiri::HTML.parse(browser.html)
+        # g9_item_list = doc.css("#searchItemList").css("li")
+        # g9_item_list.each do |item|
+          # item_id = item.css(".tag").attr("href").value.split("/")[-1].to_i
+          # deal_item = DealItem.where(item_id: item_id, site_id: site_id)
+#           
+          # if deal_item.blank?
+            # deal_url = url + item.css(".tag").attr("href").value
+            # # deal_image = item.css("#img#{item_id}").attr("src").value
+            # deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
+#             
+            # deal_description = item.css(".tag").css(".title").css("em").text
+            # begin
+              # deal_title = item.css(".tag").css(".title").text.delete!("\t").delete!("\n").delete(deal_description)
+            # rescue
+              # title = item.css(".tag").css(".title").to_s
+              # title_s_index = title.index("</em>") + 5
+              # title_e_index = title.size
+              # deal_title = title[title_s_index..title_e_index].delete!("\t").delete!("\n").delete("</span>")
+            # end
+            # deal_price = item.css(".price_info").css(".price").css("strong").text.scan(/\d/).join('').to_i
+            # deal_original_price = item.css(".price_info").css(".price").css("del").text.scan(/\d/).join('').to_i
+            # special_price = item.css(".price_info").css(".price").css("em").text
+            # discount = item.css(".price_info").css(".sale").text.scan(/\d/).join('').to_i
+#             
+            # like_count = item.css("#fcnt#{item_id}").text.scan(/\d/).join('').to_i
+            # deal_count = item.css(".count_item").css("strong").text
+#             
+            # card_interest_description = ""
+            # deliver_charge_description = item.css(".ico_tag4").text
+#             
+            # deal_start = Date.today if item.css(".ico_tag2").text != ""
+#             
+            # # ActiveRecord::Base.transaction do
+            # deal_item = DealItem.create(deal_search_word_id: key.id, item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, deal_description: deal_description, 
+                                  # like_count: like_count, discount: discount, deal_original_price: deal_original_price, deal_start: deal_start, special_price: special_price,
+                                  # deal_title: deal_title, deal_price: deal_price, deal_count: deal_count, card_interest_description: card_interest_description, deliver_charge_description: deliver_charge_description)
+            # # end
+            # search_result = DealSearchResult.where(deal_item_id: deal_item.id, deal_search_word: key.word)
+            # DealSearchResult.create(deal_item_id: deal_item.id, deal_search_word: key.word) if search_result.blank?
+          # else
+            # search_result = DealSearchResult.where(deal_item_id: deal_item[0].id, deal_search_word: key.word)
+            # DealSearchResult.create(deal_item_id: deal_item[0].id, deal_search_word: key.word) if search_result.blank?  
+          # end
+        # end
+      # end
+      # return true
     rescue => e
       pp e.backtrace
       return false
