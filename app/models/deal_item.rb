@@ -176,6 +176,9 @@ class DealItem < ActiveRecord::Base
                             discount: discount, show_flg: true, push_flg: true, update_flg: true)
                                   
           end
+        else
+          event = Event.where(event_site_id: 9002).last
+          event.update(show_flg: false) unless event
         end
       end
       
@@ -371,7 +374,7 @@ class DealItem < ActiveRecord::Base
           # end
         # end
       # end
-      # return true
+      return true
     rescue => e
       pp e.backtrace
       return false
