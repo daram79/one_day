@@ -16,6 +16,9 @@ Rails.application.routes.draw do
       get "get_event_play"
       get "get_event_movie"
       get "get_event_cafe"
+      get "get_hot_all"
+      get "get_hot_deal"
+      get "get_hot_movie"
     end
     member do
       put "show_data"
