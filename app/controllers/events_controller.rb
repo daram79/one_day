@@ -147,7 +147,7 @@ class EventsController < ApplicationController
   
   def get_hot_all
     event_site_ids = [4001, 4002, 4003, 9001, 9002]
-    @event = Event.where(show_flg: true, deal_search_word_id: 10001).order("id desc")
+    @event = Event.where(show_flg: true, deal_search_word_id: event_site_ids).order("id desc")
     
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
