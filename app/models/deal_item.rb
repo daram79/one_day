@@ -165,14 +165,14 @@ class DealItem < ActiveRecord::Base
           tmp_ary = rear_link_url.split("/")
           item_id = tmp_ary[-1]
           deal_url = url + rear_link_url
-          event = Event.where(event_id: item_id, event_site_id: site_id)
+          event = Event.where(event_id: item_id, event_site_id: 9002)
           # deal_image = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
           deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
           if event.blank?
-            DealItem.create(item_id: item_id, site_id: site_id, deal_url: deal_url, deal_image: deal_image, discount: discount, deal_original_price: deal_original_price,
+            DealItem.create(item_id: item_id, site_id: 9002, deal_url: deal_url, deal_image: deal_image, discount: discount, deal_original_price: deal_original_price,
                                   deal_title: deal_title, deal_price: deal_price)
                                   
-            Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: site_id, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
+            Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: 9002, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
                             discount: discount, show_flg: true, push_flg: true, update_flg: true)
                                   
           end

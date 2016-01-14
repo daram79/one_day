@@ -5,14 +5,20 @@ class Event < ActiveRecord::Base
   after_create :send_push
   after_update :send_push
   
+  @@super_deal_ids = ["9001", "9002"]
+  
   def send_push
-    if self.push_flg && self.show_flg
-      Thread.new do
-        gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
-        user_ids = EventMailingList.all.ids
-        option = { :data => {'message' => self.event_name + "***" + self.event_url} }
-        registration_ids = EventUserRegistrations.where(event_user_id: user_ids).pluck(:registration_id)
-        gcm.send(registration_ids, option) unless registration_ids.blank?
+    unless @@super_deal_ids.any? { |id| self.event_site_id.to_s.include?(id) }
+      if self.push_flg && self.show_flg
+        Thread.new do
+          gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
+          user_ids = EventMailingList.all.ids
+          option = { :data => {'message' => self.event_name + "***" + self.event_url} }
+          registration_ids = EventUserRegistrations.where(event_user_id: user_ids).pluck(:registration_id)
+          gcm.send(registration_ids, option) unless registration_ids.blank?
+        end
+      else
+        #꿀딜, 플레쉬딜 알림
       end
     end
   end
