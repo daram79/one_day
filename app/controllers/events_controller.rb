@@ -145,6 +145,39 @@ class EventsController < ApplicationController
     end
   end
   
+  def get_hot_all
+    event_site_ids = [4001, 4002, 4003, 9001, 9002]
+    @event = Event.where(show_flg: true, deal_search_word_id: 10001).order("id desc")
+    
+    # @event = Event.where(show_flg: true).order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render json: @event }
+    end
+  end
+  
+  def get_hot_deal
+    event_site_ids = [9001, 9002]
+    @event = Event.where(show_flg: true, event_site_id: event_site_ids).order("id desc")
+    
+    # @event = Event.where(show_flg: true).order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render json: @event }
+    end
+  end
+  
+  def get_hot_movie
+    event_site_ids = [4001, 4002, 4003]
+    @event = Event.where(show_flg: true, event_site_id: event_site_ids).order("id desc")
+    
+    # @event = Event.where(show_flg: true).order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render json: @event }
+    end
+  end
+  
   def show_data
     event = Event.find(params[:id])
     if event.update_flg && !event.show_flg

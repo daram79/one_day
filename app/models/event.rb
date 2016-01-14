@@ -5,11 +5,12 @@ class Event < ActiveRecord::Base
   after_create :send_push
   after_update :send_push
   
-  @@super_deal_ids = ["9001", "9002"]
+  @@super_deal_ids = ["9001", "9002", "4001", "4002", "4003"]
   
   def send_push
-    unless @@super_deal_ids.any? { |id| self.event_site_id.to_s.include?(id) }
-      if self.push_flg && self.show_flg
+    if self.push_flg && self.show_flg
+      if @@super_deal_ids.any? { |id| self.event_site_id.to_s.include?(id) }
+        #꿀딜, 플레쉬딜 영화 1+1 알림
         Thread.new do
           gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
           user_ids = EventMailingList.all.ids
@@ -18,7 +19,7 @@ class Event < ActiveRecord::Base
           gcm.send(registration_ids, option) unless registration_ids.blank?
         end
       else
-        #꿀딜, 플레쉬딜 알림
+        #이벤트 알림
       end
     end
   end
