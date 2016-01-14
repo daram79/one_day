@@ -1,5 +1,7 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
+  
+  @@super_deal_ids = [9001, 9002]
 
   # GET /events
   # GET /events.json
@@ -87,7 +89,8 @@ class EventsController < ApplicationController
   end
   
   def get_event_all
-    @event = Event.where(show_flg: true).where("event_site_id > 1000").order("id desc")
+    
+    @event = Event.where(show_flg: true).where("event_site_id > 1000").where('event_site_id NOT IN (?)', @@super_deal_ids).order("id desc")
     respond_to do |format|
       format.html { render "get_event" }
       format.json { render json: @event }
