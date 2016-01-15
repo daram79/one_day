@@ -12,13 +12,11 @@ class Event < ActiveRecord::Base
       if @@super_deal_ids.any? { |id| self.event_site_id.to_s.include?(id) }
         #꿀딜, 플레쉬딜 영화 1+1 알림
         Thread.new do
-          debugger
           gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
           user_ids = EventMailingList.all.ids
           option = { :data => {'message' => self.event_name + "***" + self.event_url} }
           registration_ids = EventUserRegistrations.where(event_user_id: user_ids).pluck(:registration_id)
           gcm.send(registration_ids, option) unless registration_ids.blank?
-          p "send ok"
         end
       else
         #이벤트 알림
