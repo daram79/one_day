@@ -147,7 +147,8 @@ class EventsController < ApplicationController
   
   def get_hot_all
     event_site_ids = [4001, 4002, 4003, 9001, 9002]
-    @event = Event.where(show_flg: true, event_site_id: event_site_ids).order("id desc")
+    # @event = Event.where(event_site_id: event_site_ids).order("id desc")
+    @event = Event.where(event_site_id: event_site_ids).order("show_flg desc")
     
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
@@ -158,7 +159,7 @@ class EventsController < ApplicationController
   
   def get_hot_deal
     event_site_ids = [9001, 9002]
-    @event = Event.where(show_flg: true, event_site_id: event_site_ids).order("id desc")
+    @event = Event.where(event_site_id: event_site_ids).order("show_flg desc")
     
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
@@ -169,7 +170,7 @@ class EventsController < ApplicationController
   
   def get_hot_movie
     event_site_ids = [4001, 4002, 4003]
-    @event = Event.where(show_flg: true, event_site_id: event_site_ids).order("id desc")
+    @event = Event.where(event_site_id: event_site_ids).order("show_flg desc")
     
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
