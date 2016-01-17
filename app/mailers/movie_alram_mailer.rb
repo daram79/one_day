@@ -47,7 +47,7 @@ class MovieAlramMailer < ActionMailer::Base
             Event.create(event_id: event["idx"], event_name: event["description"], event_site_id: event_site_id, event_url: first_url + event["link"], 
                           image_url: event["imageUrl"], show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 10001)
           else
-            Event.create(event_id: event["idx"], event_name: event["description"], event_site_id: event_site_id, event_url: first_url + event["link"], image_url: event["imageUrl"] )
+            # Event.create(event_id: event["idx"], event_name: event["description"], event_site_id: event_site_id, event_url: first_url + event["link"], image_url: event["imageUrl"] )
           end
         end
       end
@@ -92,7 +92,7 @@ class MovieAlramMailer < ActionMailer::Base
           if event_name.include?("1+1") || event_name.include?("얼리버드")
             Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 10001)
           else
-            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url)
+            # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url)
           end
           event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
           @event_ary.push event_hash
