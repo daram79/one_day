@@ -3,8 +3,8 @@ require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 
 #deal_item데이터를 필터해서 event에 추가함.
     begin
-      # ids = [1001, 1002, 1003, 1005, 9001]
-      ids = [1001, 1002, 1005, 9001]
+      # ids = [1001, 1002, 1005, 9001]
+      ids = [9001]
       datas = Event.where(event_site_id: ids, show_flg: true).order("id")
       datas.each_with_index do |data, i|
         begin
