@@ -702,4 +702,49 @@ class DealItem < ActiveRecord::Base
       return false
     end
   end
+  
+  def self.add_tmon_super_ggul(browser)
+    begin
+      url = "http://m.search.ticketmonster.co.kr/search/result?keyword=%EC%8A%88%ED%8D%BC%EA%BF%80%EB%94%9C"
+      browser.goto url
+      event_site_id = 9001
+      
+      doc = Nokogiri::HTML.parse(browser.html)      
+      begin
+        browser.button(:id =>'_btnCloseCateInfoLayer').click
+        doc = Nokogiri::HTML.parse(browser.html)
+      rescue
+      end
+      
+      lis = doc.css("#dealList li")
+      lis.each do |li|
+        event_url = li.css(".deal_item_anchor").attr("href").value
+        event_id = event_url.split("//")[1].split("?")[0].split("/")[3]
+        event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        if event.blank?
+          title = li.css(".deal_item_title").text.strip
+          price = li.css(".deal_item_price").text.split(" ")[0].scan(/\d/).join('').to_i
+          original_price = li.css(".deal_item_price_cover").text
+          discount = li.css(".deal_item_discount").text
+          event_name = title 
+          
+          image_url = li.css(".deal_item_thumb img").attr("src").value
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+                        price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 9001)
+        else
+          if li.css(".type2 .blind").text == "매진"
+            event.update_all(show_flg: false)
+          else
+            event.update_all(show_flg: true)
+          end
+        end
+      end
+      return true
+    rescue => e
+      pp e.backtrace
+      return false
+    end
+  end
+  
+  
 end

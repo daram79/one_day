@@ -57,6 +57,19 @@ i = 0
       browser.driver.manage.timeouts.implicit_wait = 3
     end
     
+    p "슈퍼꿀딜"
+    ret = DealItem.add_tmon_super_ggul(browser)
+    unless ret
+      p "슈퍼꿀딜 error"
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
+    end
+    
     #쇼킹딜
     # p "쇼킹딜"
     # ret = DealItem.add_shocking_deal(browser)
