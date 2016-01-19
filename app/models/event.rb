@@ -6,7 +6,7 @@ class Event < ActiveRecord::Base
   after_update :send_push
   
   @@super_deal_ids = ["9001", "9002", "4001", "4002", "4003"]
-  
+=begin  
   def send_push
     if self.push_flg && self.show_flg
       if @@super_deal_ids.any? { |id| self.event_site_id.to_s.include?(id) }
@@ -24,17 +24,18 @@ class Event < ActiveRecord::Base
       end
     end
   end
+=end
   
-=begin  
   def send_push
     if self.push_flg && self.show_flg
       if @@super_deal_ids.any? { |id| self.event_site_id.to_s.include?(id) }
         #꿀딜, 플레쉬딜 영화 1+1 알림
         Thread.new do
           gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
-          user_ids = EventMailingList.all.ids
+          # user_ids = EventMailingList.all.ids
           option = { :data => {'message' => self.event_name + "***" + self.event_url} }
-          registration_ids = EventUserRegistrations.where(event_user_id: user_ids).pluck(:registration_id)
+          # registration_ids = EventUserRegistrations.where(event_user_id: user_ids).pluck(:registration_id)
+          registration_ids = EventUserRegistrations.all.pluck(:registration_id)
           unless registration_ids.blank?
             response = gcm.send(registration_ids, option)
             send_push_check(response, registration_ids)
@@ -47,69 +48,78 @@ class Event < ActiveRecord::Base
   end
   
   def send_push_check(response, registration_ids)
-    rr = JSON.parse(response[:body])["results"]
-    
-    # delete_id_index = []
-    # update_id_index = []
-    # resend_id_index = []
-    
-    delete_ids = []
-    update_ids = []
-    success_ids = []
-    
-    
-    
-    rr.each_with_index do |r, i|
-      update_hash = Hash.new
-      if r.key?("error") && r.value?("NotRegistered")
-        # delete_id_index.push i
-        delete_ids.push registration_ids[i]
-      elsif r.key?("error") && r.value?("InvalidRegistration")
-        # delete_id_index.push i
-        delete_ids.push registration_ids[i]
-      elsif r.key?("message_id") && r.key?("registration_id")
-        update_hash[:old] = registration_ids[i]
-        update_hash[:new] = r["registration_id"]
-        update_ids.push(update_hash)
-        # delete_id_index.push i
-      elsif r.key?("error") && r.value?("Unavailable")
-        #전송 실패한 아이디는 다시 전송
-      elsif r.key?("message_id") && r.size == 1
-        success_ids.push registration_ids[i]
-        # update_id_index.push i
+    loop_flg = true
+    loop_flg = false if JSON.parse(response[:body])["failure"] == 0
+    while loop_flg
+      rr = JSON.parse(response[:body])["results"]
+      
+      delete_ids = response[:not_registered_ids]
+      update_ids = []
+      success_ids = []
+      
+      rr.each_with_index do |r, i|
+        update_hash = Hash.new
+        if r.key?("error") && r.value?("NotRegistered")
+          # delete_ids.push registration_ids[i]
+        elsif r.key?("error") && r.value?("InvalidRegistration")
+          # delete_id_index.push i
+          delete_ids.push registration_ids[i]
+        elsif r.key?("message_id") && r.key?("registration_id")
+          update_hash[:old] = registration_ids[i]
+          update_hash[:new] = r["registration_id"]
+          update_ids.push(update_hash)
+          # delete_id_index.push i
+        elsif r.key?("error") && r.value?("Unavailable")
+          #전송 실패한 아이디는 다시 전송
+        elsif r.key?("message_id") && r.size == 1
+          success_ids.push registration_ids[i]
+          # update_id_index.push i
+        end
       end
-    end
-        
-    #푸쉬에 성공한 registration_id 배열에서 삭제함.
-    success_ids.each do |success_id|
-      i = registration_ids.index(success_id)
-      registration_ids.delete_at(i)
-    end
-    
-    
-    #잘못된 registration_id 배열에서 삭제
-    del_event_registrations = EventUserRegistrations.where(registration_id: delete_ids)
-    del_event_registrations.destroy_all
-    
-    #잘못된 registration_id DB에서 삭제
-    delete_ids.each do |del_id|
-      i = registration_ids.index(del_id)
-      registration_ids.delete_at(i)
-    end
-    
-    #변경된 registration_id 배열/DB에서 업데이트
-    update_ids.each do |up_id|
-      i = registration_ids.index(up_id[:old])
-      registration_ids[i] = up_id[:new]
-      up_event_registrations = EventUserRegistrations.find_by_registration_id(up_id[:old])
-      up_event_registrations.update(registration_id: up_id[:new])
-    end
-        
-    return registration_ids
+          
+      #푸쉬에 성공한 registration_id 배열에서 삭제함.
+      success_ids.each do |success_id|
+        i = registration_ids.index(success_id)
+        registration_ids.delete_at(i)
+      end
+      
+      
+      #잘못된 registration_id 배열에서 삭제
+      del_event_registrations = EventUserRegistrations.where(registration_id: delete_ids)
+      del_event_registrations.destroy_all
+      
+      #잘못된 registration_id DB에서 삭제
+      delete_ids.each do |del_id|
+        i = registration_ids.index(del_id)
+        registration_ids.delete_at(i)
+      end
+      
+      #변경된 registration_id 배열/DB에서 업데이트
+      update_ids.each do |up_id|
+        i = registration_ids.index(up_id[:old])
+        registration_ids[i] = up_id[:new]
+        up_event_registrations = EventUserRegistrations.find_by_registration_id(up_id[:old])
+        up_event_registrations.update(registration_id: up_id[:new])
+      end
+      unless registration_ids.blank?
+        response, registration_ids = re_send_push(registration_ids)
+        loop_flg = false if JSON.parse(response[:body])["failure"] == 0
+      else
+        loop_flg = false
+      end
+      
+    end  
   end
   
-  
-=end
+  def re_send_push(registration_ids)
+    gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
+    option = { :data => {'message' => self.event_name + "***" + self.event_url} }
+    registration_ids = EventUserRegistrations.all.pluck(:registration_id)
+    unless registration_ids.blank?
+      response = gcm.send(registration_ids, option)
+      return response, registration_ids
+    end
+  end
   
   
   def self.get_clien_sale_data(event_site_id)
