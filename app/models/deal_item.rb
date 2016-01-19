@@ -717,7 +717,8 @@ class DealItem < ActiveRecord::Base
       end
       
       lis = doc.css("#dealList li")
-      lis.each do |li|
+      li = lis[0]
+      # lis.each do |li|
         event_url = li.css(".deal_item_anchor").attr("href").value
         event_id = event_url.split("//")[1].split("?")[0].split("/")[3]
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
@@ -738,7 +739,7 @@ class DealItem < ActiveRecord::Base
             event.update_all(show_flg: true)
           end
         end
-      end
+      # end
       return true
     rescue => e
       pp e.backtrace
