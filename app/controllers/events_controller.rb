@@ -11,13 +11,15 @@ class EventsController < ApplicationController
   end
   
   def event_true
-    @events = Event.where("event_site_id > 1000").where(show_flg: true).order("id desc")
+    event_site_ids = [4001, 4002, 4003, 9001, 9002]
+    @events = Event.where(event_site_id: event_site_ids, show_flg: true).order("id desc")
     # @events = Event.where(show_flg: true).order("id desc")
     render "index"
   end
   
   def event_false
-    @events = Event.where("event_site_id > 1000").where(show_flg: false).order("id desc")
+    event_site_ids = [4001, 4002, 4003, 9001, 9002]
+    @events = Event.where(event_site_id: event_site_ids, show_flg: false).order("id desc")
     # @events = Event.where(show_flg: false).order("id desc")
     render "index"
   end
@@ -205,19 +207,20 @@ class EventsController < ApplicationController
   
   def add_push
     event = Event.find(params[:id])
-    if event.push_flg
+    Event.send_push_button(event)
+    # if event.push_flg
+      # render json: {flg: true}
+    # else
+      # users = EventMailingList.all
+      # EventUserPush
+      # ActiveRecord::Base.transaction do
+        # users.each do|user|
+          # EventUserPush.create(event_id: event.id, event_user_id: user.id)
+        # end
+      # end
+      # event.update(show_flg: true, push_flg: true, update_flg: true)
       render json: {flg: true}
-    else
-      users = EventMailingList.all
-      EventUserPush
-      ActiveRecord::Base.transaction do
-        users.each do|user|
-          EventUserPush.create(event_id: event.id, event_user_id: user.id)
-        end
-      end
-      event.update(show_flg: true, push_flg: true, update_flg: true)
-      render json: {flg: true}
-    end
+    # end
   end
   
   def force_data
