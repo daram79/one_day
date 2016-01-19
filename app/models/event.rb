@@ -351,36 +351,60 @@ class Event < ActiveRecord::Base
     begin
       event_site_id = 9001
       first_url = "http://m.ticketmonster.co.kr"
-      url = "http://m.ticketmonster.co.kr/deal?cat=20070759"
+      # url = "http://m.ticketmonster.co.kr/deal?cat=20070759"
+      url = "http://m.ticketmonster.co.kr/"
+      
       html_str = open(url).read
       doc = Nokogiri::HTML(html_str)
-      # lis = doc.search(".prd_wrap li")
       
       event_ary = []
-      # lis.each do |li|
-      title = doc.css(".lst_dl")[0].css(".info")[0].css(".tit").text
-      if title.include?("슈퍼") && title.include?("꿀딜")
-        price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".sale").text
-        price = price.scan(/\d/).join('').to_i
-        original_price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".org").text
-        discount = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".per").text
-          
-        rear_link_url = doc.css(".lst_dl")[0].css("a")[0].attributes["href"].value
-          
-        event_id = rear_link_url.split("/")[3].split("?")[0]
-        event_name = title
-        event_url = first_url + rear_link_url
-        event = Event.where(event_id: event_id, event_site_id: event_site_id)
-        image_url = doc.css(".lst_dl")[0].css(".thm")[0].css("img")[0].attributes["src"].value
-        if event.blank?
-          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
-                          price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
-          event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
-          event_ary.push event_hash
+      lis = doc.css("#flick_lst li")
+      lis.each do |li|
+        title = li.css(".thmb img").attr("alt").value
+        if title.include?("슈퍼") && title.include?("꿀딜")
+          price = li.css(".sale em").text
+          price = price.scan(/\d/).join('').to_i
+          original_price = li.css(".prime em").text
+          discount = ""
+          rear_link_url = li.css("a")[0].attributes["href"].value
+          event_id = rear_link_url.split("/")[3].split("?")[0]
+          event_name = title
+          event_url = first_url + rear_link_url
+          event = Event.where(event_id: event_id, event_site_id: event_site_id)
+          image_url = li.css(".thmb img").attr("src").value
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
+            event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+            event_ary.push event_hash
+          end
         end
       end
-      # end
       event_ary
+      
+      
+      # event_ary = []
+      # title = doc.css(".lst_dl")[0].css(".info")[0].css(".tit").text
+      # if title.include?("슈퍼") && title.include?("꿀딜")
+        # price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".sale").text
+        # price = price.scan(/\d/).join('').to_i
+        # original_price = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".won")[0].css(".org").text
+        # discount = doc.css(".lst_dl")[0].css(".info")[0].css(".price")[0].css(".per").text
+#           
+        # rear_link_url = doc.css(".lst_dl")[0].css("a")[0].attributes["href"].value
+#           
+        # event_id = rear_link_url.split("/")[3].split("?")[0]
+        # event_name = title
+        # event_url = first_url + rear_link_url
+        # event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        # image_url = doc.css(".lst_dl")[0].css(".thm")[0].css("img")[0].attributes["src"].value
+        # if event.blank?
+          # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+                          # price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true)
+          # event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
+          # event_ary.push event_hash
+        # end
+      # end
+      # event_ary
     rescue => e
       p e.backtrace
       return event_ary = []
