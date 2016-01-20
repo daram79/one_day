@@ -16,46 +16,78 @@ class MovieAlramMailer < ActionMailer::Base
   def movie_event_cgv
     begin
       @title = "[CGV 이벤트]"
-      first_url = "http://www.cgv.co.kr/culture-event/event/"
-      url = "http://www.cgv.co.kr/culture-event/event/?menu=2#1"
+      first_url = "http://m.cgv.co.kr"
+      url = "http://m.cgv.co.kr/WebApp/EventNotiV4/EventList.aspx?mCode=004&logoIndex=0"
       event_site_id = 4001
       html_str = open(url).read
       
       doc = Nokogiri::HTML(html_str)
-      
-      script = doc.search("script").to_s
-      script_ary = script.split(';')
-      event_data = ""
-      script_ary.each do |s|
-        if s.include?('cgv.co.kr/Event/Event')
-          event_data = s
-        end
-      end
-      event_data.strip!
-      tmp = event_data.split('[')
-      event_str = "[" + tmp[1]
-      
-      json_event_ary = JSON.parse(event_str)
       @event_ary = []
       
-      json_event_ary.each do |event|
-        db_event = Event.where(event_id: event["idx"], event_site_id: event_site_id)
-        if db_event.blank?
-          if event["description"].include?("1+1")
-            event_hash = {event_id: event["idx"], event_name: event["description"], event_url: first_url + event["link"]}
+      list = doc.css("#evtList article")      
+      list.each do |item|
+        article = item.attr("class")
+        link = item.css("a").attr("href").value.split("'")[1]
+        event_id = link.split("=")[1].split("&")[0]
+        
+        event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        if event.blank?
+          event_name = item.css(".tit").text
+          p event_name
+          if event_name.include?("1+1")
+            event_url = first_url + link
+            image_url = item.css(".img_look img").attr("src").value
+            event_hash = {event_id: event_id, event_name: event_name, event_url: event_url}
             @event_ary.push event_hash
-            Event.create(event_id: event["idx"], event_name: event["description"], event_site_id: event_site_id, event_url: first_url + event["link"], 
-                          image_url: event["imageUrl"], show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 10001)
-          else
-            # Event.create(event_id: event["idx"], event_name: event["description"], event_site_id: event_site_id, event_url: first_url + event["link"], image_url: event["imageUrl"] )
+            Event.create(event_id: event_id, event_name: event_name, event_site_id: event_site_id, event_url: event_url, 
+                          image_url: image_url, show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 10001)
           end
         end
       end
-      # email = EventMailingList.all.pluck(:email)
+      
+      
+      
+      # @title = "[CGV 이벤트]"
+      # first_url = "http://www.cgv.co.kr/culture-event/event/"
+      # url = "http://www.cgv.co.kr/culture-event/event/?menu=2#1"
+      # event_site_id = 4001
+      # html_str = open(url).read
+#       
+      # doc = Nokogiri::HTML(html_str)
+#       
+      # script = doc.search("script").to_s
+      # script_ary = script.split(';')
+      # event_data = ""
+      # script_ary.each do |s|
+        # if s.include?('cgv.co.kr/Event/Event')
+          # event_data = s
+        # end
+      # end
+      # event_data.strip!
+      # tmp = event_data.split('[')
+      # event_str = "[" + tmp[1]
+#       
+      # json_event_ary = JSON.parse(event_str)
+      # @event_ary = []
+#       
+      # json_event_ary.each do |event|
+        # db_event = Event.where(event_id: event["idx"], event_site_id: event_site_id)
+        # if db_event.blank?
+          # if event["description"].include?("1+1")
+            # event_hash = {event_id: event["idx"], event_name: event["description"], event_url: first_url + event["link"]}
+            # @event_ary.push event_hash
+            # Event.create(event_id: event["idx"], event_name: event["description"], event_site_id: event_site_id, event_url: first_url + event["link"], 
+                          # image_url: event["imageUrl"], show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 10001)
+          # else
+            # # Event.create(event_id: event["idx"], event_name: event["description"], event_site_id: event_site_id, event_url: first_url + event["link"], image_url: event["imageUrl"] )
+          # end
+        # end
+      # end
+      # # email = EventMailingList.all.pluck(:email)
       return if @event_ary.blank?
       mail to: @@email , subject: @title
     rescue => e
-      p e.backtrace
+      pp e.backtrace
       @title = "CGV error"
       @event_ary = []
       @event_ary.push "app/mailers/movie_alram_mailer.rb"
