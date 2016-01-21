@@ -5,7 +5,7 @@ class Event < ActiveRecord::Base
   after_create :send_push
   after_update :send_push
   
-  @@super_deal_ids = ["9001", "9002", "4001", "4002", "4003"]
+  @@super_deal_ids = ["9001", "9002", "4001", "4002", "4003", "9900"]
 =begin  
   def send_push
     if self.push_flg && self.show_flg
