@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       get "get_hot_all"
       get "get_hot_deal"
       get "get_hot_movie"
+      get "add_item"
     end
     member do
       put "show_data"
