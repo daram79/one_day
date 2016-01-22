@@ -1,3 +1,5 @@
+# coding : utf-8
+
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
   
@@ -11,17 +13,21 @@ class EventsController < ApplicationController
   end
   
   def event_true
-    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
+    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
     @events = Event.where(event_site_id: event_site_ids, show_flg: true).order("id desc")
     # @events = Event.where(show_flg: true).order("id desc")
     render "index"
   end
   
   def event_false
-    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
+    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
     @events = Event.where(event_site_id: event_site_ids, show_flg: false).order("id desc")
     # @events = Event.where(show_flg: false).order("id desc")
     render "index"
+  end
+  
+  def add_item
+    @event = Event.new
   end
 
   # GET /events/1
@@ -41,14 +47,32 @@ class EventsController < ApplicationController
   # POST /events
   # POST /events.json
   def create
+    ret = true
+    if params[:event][:event_name] == ""
+      flash[:notice] = "타이틀을 입력해 주세요."
+      ret = false
+    elsif params[:event][:event_url] == ""
+      flash[:notice] = "사이트 url을 입력해 주세요."
+      ret = false
+    elsif params[:event][:image_url] == ""
+      flash[:notice] = "이미지 URL을 입력해 주세요."
+      ret = false      
+    end
+    unless ret
+      redirect_to :action => "add_item"
+      return
+    end
+    
     @event = Event.new(event_params)
-
     respond_to do |format|
       if @event.save
-        format.html { redirect_to @event, notice: 'Event was successfully created.' }
-        format.json { render :show, status: :created, location: @event }
+        # format.html { redirect_to @event, notice: 'Event was successfully created.' }
+        # format.html { redirect_to '/add_item', notice: '데이터 작성 완료' }
+        flash[:notice] = "데이터 작성 완료"
+        format.html { redirect_to :action => "add_item" }
+        format.json { render :add_item, status: :created, location: @event }
       else
-        format.html { render :new }
+        format.html { render :add_item }
         format.json { render json: @event.errors, status: :unprocessable_entity }
       end
     end
@@ -148,7 +172,8 @@ class EventsController < ApplicationController
   end
   
   def get_hot_all
-    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
+    # event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
+    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
     # @event = Event.where(event_site_id: event_site_ids).order("id desc")
     @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
        
@@ -160,7 +185,7 @@ class EventsController < ApplicationController
   end
   
   def get_hot_deal
-    event_site_ids = [9001, 9002, 9900]
+    event_site_ids = [9001, 9002, 9900, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
     @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
     
     # @event = Event.where(show_flg: true).order("id desc")
@@ -241,6 +266,6 @@ class EventsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def event_params
-      params[:event]
+      params[:event].permit(:event_site_id, :event_name, :event_url, :image_url, :discount, :price, :original_price, :show_flg, :push_flg, :update_flg)
     end
 end
