@@ -10,8 +10,20 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="actions">
-    <%= f.submit %>
+  <div style="padding: 10px">
+	  <div>
+	  	<%= f.text_area :event_name, :size => "40x20" %>
+	  </div>
+	  <div>
+	  	<%= f.fields_for :event_images do |event_image| %>
+		  <%= event_image.file_field :image %>
+		<% end %>
+	  </div>
+	  <%= f.hidden_field :event_site_id,  :value => "10001" %>
+	  <%= f.hidden_field :push_flg,  :value=>true %>
+	  <%= f.hidden_field :update_flg, :value=>true %>
+	  <div class="actions">
+	    <%= f.submit %>
+	  </div>
   </div>
 <% end %>

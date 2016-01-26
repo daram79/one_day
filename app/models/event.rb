@@ -5,6 +5,10 @@ class Event < ActiveRecord::Base
   after_create :send_push
   after_update :send_push
   
+  has_many :event_images, :dependent => :destroy
+  
+  accepts_nested_attributes_for :event_images, reject_if: :feed_photos_attributes.blank?#, allow_destroy: true
+  
   @@super_deal_ids = ["9001", "9002", "4001", "4002", "4003"]
 =begin  
   def send_push
