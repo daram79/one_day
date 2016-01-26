@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151220154813) do
+ActiveRecord::Schema.define(version: 20160125154934) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -164,6 +164,13 @@ ActiveRecord::Schema.define(version: 20151220154813) do
     t.boolean  "update_flg",                    default: false
     t.integer  "deal_search_word_id"
     t.integer  "item_type_code"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "event_images", force: true do |t|
+    t.integer  "event_id"
+    t.string   "image"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
