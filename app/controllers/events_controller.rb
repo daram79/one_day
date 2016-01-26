@@ -137,7 +137,6 @@ class EventsController < ApplicationController
   end
   
   def get_event_all
-    
     @event = Event.where(show_flg: true).where("event_site_id > 1000").where('event_site_id NOT IN (?)', @@super_deal_ids).order("id desc")
     respond_to do |format|
       format.html { render "get_event" }
@@ -160,7 +159,6 @@ class EventsController < ApplicationController
     else
       @event = Event.where(show_flg: true, item_type_code: 0, deal_search_word_id: params[:typeIndex].to_i).where("event_site_id > 1000").order("id desc")
     end
-    
     
     respond_to do |format|
       format.html { render "get_event" }
@@ -195,7 +193,33 @@ class EventsController < ApplicationController
   
   def get_hot_all
     # event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
-    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906, 10001]
+    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
+    # @event = Event.where(event_site_id: event_site_ids).order("id desc")
+    @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
+       
+    # @event = Event.where(show_flg: true).order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render json: @event }
+    end
+  end
+  
+  def get_hot_offline
+    # event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
+    event_site_ids = [10001]
+    # @event = Event.where(event_site_id: event_site_ids).order("id desc")
+    @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
+       
+    # @event = Event.where(show_flg: true).order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render json: @event }
+    end
+  end
+  
+  def get_hot_online
+    # event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
+    event_site_ids = [10002]
     # @event = Event.where(event_site_id: event_site_ids).order("id desc")
     @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
        
