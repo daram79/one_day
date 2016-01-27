@@ -13,14 +13,14 @@ class EventsController < ApplicationController
   end
   
   def event_true
-    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
+    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906, 10001, 10002]
     @events = Event.where(event_site_id: event_site_ids, show_flg: true).order("id desc")
     # @events = Event.where(show_flg: true).order("id desc")
     render "index"
   end
   
   def event_false
-    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
+    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906, 10001, 10002]
     @events = Event.where(event_site_id: event_site_ids, show_flg: false).order("id desc")
     # @events = Event.where(show_flg: false).order("id desc")
     render "index"
