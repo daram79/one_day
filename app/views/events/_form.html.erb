@@ -11,6 +11,9 @@
     </div>
   <% end %>
   <div style="padding: 10px">
+  	<div>
+  		<%= f.select :event_site_id, [["오프라인", "10001"], ["온라인", "10002"]] %>
+  	</div>
 	  <div>
 	  	<%= f.text_area :event_name, :size => "40x20" %>
 	  </div>
@@ -19,7 +22,6 @@
 		  <%= event_image.file_field :image %>
 		<% end %>
 	  </div>
-	  <%= f.hidden_field :event_site_id,  :value => "10001" %>
 	  <%= f.hidden_field :push_flg,  :value=>true %>
 	  <%= f.hidden_field :update_flg, :value=>true %>
 	  <div class="actions">
