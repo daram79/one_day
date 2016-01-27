@@ -68,7 +68,7 @@ class EventsController < ApplicationController
       if @event.save
         # format.html { redirect_to @event, notice: 'Event was successfully created.' }
         # format.html { redirect_to '/add_item', notice: '데이터 작성 완료' }
-        if params[:event][:event_site_id] == "10001"
+        if params[:event][:event_site_id] == "10001" || params[:event][:event_site_id] == "10002"
           #이미지 링크 처리
           flash[:notice] = "데이터 작성 완료"
           event_url = URI.extract(params[:event][:event_name])[0]
