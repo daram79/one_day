@@ -73,7 +73,8 @@ class EventsController < ApplicationController
           flash[:notice] = "데이터 작성 완료"
           event_url = URI.extract(params[:event][:event_name])[0]
           unless event_url.blank?
-            @event.update(event_name: @event.event_name.delete(event_url).rstrip, event_url: event_url)  
+            i = @event.event_name.index("http")
+            @event.update(event_name: @event.event_name[0..i].rstrip, event_url: event_url)  
           end
           if Rails.env == 'development'
             @event.update(image_url: "http://192.168.0.4:3000#{@event.event_images[0].image_url.to_s}", event_url: event_url) unless @event.event_images.blank?
