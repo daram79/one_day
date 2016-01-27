@@ -73,7 +73,7 @@ class EventsController < ApplicationController
           flash[:notice] = "데이터 작성 완료"
           event_url = URI.extract(params[:event][:event_name])[0]
           unless event_url.blank?
-            i = @event.event_name.index("http")
+            i = @event.event_name.index("http") - 1
             @event.update(event_name: @event.event_name[0..i].rstrip, event_url: event_url)  
           end
           if Rails.env == 'development'
