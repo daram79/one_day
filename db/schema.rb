@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160125154934) do
+ActiveRecord::Schema.define(version: 20160128091357) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -65,6 +65,27 @@ ActiveRecord::Schema.define(version: 20160125154934) do
   end
 
   add_index "comments", ["feed_id"], name: "index_comments_on_feed_id", using: :btree
+
+  create_table "convenience_items", force: true do |t|
+    t.integer  "convenience_item_kind_id"
+    t.string   "item_type"
+    t.string   "conveni_name"
+    t.string   "name"
+    t.string   "image_url"
+    t.integer  "price"
+    t.string   "gift_name"
+    t.string   "gift_image_url"
+    t.integer  "gift_price"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.boolean  "is_show"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "convenience_items", ["conveni_name", "item_type"], name: "index_convenience_items_on_conveni_name_and_item_type", using: :btree
+  add_index "convenience_items", ["item_type"], name: "index_convenience_items_on_item_type", using: :btree
+  add_index "convenience_items", ["name"], name: "index_convenience_items_on_name", using: :btree
 
   create_table "deal_item_back_ups", force: true do |t|
     t.integer  "deal_search_word_id"
@@ -222,7 +243,7 @@ ActiveRecord::Schema.define(version: 20160125154934) do
   create_table "events", force: true do |t|
     t.string   "event_id"
     t.integer  "event_site_id"
-    t.string   "event_name"
+    t.text     "event_name"
     t.string   "event_url"
     t.string   "image_url",           default: ""
     t.string   "discount",            default: ""

@@ -1,0 +1,86 @@
+<!-- <h1>Listing convenience_items</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @convenience_items.each do |convenience_item| %>
+      <tr>
+        <td><%= link_to 'Show', convenience_item %></td>
+        <td><%= link_to 'Edit', edit_convenience_item_path(convenience_item) %></td>
+        <td><%= link_to 'Destroy', convenience_item, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Convenience item', new_convenience_item_path %> -->
+<div style="margin-top: 5px;">
+	<table style="width: 100%;">
+		<tr>
+			<td valign="middle" style="width: 33%; text-align: center; background-color: white; padding: 10px; border: 1px #808080 solid;">
+				<a style="text-decoration: none;" href="/convenience_items?item_type=11"><div style="font-size: 18px; height:100%; width:100%; color:black;">1+1</div></a>
+			</td>
+			<td valign="middle" style="width: 33%; text-align: center; background-color: white; padding: 10px; border: 1px #808080 solid;">
+				<a style="text-decoration: none;" href="/convenience_items?item_type=21"><div style="font-size: 18px; height:100%; width:100%; color:black;">2+1</div></a>
+			</td>
+			<td valign="middle" style="width: 33%; text-align: center; background-color: white; padding: 10px; border: 1px #808080 solid;">
+				<a style="text-decoration: none;" href="/convenience_items?item_type=gift"><div style="font-size: 18px; height:100%; width:100%; color:black;">증정행사</div></a>
+			</td>
+		</tr>
+	</table>
+</div>
+<div>
+	<table style="width: 100%;">
+		<% @table_index.each do |i| %>
+		<tr>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+				<img src="<%=@convenience_items[i].image_url%>" style="width:<%=@image_size%>px; margin-bottom: -6px">
+			</td>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+				<img src="<%=@convenience_items[i+1].image_url%>" style="width:<%=@image_size%>px; margin-bottom: -6px">
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+				<span><%=@convenience_items[i].name%></span>
+			</td>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+				<span><%=@convenience_items[i+1].name%></span>
+			</td>
+		</tr>
+		<tr>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; padding-bottom: 20px ">
+				<span><%=@convenience_items[i].price%></span>
+			</td>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; padding-bottom: 20px ">
+				<span><%=@convenience_items[i+1].price%></span>
+			</td>
+		</tr>
+		<% end %>
+		<% if @is_even %>
+		<tr>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "><img src="<%=@convenience_items[-1].image_url%>" style="width:<%=@image_size%>px; margin-bottom: -6px"></td>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "><img src="" style="width:150px; margin-bottom: -6px"></td>
+		</tr>
+		<tr>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+				<span><%=@convenience_items[-1].name%></span>
+			</td>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "></td>
+		</tr>
+		<tr>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; padding-bottom: 20px">
+				<span><%=@convenience_items[-1].price%></span>
+			</td>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "></td>
+		</tr>
+		<% end %>
+	</table>
+</div>
