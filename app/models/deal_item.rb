@@ -747,5 +747,396 @@ class DealItem < ActiveRecord::Base
     end
   end
   
+  def self.gs25(browser)
+    begin
+      # browser = Watir::Browser.new
+      # DealItem.gs25(browser)
+      p "GS25..."
+      url = "http://gs25.gsretail.com/gscvs/ko/products/event-goods"
+      conveni_name = "gs25"
+      browser.goto url
+      browser.a(:id =>'TOTAL').click
+      
+      doc = Nokogiri::HTML.parse(browser.html)
+      end_index = doc.css(".next2").attr("onclick").value.split("(")[1].split(")")[0].to_i
+      
+      box_kind_size = doc.css(".prod_list").size
+      items = doc.css(".prod_list")[box_kind_size-1].css("li")
+      
+      p "GS25 데이터 처리중..."
+      for i in 0..end_index - 1
+        sleep 1
+        doc = Nokogiri::HTML.parse(browser.html)
+        box_kind_size = doc.css(".prod_list").size
+        items = doc.css(".prod_list")[box_kind_size-1].css("li")
+        items.each do |item|
+          item_type = item.css(".flg01 span").text
+          item_type = "gift" if item_type == "덤증정"        
+          image_url = item.css("img").attr("src").value
+          name = item.css(".tit")[0].text
+          price = item.css(".cost")[0].text.scan(/\d/).join('').to_i
+          gift_image_url = nil
+          gift_name = nil
+          gift_price = nil
+          if item_type == "gift"
+            gift_image_url = item.css(".dum_prd img").attr("src").value
+            gift_name = item.css(".dum_txt .name").text
+            gift_price = item.css(".dum_txt .price").text.scan(/\d/).join("").to_i
+          end
+          ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, gift_image_url: gift_image_url, gift_name: gift_name, gift_price: gift_price, conveni_name: conveni_name)
+        end
+        browser.link(:class =>'next', :index => box_kind_size).click
+      end
+      return true
+    rescue
+      return false
+    end
+  end
+  
+  def self.cu(browser)
+    begin
+      # browser = Watir::Browser.new
+      # DealItem.cu(browser)
+      p "CU..."
+      conveni_name = "cu"
+      url = "http://cu.bgfretail.com/event/plus.do?category=event&depth2=1&sf=N"
+      browser.goto url
+      
+      #로딩 끝날때까지 기다림.
+      begin
+        while browser.div(:class => 'AjaxLoading').visible? do
+          sleep 0.2
+        end
+      rescue
+      end
+      
+      #더보기 버튼이 없을때까지 클릭
+      p "CU 페이지 로딩..."
+      begin
+        while browser.a(:text => '더보기').visible? do
+          browser.a(:text=>'더보기').click
+          while browser.div(:class => 'AjaxLoading').visible? do
+            sleep 0.2
+          end
+        end
+      rescue
+      end
+      
+      p "CU 1+1 2+1 데이터 처리중..."
+      doc = Nokogiri::HTML.parse(browser.html)
+      items = doc.css(".prodListWrap li")
+      items.each_with_index do |item, index|
+        begin
+          image_url = item.css(".photo img").attr("src").value
+          name = item.css(".prodName").text
+          price = item.css(".prodPrice").text.scan(/\d/).join('').to_i
+          item_type = item.css("li")[0].text
+          ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, conveni_name: conveni_name)
+        rescue
+        end
+      end
+      
+      
+      #증정품
+      url = "http://cu.bgfretail.com/event/present.do?category=event&depth2=5"
+      browser.goto url
+      #로딩 끝날때까지 기다림.
+      begin
+        while browser.div(:class => 'AjaxLoading').visible? do
+          sleep 0.2
+        end
+      rescue
+      end
+      
+      # begin
+        # while browser.a(:text => '더보기').visible? do
+          # browser.a(:text=>'더보기').click
+          # while browser.div(:class => 'AjaxLoading').visible? do
+            # sleep 0.2
+          # end
+        # end
+      # rescue
+      # end
+      
+      p "CU gift 처리중..."
+      doc = Nokogiri::HTML.parse(browser.html)
+      items = doc.css(".presentListBox")
+      items.each_with_index do |item, index|
+        image_url = item.css(".presentList-w .photo img").attr("src").value
+        name = item.css(".presentList-w .prodName").text
+        price = item.css(".presentList-w .prodPrice").text.scan(/\d/).join('').to_i
+        item_type = "gift"
+        
+        gift_image_url = item.css(".presentList-e .photo img").attr("src").value
+        gift_name = item.css(".presentList-e .prodName").text
+        gift_price = item.css(".presentList-e .prodPrice").text.scan(/\d/).join('').to_i
+        ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, gift_image_url: gift_image_url, gift_name: gift_name, gift_price: gift_price, conveni_name: conveni_name)
+      end
+      return true
+    rescue
+      return false
+    end
+    
+  end
+  
+  
+  def self.seven_eleven(browser)
+    begin
+      head_url = "https://www.7-eleven.co.kr"
+      # browser = Watir::Browser.new
+      # DealItem.seven_eleven(browser)
+      url = "https://www.7-eleven.co.kr/product/presentList.asp"
+      conveni_name = "seven_eleven"
+      browser.goto url
+  #     1+1
+      browser.execute_script("document.getElementById('header').style.position='absolute';")
+      p "세븐일레븐 1+1 데이터 수집중..."
+      err_cnt = 0
+      for i in 0..1000
+        begin
+          browser.execute_script("document.getElementById('header').style.position='absolute';")
+          browser.a(:text => 'MORE').click
+          sleep 0.5
+        rescue => e
+          err_cnt += 1
+          break if(err_cnt > 3)
+        end
+      end
+      # begin
+        # while browser.a(:text => 'MORE').visible? do
+          # browser.execute_script("document.getElementById('header').style.position='absolute';")
+          # browser.a(:text=>'MORE').click
+          # sleep 2
+        # end
+      # rescue
+      # end
+      doc = Nokogiri::HTML.parse(browser.html)
+      items = doc.css("#listUl")
+      items = items.xpath("li")
+      p "세븐일레븐 1+1 데이터 생성중......................................................................"
+      items.each do |item|
+        begin
+        item_type = "1+1"
+        image_url = head_url + item.css(".pic_product img").attr("src").value
+        name = item.css(".name").text
+        price = item.css(".price").text.scan(/\d/).join('').to_i
+        ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, conveni_name: conveni_name)
+        rescue
+        end
+      end
+      
+      
+  #     2+1
+      browser.execute_script("document.getElementById('header').style.position='absolute';")
+      browser.div(:class => "wrap_tab").a(:text => "2+1").click
+      p "세븐일레븐 2+1 데이터 수집중......................................................................"
+      err_cnt = 0
+      for i in 0..1000
+        begin
+          browser.execute_script("document.getElementById('header').style.position='absolute';")
+          browser.a(:text => 'MORE').click
+          sleep 0.5
+        rescue
+          err_cnt += 1
+          break if(err_cnt > 3)
+        end
+      end
+      
+      # begin
+        # while browser.a(:text => 'MORE').visible? do
+          # # debugger
+          # browser.execute_script("document.getElementById('header').style.position='absolute';")
+          # browser.a(:text=>'MORE').click
+          # sleep 2
+        # end
+      # rescue => e
+        # pp e.backtrace
+        # p "error"
+      # end
+      
+      doc = Nokogiri::HTML.parse(browser.html)
+      items = doc.css("#listUl")
+      items = items.xpath("li")
+      p "세븐일레븐 2+1 데이터 생성중..."
+      items.each do |item|
+        begin
+        item_type = "2+1"
+        image_url = head_url + item.css(".pic_product img").attr("src").value
+        name = item.css(".name").text
+        price = item.css(".price").text.scan(/\d/).join('').to_i
+        ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, conveni_name: conveni_name)
+        rescue
+        end
+      end
+      
+  #     증정
+      browser.execute_script("document.getElementById('header').style.position='absolute';")
+      browser.div(:class => "wrap_tab").a(:text => "증정행사").click
+      p "세븐일레븐 증정 데이터 수집중......................................................................"
+      
+      err_cnt = 0
+      for i in 0..1000
+        begin
+          browser.execute_script("document.getElementById('header').style.position='absolute';")
+          browser.a(:text => 'MORE').click
+          sleep 0.5
+        rescue
+          err_cnt += 1
+          break if(err_cnt > 3)
+        end
+      end
+      # begin
+        # while browser.a(:text => 'MORE').visible? do
+          # # debugger
+          # browser.execute_script("document.getElementById('header').style.position='absolute';")
+          # browser.a(:text=>'MORE').click
+          # sleep 2
+        # end
+      # rescue => e
+        # pp e.backtrace
+        # p "error"
+      # end
+      
+      doc = Nokogiri::HTML.parse(browser.html)
+      items = doc.css("#listUl")
+      items = items.xpath("li")
+      p "세븐일레븐 증정 데이터 생성중..."
+      items.each do |item|
+        begin
+          item_type = "gift"
+          ori_item = item.css(".pic_product")[0]
+          image_url = head_url + ori_item.css("img").attr("src").value
+          name = ori_item.css(".name").text
+          price = ori_item.css(".price").text.scan(/\d/).join('').to_i
+          
+          gift_item = item.css(".pic_product")[1]
+          gift_image_url = head_url + gift_item.css("img").attr("src").value
+          gift_name = gift_item.css(".name").text
+          gift_price = gift_item.css(".price").text.scan(/\d/).join('').to_i
+          ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, gift_image_url: gift_image_url, gift_name: gift_name, gift_price: gift_price, conveni_name: conveni_name)
+        rescue
+        end
+      end
+      return true
+    rescue
+      return false
+    end
+  end
+  
+  
+  def self.mini_stop(browser)
+    begin
+      # browser = Watir::Browser.new
+      # DealItem.mini_stop(browser)
+      p "미니스탑..."
+      head_url = "http://minihomepage.cloudapp.net/MiniStopHomePage/page"
+      url = "http://minihomepage.cloudapp.net/MiniStopHomePage/page/event/plus1.do"
+      conveni_name = "mini_stop"
+      browser.goto url
+      
+      err_cnt = 0
+      for i in 0..20
+        begin
+          browser.a(:text => '더보기').click
+          sleep 0.2
+        rescue
+          err_cnt += 1
+          break if(err_cnt > 3)
+        end
+      end
+      
+      p "미니스탑 1+1데이터 처리중..."
+      doc = Nokogiri::HTML.parse(browser.html)
+      items = doc.css(".event_plus_list li")
+      items.each do |item|
+        item_type = "1+1"
+        image_url = item.css("img").attr("src").value
+        image_url = head_url + image_url[2..image_url.size - 1]
+        
+        name = item.css("p").to_s
+        tmp_ary = name.split("<br>")
+        name = tmp_ary[0].delete("<p>")
+        
+        price = item.css("strong").text.scan(/\d/).join('').to_i
+        ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, conveni_name: conveni_name)
+      end
+      
+  #     2+1
+      browser.a(:text => '2 + 1').click
+      err_cnt = 0
+      for i in 0..20
+        begin
+          browser.a(:text => '더보기').click
+          sleep 0.2
+        rescue
+          err_cnt += 1
+          break if(err_cnt > 3)
+        end
+      end
+      
+      p "미니스탑 2+1데이터 처리중..."
+      doc = Nokogiri::HTML.parse(browser.html)
+      items = doc.css(".event_plus_list li")
+      items.each do |item|
+        item_type = "2+1"
+        image_url = item.css("img").attr("src").value
+        image_url = head_url + image_url[2..image_url.size - 1]
+        
+        name = item.css("p").to_s
+        tmp_ary = name.split("<br>")
+        name = tmp_ary[0].delete("<p>")
+        
+        price = item.css("strong").text.scan(/\d/).join('').to_i
+        ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, conveni_name: conveni_name)
+      end
+      
+      # 덤증정
+      browser.ul(:class => "section_menu_tab guide").a(:text => '덤증정').click
+      err_cnt = 0
+      for i in 0..20
+        begin
+          browser.a(:text => '더보기').click
+          sleep 0.2
+        rescue
+          err_cnt += 1
+          break if(err_cnt > 3)
+        end
+      end
+      
+      doc = Nokogiri::HTML.parse(browser.html)
+      
+      p "미니스탑 gift 데이터 처리중..."
+      items = doc.css(".event_add_list li")
+      items.each do |item|
+        item_type = "gift"
+        ori_item = item.css(".add_left")
+        image_url = ori_item.css("img").attr("src").value
+        image_url = head_url + image_url[2..image_url.size - 1]
+        
+        name = ori_item.css("p").to_s
+        tmp_ary = name.split("<br>")
+        name = tmp_ary[0].delete("<p>")
+        
+        price = ori_item.css("strong").text.scan(/\d/).join('').to_i
+        
+        
+        gift_item = item.css(".add_right")
+        gift_image_url = gift_item.css("img").attr("src").value
+        gift_image_url = head_url + gift_image_url[2..gift_image_url.size - 1]
+        
+        gift_name = gift_item.css("p").to_s
+        tmp_ary = gift_name.split("<br>")
+        gift_name = tmp_ary[0].delete("<p>")
+        
+        gift_price = gift_item.css("strong").text.scan(/\d/).join('').to_i
+        ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, gift_image_url: gift_image_url, gift_name: gift_name, gift_price: gift_price, conveni_name: conveni_name)
+      end
+      return true
+    rescue
+      return false
+    end
+    
+  end
+  
   
 end

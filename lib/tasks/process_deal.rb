@@ -5,7 +5,7 @@ headless = Headless.new
 headless.start
 browser = Watir::Browser.new
 browser.driver.manage.timeouts.implicit_wait = 3
-i = 0
+  i = 0
   while 1
     s = Time.now
     p "process start #{s}"
@@ -152,7 +152,59 @@ i = 0
       # i = 0
     # end
     
-    
+    start_at = Time.now.beginning_of_month
+    end_at = Time.now.beginning_of_month.change(min: 10)
+    conveni_flg = true
+    if Time.now  > start_at && Time.now < end_at && conveni_flg
+      conveni_flg = false
+      ret = DealItem.gs25(browser)
+      unless ret
+        p "GS25 error"
+        browser.close
+        headless.destroy
+        
+        headless = Headless.new
+        headless.start
+        browser = Watir::Browser.new
+        browser.driver.manage.timeouts.implicit_wait = 3
+      end
+      ret = DealItem.cu(browser)
+      unless ret
+        p "CU error"
+        browser.close
+        headless.destroy
+        
+        headless = Headless.new
+        headless.start
+        browser = Watir::Browser.new
+        browser.driver.manage.timeouts.implicit_wait = 3
+      end
+      ret = DealItem.seven_eleven(browser)
+      unless ret
+        p "세븐일레븐 error"
+        browser.close
+        headless.destroy
+        
+        headless = Headless.new
+        headless.start
+        browser = Watir::Browser.new
+        browser.driver.manage.timeouts.implicit_wait = 3
+      end
+      
+      ret = DealItem.mini_stop(browser)
+      unless ret
+        p "미니스탑 error"
+        browser.close
+        headless.destroy
+        
+        headless = Headless.new
+        headless.start
+        browser = Watir::Browser.new
+        browser.driver.manage.timeouts.implicit_wait = 3
+      end
+    elsif Time.now > end_at
+      conveni_flg = true
+    end
     
   end
   
