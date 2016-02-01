@@ -21,7 +21,7 @@
 <br>
 
 <%= link_to 'New Convenience item', new_convenience_item_path %> -->
-<div style="margin-top: 5px;">
+<div style="margin-top: 5px; padding-bottom: 10px">
 	<table style="width: 100%;">
 		<tr>
 			<td valign="middle" style="width: 33%; text-align: center; background-color: white; padding: 10px; border: 1px #808080 solid;">
@@ -36,6 +36,7 @@
 		</tr>
 	</table>
 </div>
+<% unless @item_type == "gift" %>
 <div>
 	<table style="width: 100%;">
 		<% @table_index.each do |i| %>
@@ -84,3 +85,23 @@
 		<% end %>
 	</table>
 </div>
+<% else %>
+<div>
+	<table style="width: 100%;border-collapse:collapse;">
+		<% @convenience_items.each do |item| %>
+		<tr style="border-bottom: 1px solid gray; margin-top: 10px;">
+			<td style="width: 50%; text-align: center; background-color: white; ">
+				<img src="<%= item.image_url %>" style="width:<%= @image_size %>px; margin-bottom: -6px"><br />
+				<span><%= item.name %></span><br />
+				<span><%= item.price %></span><br />
+			</td>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 20px 0; ">
+				<img src="<%= item.gift_image_url %>" style="width:<%= @image_size %>px; margin-bottom: -6px"><br />
+				<span>[증정품]<br /><%= item.gift_name %></span><br />
+				<span><%= item.gift_price %></span>
+			</td>
+		</tr>
+		<% end %>
+	</table>
+</div>
+<% end %>

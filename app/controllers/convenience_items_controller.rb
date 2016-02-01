@@ -6,15 +6,15 @@ class ConvenienceItemsController < ApplicationController
   # GET /convenience_items.json
   def index    
     if params[:item_type] == "11"
-      item_type = "1+1"
+      @item_type = "1+1"
     elsif params[:item_type] == "21"
-      item_type = "2+1"
+      @item_type = "2+1"
     elsif params[:item_type] == "gift"
-      item_type = "gift"
+      @item_type = "gift"
     end
     
-    title_back = item_type
-    title_back = "증정행사" if item_type == "gift"
+    title_back = @item_type
+    title_back = "증정행사" if @item_type == "gift"
     
     session[:conveni_name] = params[:conveni_name] if params[:conveni_name]
     
@@ -28,10 +28,10 @@ class ConvenienceItemsController < ApplicationController
       @title = "미니스톱" + title_back
     end
     
-    # @convenience_items = ConvenienceItem.where("conveni_name = ? and item_type= ? ", session[:conveni_name], item_type)
+    # @convenience_items = ConvenienceItem.where("conveni_name = ? and item_type= ? ", session[:conveni_name], @item_type)
     start_date = Time.now.beginning_of_month
     end_at = Time.now.end_of_month
-    @convenience_items = ConvenienceItem.where("conveni_name = ? and item_type= ? and created_at between ? and ? ", session[:conveni_name], item_type, start_date, end_at)
+    @convenience_items = ConvenienceItem.where("conveni_name = ? and item_type= ? and created_at between ? and ? ", session[:conveni_name], @item_type, start_date, end_at)
     
     @half_cnt = @convenience_items.size/2
     @table_index = []
@@ -42,7 +42,7 @@ class ConvenienceItemsController < ApplicationController
     @is_even = false
     @is_even = true if @convenience_items.size % 2 == 1
     
-    @image_size = 150
+    @image_size = 100
     @image_size = 80 if session[:conveni_name] == "seven_eleven" 
   end
 

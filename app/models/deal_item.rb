@@ -882,7 +882,7 @@ class DealItem < ActiveRecord::Base
   
   def self.seven_eleven(browser)
     begin
-      head_url = "https://www.7-eleven.co.kr"
+      head_url = "http://www.7-eleven.co.kr"
       # browser = Watir::Browser.new
       # DealItem.seven_eleven(browser)
       url = "https://www.7-eleven.co.kr/product/presentList.asp"
