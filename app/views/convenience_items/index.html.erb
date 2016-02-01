@@ -42,10 +42,10 @@
 		<% @table_index.each do |i| %>
 		<tr>
 			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
-				<img src="<%=@convenience_items[i].image_url%>" style="width:<%=@image_size%>px; margin-bottom: -6px">
+				<img src="<%=@convenience_items[i].image_url%>" style="width:<%=@image_size%>px; height:<%=@image_size%>px; margin-bottom: -6px">
 			</td>
 			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
-				<img src="<%=@convenience_items[i+1].image_url%>" style="width:<%=@image_size%>px; margin-bottom: -6px">
+				<img src="<%=@convenience_items[i+1].image_url%>" style="width:<%=@image_size%>px; height:<%=@image_size%>px; margin-bottom: -6px">
 			</td>
 		</tr>
 		<tr>
@@ -67,7 +67,7 @@
 		<% end %>
 		<% if @is_even %>
 		<tr>
-			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "><img src="<%=@convenience_items[-1].image_url%>" style="width:<%=@image_size%>px; margin-bottom: -6px"></td>
+			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "><img src="<%=@convenience_items[-1].image_url%>" style="width:<%=@image_size%>px; height:<%=@image_size%>px; margin-bottom: -6px"></td>
 			<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "><img src="" style="width:150px; margin-bottom: -6px"></td>
 		</tr>
 		<tr>
@@ -91,12 +91,12 @@
 		<% @convenience_items.each do |item| %>
 		<tr style="border-bottom: 1px solid gray; margin-top: 10px;">
 			<td style="width: 50%; text-align: center; background-color: white; ">
-				<img src="<%= item.image_url %>" style="width:<%= @image_size %>px; margin-bottom: -6px"><br />
+				<img src="<%= item.image_url %>" style="width:<%= @image_size %>px; height:<%=@image_size%>px; margin-bottom: -6px"><br />
 				<span><%= item.name %></span><br />
 				<span><%= item.price %></span><br />
 			</td>
 			<td style="width: 50%; text-align: center; background-color: white; padding: 20px 0; ">
-				<img src="<%= item.gift_image_url %>" style="width:<%= @image_size %>px; margin-bottom: -6px"><br />
+				<img src="<%= item.gift_image_url %>" style="width:<%= @image_size %>px; height:<%=@image_size%>px;margin-bottom: -6px"><br />
 				<span>[증정품]<br /><%= item.gift_name %></span><br />
 				<span><%= item.gift_price %></span>
 			</td>

@@ -43,7 +43,7 @@ class ConvenienceItemsController < ApplicationController
     @is_even = true if @convenience_items.size % 2 == 1
     
     @image_size = 100
-    @image_size = 80 if session[:conveni_name] == "seven_eleven" 
+    # @image_size = 80 if session[:conveni_name] == "seven_eleven" 
   end
 
   # GET /convenience_items/1
