@@ -5,6 +5,7 @@ headless = Headless.new
 headless.start
 browser = Watir::Browser.new
 browser.driver.manage.timeouts.implicit_wait = 3
+conveni_flg = true
   i = 0
   while 1
     s = Time.now
@@ -154,7 +155,6 @@ browser.driver.manage.timeouts.implicit_wait = 3
     
     start_at = Time.now.beginning_of_month
     end_at = Time.now.beginning_of_month.change(min: 10)
-    conveni_flg = true
     if Time.now  > start_at && Time.now < end_at && conveni_flg
       conveni_flg = false
       ret = DealItem.gs25(browser)
