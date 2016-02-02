@@ -3,6 +3,7 @@ require 'open-uri'
 class Event < ActiveRecord::Base
   
   after_create :send_push
+  after_update :add_new_button
   after_update :send_push
   
   has_many :event_images, :dependent => :destroy
@@ -29,6 +30,23 @@ class Event < ActiveRecord::Base
     end
   end
 =end
+
+  def add_new_button
+    menu_ary_ids = ["10001", "10002"]
+    if self.show_flg && menu_ary_ids.any? { |id| self.event_site_id.to_s.include?(id) }
+      menu_id = 0
+      case self.event_site_id
+      when 10001
+        menu_id = 5
+      when 10002
+        menu_id = 6
+      end
+      users = EventMailingList.all
+      users.each do |user|
+        EventUserAlram.create(event_mailing_list_id: user.id, menu_id: menu_id)
+      end
+    end
+  end
 
   def send_push
     if self.push_flg && self.show_flg

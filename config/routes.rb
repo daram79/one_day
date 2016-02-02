@@ -23,6 +23,8 @@ Rails.application.routes.draw do
       get "add_item"
       get "get_hot_offline"
       get "get_hot_online"
+      get "get_new_flg"
+      delete "del_new_flg"
       
     end
     member do

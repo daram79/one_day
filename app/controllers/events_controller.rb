@@ -304,6 +304,19 @@ class EventsController < ApplicationController
     end
     render json: {flg: true}
   end
+  
+  def get_new_flg
+    data = EventUserAlram.where(event_mailing_list_id: params[:user_id]).pluck(:menu_id)
+    render json: data
+  end
+  
+  def del_new_flg
+    data = EventUserAlram.where(event_mailing_list_id: params[:user_id], menu_id: params[:menu_id]).pluck(:menu_id)
+    
+    del_data = EventUserAlram.where(event_mailing_list_id: params[:user_id], menu_id: params[:menu_id])
+    del_data.destroy_all
+    render json: data
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
