@@ -21,23 +21,25 @@
 <br>
 
 <%= link_to 'New Convenience item', new_convenience_item_path %> -->
-<div style="margin-top: 5px; padding-bottom: 10px">
-	<table style="width: 100%;">
+
+<div style="padding-bottom: 10px; position: fixed; width: 100%;">
+	<table style="width: 100%; border-spacing: 0;">
 		<tr>
-			<td valign="middle" style="width: 33%; text-align: center; background-color: white; padding: 10px; border: 1px #808080 solid;">
+			<td valign="middle" style="width: 33%; text-align: center; background-color: <%= @item_type == "1+1" ? "#FBB131" : "white" %>; padding: 10px; border: 1px #808080 solid;">
 				<a style="text-decoration: none;" href="/convenience_items?item_type=11"><div style="font-size: 18px; height:100%; width:100%; color:black;">1+1</div></a>
 			</td>
-			<td valign="middle" style="width: 33%; text-align: center; background-color: white; padding: 10px; border: 1px #808080 solid;">
+			<td valign="middle" style="width: 33%; text-align: center; background-color: <%= @item_type=="2+1" ? "#FBB131" : "white" %>; padding: 10px; border: 1px #808080 solid;">
 				<a style="text-decoration: none;" href="/convenience_items?item_type=21"><div style="font-size: 18px; height:100%; width:100%; color:black;">2+1</div></a>
 			</td>
-			<td valign="middle" style="width: 33%; text-align: center; background-color: white; padding: 10px; border: 1px #808080 solid;">
+			<td valign="middle" style="width: 33%; text-align: center; background-color: <%= @item_type=="gift" ? "#FBB131" : "white" %>; padding: 10px; border: 1px #808080 solid;">
 				<a style="text-decoration: none;" href="/convenience_items?item_type=gift"><div style="font-size: 18px; height:100%; width:100%; color:black;">증정행사</div></a>
 			</td>
 		</tr>
 	</table>
 </div>
+
+<div style="padding-top: 40px;">
 <% unless @item_type == "gift" %>
-<div>
 	<table style="width: 100%;">
 		<% @table_index.each do |i| %>
 		<tr>
@@ -84,9 +86,7 @@
 		</tr>
 		<% end %>
 	</table>
-</div>
 <% else %>
-<div>
 	<table style="width: 100%;border-collapse:collapse;">
 		<% @convenience_items.each do |item| %>
 		<tr style="border-bottom: 1px solid gray; margin-top: 10px;">
@@ -103,5 +103,6 @@
 		</tr>
 		<% end %>
 	</table>
-</div>
 <% end %>
+</div>
+
