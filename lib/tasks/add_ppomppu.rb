@@ -1,47 +1,40 @@
 #encoding: utf-8
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 
-#deal_item데이터를 필터해서 event에 추가함.
 head_url = "http://www.ppomppu.co.kr"
-#이벤트
-# url = "http://www.ppomppu.co.kr/hot.php?id=ppomppu"
-# html_str = open(url).read
-# doc = Nokogiri::HTML(html_str)
-# items = doc.css(".board_table .line")
-# items.each do |item|
-  # begin
-    # category_id = 1
-    # item_id = item.css("a")[1].attr("href").split("=")[-1]
-    # search_ret = Ppomppu.where(category_id: category_id, item_id: item_id)
-    # next unless search_ret.blank?    
-#     
-    # title = item.css("a")[1].text
-    # link_url = head_url + item.css("a")[1].attr("href")
-    # Ppomppu.create(category_id: category_id, item_id: item_id, title: title, url: link_url)
-  # rescue
-  # end
-# end
-
 url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu"
 html_str = open(url).read
+
 doc = Nokogiri::HTML(html_str)
-items = doc.css("#revolution_main_table tr")
+items = doc.css("#revolution_main_table .list0")
+
 items.each do |item|
   begin
-    if item.attr("class") && (item.attr("class") == "list1" || item.attr("class") == "list0")
-      category_id = 1
-      item_id = item.css("td")[3].css("td")[1].css("a").attr("href").value.split("=")[-1]
+    category_id = 1
+    item_id = item.css("td")[3].css("td")[1].css("a").attr("href").value.split("=")[-1]
       
-      search_ret = Ppomppu.where(category_id: category_id, item_id: item_id)
-      next unless search_ret.blank?
+    search_ret = Ppomppu.where(category_id: category_id, item_id: item_id)
+    next unless search_ret.blank?
       
+    title = item.css("td")[3].css("td")[1].css("a").text
+    link_url = head_url + item.css("td")[3].css("td")[1].css("a").attr("href").value
+    Ppomppu.create(category_id: category_id, item_id: item_id, title: title, url: link_url)
+  rescue
+  end
+end
+
+items = doc.css("#revolution_main_table .list1")
+items.each do |item|
+  begin
+    category_id = 1
+    item_id = item.css("td")[3].css("td")[1].css("a").attr("href").value.split("=")[-1]
       
-      title = item.css("td")[3].css("td")[1].css("a").text
-      link_url = head_url + item.css("td")[3].css("td")[1].css("a").attr("href").value
-      Ppomppu.create(category_id: category_id, item_id: item_id, title: title, url: link_url)
-    else
-      next
-    end
+    search_ret = Ppomppu.where(category_id: category_id, item_id: item_id)
+    next unless search_ret.blank?
+      
+    title = item.css("td")[3].css("td")[1].css("a").text
+    link_url = head_url + item.css("td")[3].css("td")[1].css("a").attr("href").value
+    Ppomppu.create(category_id: category_id, item_id: item_id, title: title, url: link_url)
   rescue
   end
 end
