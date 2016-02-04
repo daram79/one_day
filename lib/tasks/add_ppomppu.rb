@@ -1,8 +1,9 @@
 #encoding: utf-8
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 
-while true
-  p "start"
+# while true
+  # p "start"
+begin
   head_url = "http://www.ppomppu.co.kr/zboard/"
   url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu"
   html_str = open(url).read
@@ -75,5 +76,8 @@ while true
       end
     end
   end
-p "end"
+rescue => e
+  pp e.backtrace
 end
+# p "end"
+# end
