@@ -1,7 +1,7 @@
 #encoding: utf-8
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 
-head_url = "http://www.ppomppu.co.kr"
+head_url = "http://www.ppomppu.co.kr/zboard/"
 url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu"
 html_str = open(url).read
 
@@ -44,7 +44,6 @@ end
 
 #자게
 url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=freeboard&page_num=30&category=&search_type=sub_memo&keyword=%C0%CC%BA%A5%C6%AE&x=0&y=0"
-head_url = "http://www.ppomppu.co.kr/zboard/"
 html_str = open(url).read
 doc = Nokogiri::HTML(html_str)
 items = doc.css("#revolution_main_table tr")
