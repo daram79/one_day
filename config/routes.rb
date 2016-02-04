@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :ppomppus
   resources :convenience_items
   
   resources :deal_search_words do

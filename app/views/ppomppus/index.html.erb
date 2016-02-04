@@ -1,0 +1,16 @@
+<h1>뽐뿌 이벤트글 내역</h1>
+
+<table border="1" width="100%">
+    <% @ppomppus.each do |ppomppu| %>
+      <tr>
+      	<td>
+      		<a href="<%=ppomppu.url%>">
+      			<%=ppomppu.title%>
+      		</a>
+      	</td>
+        <!-- <td><%= link_to 'Show', ppomppu %></td>
+        <td><%= link_to 'Edit', edit_ppomppu_path(ppomppu) %></td>
+        <td><%= link_to 'Destroy', ppomppu, method: :delete, data: { confirm: 'Are you sure?' } %></td> -->
+      </tr>
+    <% end %>
+</table>
