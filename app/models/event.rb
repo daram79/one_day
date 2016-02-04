@@ -59,11 +59,14 @@ class Event < ActiveRecord::Base
   end
   
   def self.send_push_button(e)
-    
     gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
     price = e.price.to_s.gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,') + "원 - "
     price = "" if price == "0원 - " || price == "원 - "
-    option = { :data => {'message' => "#{price}#{e.event_name} " + "***" + e.event_url} }
+    
+    event_url = e.event_url
+    event_url = "" unless event_url
+    
+    option = { :data => {'message' => "#{price}#{e.event_name} " + "***" + event_url} }
     registration_ids = EventUserRegistrations.all.pluck(:registration_id)
     registration_ids.uniq!
     unless registration_ids.blank?

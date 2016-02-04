@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160202082646) do
+ActiveRecord::Schema.define(version: 20160204033944) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -328,6 +328,17 @@ ActiveRecord::Schema.define(version: 20160202082646) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "ppomppus", force: true do |t|
+    t.integer  "category_id"
+    t.integer  "item_id",     limit: 8
+    t.string   "title"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ppomppus", ["category_id", "item_id"], name: "index_ppomppus_on_category_id_and_item_id", using: :btree
 
   create_table "user_first_nicks", force: true do |t|
     t.string   "nick"
