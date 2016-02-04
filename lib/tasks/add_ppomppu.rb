@@ -1,41 +1,43 @@
 #encoding: utf-8
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 
-head_url = "http://www.ppomppu.co.kr/zboard/"
-url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu"
-html_str = open(url).read
-
-doc = Nokogiri::HTML(html_str)
-items = doc.css("#revolution_main_table .list0")
-
-items.each do |item|
-  begin
-    category_id = 1
-    item_id = item.css("td")[3].css("td")[1].css("a").attr("href").value.split("=")[-1]
-      
-    search_ret = Ppomppu.where(category_id: category_id, item_id: item_id)
-    next unless search_ret.blank?
-      
-    title = item.css("td")[3].css("td")[1].css("a").text
-    link_url = head_url + item.css("td")[3].css("td")[1].css("a").attr("href").value
-    Ppomppu.create(category_id: category_id, item_id: item_id, title: title, url: link_url)
-  rescue
+while true
+  head_url = "http://www.ppomppu.co.kr/zboard/"
+  url = "http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu"
+  html_str = open(url).read
+  
+  doc = Nokogiri::HTML(html_str)
+  items = doc.css("#revolution_main_table .list0")
+  
+  items.each do |item|
+    begin
+      category_id = 1
+      item_id = item.css("td")[3].css("td")[1].css("a").attr("href").value.split("=")[-1]
+        
+      search_ret = Ppomppu.where(category_id: category_id, item_id: item_id)
+      next unless search_ret.blank?
+        
+      title = item.css("td")[3].css("td")[1].css("a").text
+      link_url = head_url + item.css("td")[3].css("td")[1].css("a").attr("href").value
+      Ppomppu.create(category_id: category_id, item_id: item_id, title: title, url: link_url)
+    rescue
+    end
   end
-end
-
-items = doc.css("#revolution_main_table .list1")
-items.each do |item|
-  begin
-    category_id = 1
-    item_id = item.css("td")[3].css("td")[1].css("a").attr("href").value.split("=")[-1]
-      
-    search_ret = Ppomppu.where(category_id: category_id, item_id: item_id)
-    next unless search_ret.blank?
-      
-    title = item.css("td")[3].css("td")[1].css("a").text
-    link_url = head_url + item.css("td")[3].css("td")[1].css("a").attr("href").value
-    Ppomppu.create(category_id: category_id, item_id: item_id, title: title, url: link_url)
-  rescue
+  
+  items = doc.css("#revolution_main_table .list1")
+  items.each do |item|
+    begin
+      category_id = 1
+      item_id = item.css("td")[3].css("td")[1].css("a").attr("href").value.split("=")[-1]
+        
+      search_ret = Ppomppu.where(category_id: category_id, item_id: item_id)
+      next unless search_ret.blank?
+        
+      title = item.css("td")[3].css("td")[1].css("a").text
+      link_url = head_url + item.css("td")[3].css("td")[1].css("a").attr("href").value
+      Ppomppu.create(category_id: category_id, item_id: item_id, title: title, url: link_url)
+    rescue
+    end
   end
 end
 
