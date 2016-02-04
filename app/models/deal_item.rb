@@ -770,20 +770,29 @@ class DealItem < ActiveRecord::Base
         box_kind_size = doc.css(".prod_list").size
         items = doc.css(".prod_list")[box_kind_size-1].css("li")
         items.each do |item|
-          item_type = item.css(".flg01 span").text
-          item_type = "gift" if item_type == "덤증정"        
-          image_url = item.css("img").attr("src").value
-          name = item.css(".tit")[0].text
-          price = item.css(".cost")[0].text.scan(/\d/).join('').to_i
-          gift_image_url = nil
-          gift_name = nil
-          gift_price = nil
-          if item_type == "gift"
-            gift_image_url = item.css(".dum_prd img").attr("src").value
-            gift_name = item.css(".dum_txt .name").text
-            gift_price = item.css(".dum_txt .price").text.scan(/\d/).join("").to_i
+          begin
+            item_type = item.css(".flg01 span").text
+            item_type = "gift" if item_type == "덤증정"        
+            image_url = item.css("img").attr("src").value
+            name = item.css(".tit")[0].text
+            price = item.css(".cost")[0].text.scan(/\d/).join('').to_i
+            gift_image_url = nil
+            gift_name = nil
+            gift_price = nil
+            if item_type == "gift"
+              gift_image_url = nil
+              gift_name = nil
+              gift_price = nil
+              begin
+                gift_image_url = item.css(".dum_prd img").attr("src").value
+                gift_name = item.css(".dum_txt .name").text
+                gift_price = item.css(".dum_txt .price").text.scan(/\d/).join("").to_i
+              rescue
+              end
+            end
+            ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, gift_image_url: gift_image_url, gift_name: gift_name, gift_price: gift_price, conveni_name: conveni_name)
+          rescue
           end
-          ConvenienceItem.create(item_type: item_type, image_url: image_url, name: name, price: price, gift_image_url: gift_image_url, gift_name: gift_name, gift_price: gift_price, conveni_name: conveni_name)
         end
         browser.link(:class =>'next', :index => box_kind_size).click
       end
