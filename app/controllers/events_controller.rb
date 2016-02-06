@@ -194,8 +194,7 @@ class EventsController < ApplicationController
   
   def get_hot_all
     # event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
-    # event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
-    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906, 10001, 10002]
+    event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
     # @event = Event.where(event_site_id: event_site_ids).order("id desc")
     @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
        
