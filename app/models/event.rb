@@ -398,7 +398,8 @@ class Event < ActiveRecord::Base
       lis = doc.css("#flick_lst li")
       lis.each do |li|
         title = li.css(".thmb img").attr("alt").value
-        if title.include?("슈퍼") && title.include?("꿀딜")
+        # if title.include?("슈퍼") && title.include?("꿀딜") 
+        if title.include?("슈퍼꿀딜")
           price = li.css(".sale em").text
           price = price.scan(/\d/).join('').to_i
           original_price = li.css(".prime em").text
