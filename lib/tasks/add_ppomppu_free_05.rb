@@ -9,7 +9,8 @@ begin
   urls = [
     "http://www.ppomppu.co.kr/zboard/zboard.php?id=freeboard&page_num=20&category=&search_type=sub_memo&keyword=%B9%F6%B0%C5%C5%B7&x=0&y=0", #버거킹
     "http://www.ppomppu.co.kr/zboard/zboard.php?id=freeboard&page_num=20&category=&search_type=sub_memo&keyword=%B8%C6%B5%B5%B3%AF%B5%E5&x=0&y=0", #맥도날드
-    "http://www.ppomppu.co.kr/zboard/zboard.php?id=freeboard&page_num=20&category=&search_type=sub_memo&keyword=KFC&x=0&y=0" #KFC
+    "http://www.ppomppu.co.kr/zboard/zboard.php?id=freeboard&page_num=20&category=&search_type=sub_memo&keyword=KFC&x=0&y=0", #KFC
+    "http://www.ppomppu.co.kr/zboard/zboard.php?id=freeboard&page_num=20&category=&search_type=sub_memo&keyword=%C7%D7%B0%F8&x=0&y=0"
     ]
     
   urls.each do |url|
