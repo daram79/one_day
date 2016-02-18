@@ -1,0 +1,23 @@
+<h1>Listing event_details</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @event_details.each do |event_detail| %>
+      <tr>
+        <td><%= link_to 'Show', event_detail %></td>
+        <td><%= link_to 'Edit', edit_event_detail_path(event_detail) %></td>
+        <td><%= link_to 'Destroy', event_detail, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Event detail', new_event_detail_path %>

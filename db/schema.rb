@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160204033944) do
+ActiveRecord::Schema.define(version: 20160218055246) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -189,11 +189,28 @@ ActiveRecord::Schema.define(version: 20160204033944) do
     t.datetime "updated_at"
   end
 
+  create_table "event_detail_images", force: true do |t|
+    t.integer  "event_detail_id"
+    t.string   "image"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "event_details", force: true do |t|
+    t.integer  "event_id"
+    t.string   "title"
+    t.text     "content"
+    t.string   "next_url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "event_images", force: true do |t|
     t.integer  "event_id"
     t.string   "image"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "event_reserve_id"
   end
 
   create_table "event_mailing_lists", force: true do |t|
@@ -214,6 +231,32 @@ ActiveRecord::Schema.define(version: 20160204033944) do
   end
 
   add_index "event_receive_users", ["event_site_id", "is_receive"], name: "index_event_receive_users_on_event_site_id_and_is_receive", using: :btree
+
+  create_table "event_reserves", force: true do |t|
+    t.string   "event_id"
+    t.integer  "event_site_id"
+    t.string   "event_name"
+    t.string   "event_url"
+    t.string   "image_url",           default: ""
+    t.string   "discount",            default: ""
+    t.integer  "price"
+    t.string   "original_price",      default: ""
+    t.boolean  "show_flg",            default: false
+    t.boolean  "push_flg",            default: false
+    t.boolean  "update_flg",          default: false
+    t.integer  "deal_search_word_id"
+    t.integer  "item_type_code"
+    t.datetime "add_time"
+    t.boolean  "add_flg",             default: false
+    t.datetime "close_time"
+    t.boolean  "close_flg",           default: false
+    t.boolean  "push",                default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "event_reserves", ["add_flg"], name: "index_event_reserves_on_add_flg", using: :btree
+  add_index "event_reserves", ["close_flg"], name: "index_event_reserves_on_close_flg", using: :btree
 
   create_table "event_sites", force: true do |t|
     t.string   "site_name"
@@ -266,6 +309,7 @@ ActiveRecord::Schema.define(version: 20160204033944) do
     t.integer  "item_type_code"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "super_flg",           default: true
   end
 
   add_index "events", ["deal_search_word_id"], name: "index_events_on_deal_search_word_id", using: :btree
@@ -273,6 +317,7 @@ ActiveRecord::Schema.define(version: 20160204033944) do
   add_index "events", ["item_type_code"], name: "index_events_on_item_type_code", using: :btree
   add_index "events", ["show_flg", "update_flg"], name: "index_events_on_show_flg_and_update_flg", using: :btree
   add_index "events", ["show_flg"], name: "index_events_on_show_flg", using: :btree
+  add_index "events", ["super_flg"], name: "index_events_on_super_flg", using: :btree
 
   create_table "feed_photos", force: true do |t|
     t.integer  "feed_id"

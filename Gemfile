@@ -67,3 +67,5 @@ gem 'debugger', group: [:development, :test]
 gem 'json'
 gem "watir", "~>4.0"
 gem 'watir-scroll'
+
+gem 'rinku'

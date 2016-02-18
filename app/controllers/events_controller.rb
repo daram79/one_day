@@ -8,20 +8,20 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @events = Event.where("event_site_id > 1000").where(show_flg: false, update_flg: false).order("id desc")
+    @events = Event.where("event_site_id > 1000").where(show_flg: false, update_flg: false, super_flg: true).order("id desc")
     # @events = Event.where(show_flg: false, update_flg: false).order("id desc")
   end
   
   def event_true
     event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906, 10001, 10002]
-    @events = Event.where(event_site_id: event_site_ids, show_flg: true).order("id desc")
+    @events = Event.where(event_site_id: event_site_ids, show_flg: true, super_flg: true).order("id desc")
     # @events = Event.where(show_flg: true).order("id desc")
     render "index"
   end
   
   def event_false
     event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906, 10001, 10002]
-    @events = Event.where(event_site_id: event_site_ids, show_flg: false).order("id desc")
+    @events = Event.where(event_site_id: event_site_ids, show_flg: false, super_flg: true).order("id desc")
     # @events = Event.where(show_flg: false).order("id desc")
     render "index"
   end
@@ -128,7 +128,7 @@ class EventsController < ApplicationController
   def get_event
     event_site_ids = EventSite.where("id > 6").ids
     # @event = Event.where(event_site_id: event_site_ids).order("id desc")
-    @event = Event.where(show_flg: true).where("event_site_id > 1000").order("id desc")
+    @event = Event.where(show_flg: true, super_flg: true).where("event_site_id > 1000").order("id desc")
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
       format.html { @event }
@@ -146,7 +146,7 @@ class EventsController < ApplicationController
   end
   
   def get_event_cafe
-    @event = Event.where(show_flg: true, deal_search_word_id: 10002, item_type_code: params[:tabIndex]).order("price asc")
+    @event = Event.where(show_flg: true, deal_search_word_id: 10002, item_type_code: params[:tabIndex], super_flg: true).order("price asc")
     respond_to do |format|
       format.html { render "get_event" }
       format.json { render json: @event }
@@ -156,9 +156,9 @@ class EventsController < ApplicationController
   def get_event_eat
     case params[:typeIndex]
     when "0"
-      @event = Event.where(show_flg: true, item_type_code: 0).where("event_site_id > 1000").order("id desc")  
+      @event = Event.where(show_flg: true, item_type_code: 0, super_flg: true).where("event_site_id > 1000").order("id desc")  
     else
-      @event = Event.where(show_flg: true, item_type_code: 0, deal_search_word_id: params[:typeIndex].to_i).where("event_site_id > 1000").order("id desc")
+      @event = Event.where(show_flg: true, item_type_code: 0, deal_search_word_id: params[:typeIndex].to_i, super_flg: true).where("event_site_id > 1000").order("id desc")
     end
     
     respond_to do |format|
@@ -170,9 +170,9 @@ class EventsController < ApplicationController
   def get_event_play
     case params[:typeIndex]
     when "0"
-      @event = Event.where(show_flg: true, item_type_code: 1).where("event_site_id > 1000").order("id desc")
+      @event = Event.where(show_flg: true, item_type_code: 1, super_flg: true).where("event_site_id > 1000").order("id desc")
     else
-      @event = Event.where(show_flg: true, item_type_code: 1, deal_search_word_id: params[:typeIndex].to_i).where("event_site_id > 1000").order("id desc")
+      @event = Event.where(show_flg: true, item_type_code: 1, deal_search_word_id: params[:typeIndex].to_i, super_flg: true).where("event_site_id > 1000").order("id desc")
     end
     
     # @event = Event.where(show_flg: true).order("id desc")
@@ -183,7 +183,7 @@ class EventsController < ApplicationController
   end
   
   def get_event_movie
-    @event = Event.where(show_flg: true, deal_search_word_id: 10001).order("id desc")
+    @event = Event.where(show_flg: true, deal_search_word_id: 10001, super_flg: true).order("id desc")
     
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
@@ -196,7 +196,7 @@ class EventsController < ApplicationController
     # event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
     event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
     # @event = Event.where(event_site_id: event_site_ids).order("id desc")
-    @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
+    @event = Event.where(event_site_id: event_site_ids, super_flg: true).order("show_flg desc").order("id desc")
        
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
@@ -209,7 +209,7 @@ class EventsController < ApplicationController
     # event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
     event_site_ids = [10001]
     # @event = Event.where(event_site_id: event_site_ids).order("id desc")
-    @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
+    @event = Event.where(event_site_id: event_site_ids, super_flg: true).order("show_flg desc").order("id desc")
        
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
@@ -222,7 +222,7 @@ class EventsController < ApplicationController
     # event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
     event_site_ids = [10002]
     # @event = Event.where(event_site_id: event_site_ids).order("id desc")
-    @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
+    @event = Event.where(event_site_id: event_site_ids, super_flg: true).order("show_flg desc").order("id desc")
        
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
@@ -233,7 +233,7 @@ class EventsController < ApplicationController
   
   def get_hot_deal
     event_site_ids = [9001, 9002, 9900, 9900, 9901, 9902, 9903, 9904, 9905, 9906]
-    @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
+    @event = Event.where(event_site_id: event_site_ids, super_flg: true).order("show_flg desc").order("id desc")
     
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
@@ -244,7 +244,7 @@ class EventsController < ApplicationController
   
   def get_hot_movie
     event_site_ids = [4001, 4002, 4003]
-    @event = Event.where(event_site_id: event_site_ids).order("show_flg desc").order("id desc")
+    @event = Event.where(event_site_id: event_site_ids, super_flg: true).order("show_flg desc").order("id desc")
     
     # @event = Event.where(show_flg: true).order("id desc")
     respond_to do |format|
