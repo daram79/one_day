@@ -1,0 +1,28 @@
+<%= form_for(@event_detail) do |f| %>
+  <!-- <% if @event_detail.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@event_detail.errors.count, "error") %> prohibited this event_detail from being saved:</h2>
+
+      <ul>
+      <% @event_detail.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %> -->
+  <div style="padding: 10px">
+  	<div>제목</div>
+  	<div><%= f.text_field :title, :style => "width:100%;" %></div><br />
+  	<div>url</div>
+  	<div><%= f.text_field :next_url, :style => "width:100%;" %></div><br />
+  	<div>내용</div>
+  	<div><%= f.text_area :content, :size => "40x20" %></div><br />
+  	
+	<div>
+		<%= f.fields_for :event_detail_images do |event_detail_image| %>
+		  <%= event_detail_image.file_field :image %>
+		<% end %>
+	</div>
+	<div class="actions"><%= f.submit %></div>
+  </div>
+<% end %>

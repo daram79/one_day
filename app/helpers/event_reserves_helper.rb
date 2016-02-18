@@ -1,0 +1,2 @@
+module EventReservesHelper
+end

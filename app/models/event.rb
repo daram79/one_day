@@ -6,6 +6,7 @@ class Event < ActiveRecord::Base
   after_update :add_new_button
   after_update :send_push
   
+  has_one :event_reserve
   has_many :event_images, :dependent => :destroy
   
   accepts_nested_attributes_for :event_images, reject_if: :feed_photos_attributes.blank?#, allow_destroy: true

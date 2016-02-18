@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :event_reserves
+
+  resources :event_details
+
   resources :ppomppus
   resources :convenience_items
   
