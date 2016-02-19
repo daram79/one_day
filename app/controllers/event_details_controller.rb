@@ -30,8 +30,13 @@ class EventDetailsController < ApplicationController
 
     respond_to do |format|
       if @event_detail.save
-        format.html { redirect_to @event_detail, notice: 'Event detail was successfully created.' }
-        format.json { render :show, status: :created, location: @event_detail }
+        if Rails.env == 'development'
+          format.html { redirect_to @event_detail, notice: 'Event detail was successfully created.' }
+        else
+          format.html { redirect_to @event_detail, notice: 'Event detail was successfully created.', :port => 81 }
+        end
+        # format.html { redirect_to @event_detail, notice: 'Event detail was successfully created.' }
+        # format.json { render :show, status: :created, location: @event_detail }
       else
         format.html { render :new }
         format.json { render json: @event_detail.errors, status: :unprocessable_entity }
