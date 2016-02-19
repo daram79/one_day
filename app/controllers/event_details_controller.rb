@@ -10,6 +10,9 @@ class EventDetailsController < ApplicationController
   # GET /event_details/1
   # GET /event_details/1.json
   def show
+    @ary_content = [@event_detail.content_1, @event_detail.content_2, @event_detail.content_3, @event_detail.content_4, 
+                    @event_detail.content_5, @event_detail.content_6, @event_detail.content_7, @event_detail.content_8,
+                    @event_detail.content_9, @event_detail.content_10] 
   end
 
   # GET /event_details/new
@@ -76,6 +79,7 @@ class EventDetailsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def event_detail_params
-      params[:event_detail].permit(:event_id, :title, :content, :next_url, event_detail_images_attributes: [:image])
+      params[:event_detail].permit(:event_id, :title, :content_1, :content_2, :content_3, :content_4, :content_5, :content_6, :content_7, :content_8, :content_9, :content_10, 
+                                    :next_url, event_detail_images_attributes: [:image])
     end
 end
