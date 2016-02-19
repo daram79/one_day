@@ -15,7 +15,8 @@ class EventDetailsController < ApplicationController
   # GET /event_details/new
   def new
     @event_detail = EventDetail.new
-    @event_detail.event_detail_images.build
+    # @event_detail.event_detail_images.build
+    10.times { @event_detail.event_detail_images.build }
   end
 
   # GET /event_details/1/edit
