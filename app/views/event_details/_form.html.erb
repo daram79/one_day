@@ -20,7 +20,7 @@
   	
 	<div>
 		<%= f.fields_for :event_detail_images do |event_detail_image| %>
-		  <%= event_detail_image.file_field :image %>
+		  <%= event_detail_image.file_field :image %><br />
 		<% end %>
 	</div>
 	<div class="actions"><%= f.submit %></div>
