@@ -11,18 +11,53 @@
     </div>
   <% end %> -->
   <div style="padding: 10px">
+  	<div class="actions"><%= f.submit %></div>
   	<div>제목</div>
   	<div><%= f.text_field :title, :style => "width:100%;" %></div><br />
   	<div>url</div>
   	<div><%= f.text_field :next_url, :style => "width:100%;" %></div><br />
   	<div>내용</div>
-  	<div><%= f.text_area :content, :size => "40x20" %></div><br />
-  	
-	<div>
+  	<% for i in 1..10%>
+  	<div>
+  		<!-- <input id="event_detail_event_detail_images_attributes_<%=i-1%>_image" name="event_detail[event_detail_images_attributes][<%=i-1%>][image]" type="file"> -->
+  		<img style="width:150px;" id="img_<%=i-1%>" src="#" alt="your image" />
+  		<input id="add_img_btn_<%=i-1%>" name="event_detail[event_detail_images_attributes][<%=i-1%>][image]" type="file">
+  	</div>
+  	<div>
+  		<%= text_area "event_detail", "content_#{i}", :size => "40x10" %>
+  	</div>
+  	<br />
+  	<% end %>
+	<!-- <div>
 		<%= f.fields_for :event_detail_images do |event_detail_image| %>
 		  <%= event_detail_image.file_field :image %><br />
 		<% end %>
-	</div>
+	</div> -->
 	<div class="actions"><%= f.submit %></div>
   </div>
 <% end %>
+
+
+<script>
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        var tmp_id = jQuery(input).attr("id");
+        tmp_id = tmp_id.split("_"); 
+        reader.onload = function (e) {
+            $('#img_'+ tmp_id[3]).attr('src', e.target.result);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$("[id^='add_img_btn_']").change(function(){
+    readURL(this);
+});
+// 
+// 
+// $("#imgInp").change(function(){
+    // readURL(this);
+// });
+</script>
