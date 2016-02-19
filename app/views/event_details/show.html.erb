@@ -10,7 +10,7 @@
 		<% @event_detail.event_detail_images.each do |event_detail_image| %>
 		<tr>
 			<td style="padding: 5px 5px 10px 5px">
-				<img style="width:100%;" src="<%=event_detail_image.image.url%>" />
+				<img class="image_border" src="<%=event_detail_image.image.url%>" />
 			</td>
 		</tr>
 		<% end %>
@@ -22,3 +22,15 @@
 		</tr>
 	</table>
 </div>
+
+
+<style>
+	.image_border {
+		width:100%;
+		border: 1px solid #FBB131;
+	    /*padding: 15px;*/
+	    /*-webkit-border-image: url(border.png) 30 stretch; 
+	    -o-border-image: url(border.png) 30 stretch;
+	    border-image: url(border.png) 30 stretch;*/
+	}
+</style>
