@@ -586,13 +586,24 @@ class Event < ActiveRecord::Base
       mask = Magick::ImageList.new(mask_path).first
 
       src = set_mask(src, mask)
+      src.write(b_path)
       
-      normalized_mean_error = query.difference(src)[1]
-      if normalized_mean_error <= threshold
+      `composite -compose difference #{a_path} #{b_path} diff.png`
+      result = `identify -format "%[mean]" diff.png`
+      
+      if result.to_i == 0
         return true
       else
         return false
       end
+      
+      
+      # normalized_mean_error = query.difference(src)[1]
+      # if normalized_mean_error <= threshold
+        # return true
+      # else
+        # return false
+      # end
     rescue
       return false
     end

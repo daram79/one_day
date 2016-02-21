@@ -1,6 +1,11 @@
 #encoding: utf-8
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 path = "#{File.dirname(__FILE__)}/../../"
+
+a_path = "#{path}public/image/super_ggul_a.jpg"
+b_path = "#{path}public/image/super_ggul_b.jpg"
+mask_path = "#{path}public/image/super_ggul_mask.png"
+
     begin
       event_site_id = 9001
       first_url = "http://m.ticketmonster.co.kr"
@@ -25,12 +30,9 @@ path = "#{File.dirname(__FILE__)}/../../"
         event = Event.where(event_id: event_id, event_site_id: event_site_id)
         image_url = li.css(".thmb img").attr("src").value
         if event.blank?            
-          open("#{File.dirname(__FILE__)}/../../public/image/super_ggul_b.jpg", 'wb') do |file|
+          open(b_path, 'wb') do |file|
             file << open(image_url).read
           end
-          a_path = "#{path}public/image/super_ggul_a.jpg"
-          b_path = "#{path}public/image/super_ggul_b.jpg"
-          mask_path = "#{path}public/image/super_ggul_mask.png"
           ret = Event.is_same?(a_path, b_path, mask_path)
           if ret
             Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, 
