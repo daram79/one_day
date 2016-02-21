@@ -578,4 +578,29 @@ class Event < ActiveRecord::Base
     end
   end
   
+  def self.is_same?(a_path, b_path, mask_path)
+    begin
+      threshold = 0.001
+      query = Magick::ImageList.new(a_path).first
+      src = Magick::ImageList.new(b_path).first
+      mask = Magick::ImageList.new(mask_path).first
+
+      src = set_mask(src, mask)
+      
+      normalized_mean_error = query.difference(src)[1]
+      if normalized_mean_error <= threshold
+        return true
+      else
+        return false
+      end
+    rescue
+      return false
+    end
+  end
+  
+  private
+  def self.set_mask(src_img_arr, mask_img)
+    return src_img_arr.composite(mask_img, 0, 0, Magick::OverCompositeOp)
+  end
+  
 end
