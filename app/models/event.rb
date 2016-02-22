@@ -584,11 +584,14 @@ class Event < ActiveRecord::Base
       query = Magick::ImageList.new(a_path).first
       src = Magick::ImageList.new(b_path).first
       mask = Magick::ImageList.new(mask_path).first
+      
+      query = set_mask(query, mask)
+      query.write("a.jpg")
 
       src = set_mask(src, mask)
-      src.write(b_path)
+      src.write("b.jpg")
       
-      `composite -compose difference #{a_path} #{b_path} diff.png`
+      `composite -compose difference a.jpg b.jpg diff.png`
       result = `identify -format "%[mean]" diff.png`
       
       if result.to_i == 0
