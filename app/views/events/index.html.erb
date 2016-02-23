@@ -23,6 +23,7 @@
 
 <script>
 	function add_push(event_id){
+		if (confirm("푸쉬를 보내시겠습니까?") == true){    //확인
 		$.ajax({
 			   url: "/events/" + event_id + "/add_push",
 			   dataType:'json',
@@ -36,8 +37,10 @@
 			   	}
 			   }
 			});
+		}
 	}
 	function show_data(event_id){
+		if (confirm("데이터를 보여주겠습니까?") == true){    //확인
 		$.ajax({
 			   url: "/events/" + event_id + "/show_data",
 			   dataType:'json',
@@ -55,9 +58,11 @@
 			   	}
 			   }
 			});
+		}
 	}
 	
 	function hide_data(event_id){
+		if (confirm("데이터를 숨기겠습니까?") == true){    //확인
 		$.ajax({
 			   url: "/events/" + event_id + "/hide_data",
 			   dataType:'json',
@@ -75,6 +80,7 @@
 			   	}
 			   }
 			});
+		}
 	}
 	
 	function force_data(event_id, flg){
