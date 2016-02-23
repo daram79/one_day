@@ -174,8 +174,10 @@ class Event < ActiveRecord::Base
           # data[:event_name] += " "
           data[:event_name] = doc.css(".info_box .tit2").text
           data[:discount] = ""
-          data[:price] = doc.css(".price_box strong").text.scan(/\d/).join('').to_i
-          data[:original_price] = doc.css(".price_box span").text
+          # data[:price] = doc.css(".price_box strong").text.scan(/\d/).join('').to_i
+          data[:price] = doc.css(".price_box strong")[0].text.scan(/\d/).join('').to_i
+          # data[:original_price] = doc.css(".price_box span").text
+          data[:original_price] = doc.css(".price_box span")[0].text
         when 9905 then
           data[:event_id] =  url.split('?')[0].split('/')[-1]
           begin
