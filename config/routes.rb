@@ -30,6 +30,8 @@ Rails.application.routes.draw do
       get "get_hot_online"
       get "get_new_flg"
       delete "del_new_flg"
+      get "new2"
+      post "create_event"
       
     end
     member do

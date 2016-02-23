@@ -32,6 +32,194 @@ class Event < ActiveRecord::Base
   end
 =end
 
+  def self.get_event_site_id(url)
+    ret = 9999
+    if url.include?("deal.11st.co.kr")
+      #쇼킹딜 9901
+      ret = 9901
+    elsif url.include?("11st.co.kr")
+      #11번가 9900
+      ret = 9900
+    elsif url.include?("ticketmonster.co.kr")
+      #티몬 9902
+      ret = 9902
+    elsif url.include?("wemakeprice.com")
+      #위메프 9903
+      ret = 9903
+    elsif url.include?("g9.co.kr")
+      #G9 9904
+      ret = 9904
+    elsif url.include?("coupang.com")
+      #쿠팡 9905
+      ret = 9905
+    elsif url.include?("auction.co.kr")
+      #옥션 9906
+      ret = 9906
+    elsif url.include?("gmarket.co.kr")
+      #지마켓 9907
+      ret = 9907
+    elsif url.include?("dongwonmall.com")
+      ret = 9908
+      #동원몰 9908
+    end
+    return ret
+  end
+  
+  def self.get_datas(url)
+    event_site_id = get_event_site_id(url)
+    case event_site_id
+      when 9900 then
+        #11번가
+        ret = get_11st_data(url)
+      when 9901 then
+        #쇼킹딜
+      when 9902 then
+        ret = get_timon_data(url)
+        #티몬
+      when 9903 then
+        ret = get_wemakeprice_data(url)
+        #위메프
+      when 9904 then
+        ret = get_g9_data(url)
+        #G9
+      when 9905 then
+        ret = get_coupang_data(url)
+        #쿠팡
+      when 9906 then
+        ret = get_auction_data(url)
+        #옥션
+      when 9907 then
+        ret = get_gmarket_data(url)
+        #지마켓
+      when 9908 then
+        ret = get_dongwon_data(url)
+        #동원몰
+      when 9999 then
+        #그외
+    end
+    ret[:event_site_id] = event_site_id
+    return ret
+  end
+  
+  def self.get_timon_data(url)
+    data = Hash.new
+    first_url = "http://m.clien.net/cs3/board"
+    html_str = open(url).read
+      
+    doc = Nokogiri::HTML(html_str)
+    data[:event_id] = url.split('?')[0].split('/')[-1]
+    data[:event_url] = url
+    data[:image_url] = doc.css(".thmb img").attr("src").value
+    data[:event_name] = doc.css(".info h2").text
+    data[:discount] = doc.css(".rt").text
+    data[:discount] = doc.css(".price .ext").text if data[:discount] == ""
+    data[:price] = doc.css(".dc .no").text.scan(/\d/).join('').to_i
+    data[:original_price] = doc.css(".bfr .no").text
+    return data
+  end
+  
+  def self.get_11st_data(url)
+    data = Hash.new
+    html_str = open(url).read
+      
+    doc = Nokogiri::HTML(html_str)
+    data[:event_id] = url.split('prdNo=')[1].split("&")[0]
+    data[:event_url] = url
+    data[:image_url] = doc.css(".swiper-slide img").attr("src").value
+    data[:event_name] = doc.css(".dtl_tit h1").text
+    data[:discount] = doc.css(".rate b").text
+    data[:discount] = doc.css(".rate span").text if data[:discount] == ""
+    data[:price] = doc.css(".price span b")[0].text.scan(/\d/).join('').to_i
+    data[:original_price] = doc.css(".price del b").text
+    return data
+  end
+  
+  def self.get_wemakeprice_data(url)
+    data = Hash.new
+    html_str = open(url).read
+      
+    doc = Nokogiri::HTML(html_str)
+    data[:event_id] =  url.split('?')[0].split('/')[-1]
+    data[:event_url] = url
+    data[:image_url] = doc.css(".thum-area img").attr("src").value
+    data[:event_name] = doc.css("#main_name").text
+    data[:discount] = doc.css(".percent strong").text
+    data[:discount] = "위메프가" if data[:discount] == "0"
+    data[:price] = doc.css(".sale strong").text.scan(/\d/).join('').to_i
+    data[:original_price] = doc.css(".origin strong").text
+    return data
+  end
+  
+  def self.get_g9_data(url)
+    #DB에 입력후 일괄처리
+  end
+  
+  def self.get_gmarket_data(url)
+    data = Hash.new
+    html_str = open(url).read
+      
+    doc = Nokogiri::HTML(html_str)
+    data[:event_id] = url.split("?")[1].split("&")[0].split("=")[1]
+    data[:event_url] = url
+    data[:image_url] = doc.css("#GoodsImage").attr("src").value
+    data[:event_name] = doc.css(".prod_tit h3").text
+    data[:discount] = doc.css(".disct").text
+    data[:price] = doc.css(".pri1").text.scan(/\d/).join('').to_i
+    data[:original_price] = doc.css(".pri2").text
+    return data
+  end
+  
+  def self.get_dongwon_data(url)
+    data = Hash.new
+    html_str = open(url).read
+      
+    doc = Nokogiri::HTML(html_str)
+    data[:event_id] =  url.split("?")[1].split('&')[0].split('=')[1]
+    data[:event_url] = url
+    data[:image_url] = doc.css(".detail_product ul #imgli0 img").attr("src").value
+    
+    # tmp = doc.css(".name strong").text
+    data[:event_name] = doc.css(".name").text
+    data[:event_name] = doc.css(".name").text.delete!("\n") if data[:event_name].include?("\n")
+    data[:event_name] = doc.css(".name").text.delete!("\t") if data[:event_name].include?("\t")
+    data[:event_name] = doc.css(".name").text.delete!("\r") if data[:event_name].include?("\r")
+    data[:discount] = ""
+    begin
+      data[:price] = doc.css(".member_price")[0].text.scan(/\d/).join('').to_i
+    rescue
+      data[:price] = doc.css(".pricetxt").text.scan(/\d/).join('').to_i
+    end
+    
+    data[:original_price] = doc.css(".price del").text
+    return data
+  end
+  
+  def self.get_coupang_data(url)
+    data = Hash.new
+    html_str = open(url).read
+      
+    doc = Nokogiri::HTML(html_str)
+    data[:event_id] =  url.split('?')[0].split('/')[-1]
+    data[:event_url] = url
+    if doc.css("#baseInfo").blank?
+      data[:image_url] = doc.css(".detail-main-image img").attr("src").value
+      data[:event_name] = doc.css(".clearfix dt").text
+      data[:discount] = doc.css(".clearfix .discount-rate").text
+      data[:discount] = doc.css(".clearfix .discount-rate-txt").text if data[:discount] == ""
+      data[:price] = doc.css(".clearfix .sale-price").text.scan(/\d/).join('').to_i
+      data[:original_price] = doc.css(".clearfix .original-price").text
+    else
+      #DB에 입력후 일괄처리
+      data = nil      
+    end
+    return data
+  end
+  
+  def self.get_auction_data(url)
+    #DB에 입력후 일괄처리
+  end
+  
+
   def add_new_button
     menu_ary_ids = ["10001", "10002"]
     if self.show_flg && menu_ary_ids.any? { |id| self.event_site_id.to_s.include?(id) }
