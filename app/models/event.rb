@@ -199,6 +199,7 @@ class Event < ActiveRecord::Base
         Event.create(event_id: data[:event_id], event_name: data[:event_name], event_url: data[:event_url], event_site_id: event_site_id, 
                       image_url: data[:image_url], discount: data[:discount], price: data[:price], original_price: data[:original_price] )
         param.update(is_add: true)
+        p "이벤트 생성 완료: #{data[:event_name]}"
       rescue
         next
       end
