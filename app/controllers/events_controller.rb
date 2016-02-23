@@ -37,7 +37,7 @@ class EventsController < ApplicationController
   def create_event
     data = Event.get_datas(params[:event][:url])
     Event.create(event_id: data[:event_id], event_name: data[:event_name], event_url: data[:event_url], event_site_id: data[:event_site_id],
-                  image_url: data[:image_url], discount: data[:discount], price: data[:price], original_price: data[:original_price] )
+                  image_url: data[:image_url], discount: data[:discount], price: data[:price], original_price: data[:original_price] ) if data
     flash[:notice] = "데이터 작성 완료"
     redirect_to :action => "new2"
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160218055246) do
+ActiveRecord::Schema.define(version: 20160223045604) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -170,6 +170,15 @@ ActiveRecord::Schema.define(version: 20160218055246) do
   end
 
   add_index "deal_search_words", ["is_on"], name: "index_deal_search_words_on_is_on", using: :btree
+
+  create_table "event_add_wait_urls", force: true do |t|
+    t.string   "url"
+    t.boolean  "is_add",     default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "event_add_wait_urls", ["is_add"], name: "index_event_add_wait_urls_on_is_add", using: :btree
 
   create_table "event_back_ups", force: true do |t|
     t.integer  "event_id",            limit: 8
