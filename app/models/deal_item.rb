@@ -733,11 +733,11 @@ class DealItem < ActiveRecord::Base
           Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
                         price: price, original_price: original_price, discount: discount, show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 9001)
         else
-          if li.css(".type2 .blind").text == "매진"
-            event.update_all(show_flg: false)
-          else
-            event.update_all(show_flg: true)
-          end
+          # if li.css(".type2 .blind").text == "매진"
+            # event.update_all(show_flg: false)
+          # else
+            # event.update_all(show_flg: true)
+          # end
         end
       # end
       return true
