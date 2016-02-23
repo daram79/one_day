@@ -128,6 +128,22 @@ conveni_flg = true
       browser.driver.manage.timeouts.implicit_wait = 3
     end
     e = Time.now
+    
+    #이벤트 일괄 처리
+    begin
+      data = EventAddWaitUrl.where(is_add: false)
+      Event.add_item_from_url(data, browser) unless data.blank?
+    rescue
+      p "일괄등록 error"
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
+    end
+    
     p "process end #{e}"
     p "걸린 시간: #{e - s}"
     

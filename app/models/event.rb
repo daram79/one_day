@@ -97,7 +97,7 @@ class Event < ActiveRecord::Base
       when 9999 then
         #그외
     end
-    ret[:event_site_id] = event_site_id
+    ret[:event_site_id] = event_site_id if ret
     return ret
   end
   
@@ -152,6 +152,60 @@ class Event < ActiveRecord::Base
   
   def self.get_g9_data(url)
     #DB에 입력후 일괄처리
+    EventAddWaitUrl.create(url: url)
+    return nil
+  end
+  
+  def self.add_item_from_url(params, browser)
+    params.each do |param|
+      begin
+        data = Hash.new
+        url = param.url
+        event_site_id = get_event_site_id(url)
+        browser.goto url
+        sleep 2
+        doc = Nokogiri::HTML.parse(browser.html)
+        data[:event_url] = url
+        case event_site_id
+        when 9904 then
+          data[:event_id] = url.split('/')[-1]
+          data[:image_url] = doc.css(".thmb img").attr("src").value
+          # data[:event_name] = doc.css(".info_box .tit").text
+          # data[:event_name] += " "
+          data[:event_name] = doc.css(".info_box .tit2").text
+          data[:discount] = ""
+          data[:price] = doc.css(".price_box strong").text.scan(/\d/).join('').to_i
+          data[:original_price] = doc.css(".price_box span").text
+        when 9905 then
+          data[:event_id] =  url.split('?')[0].split('/')[-1]
+          begin
+            browser.a(:class => "close-banner").click
+          rescue
+          end
+          
+          data[:image_url] = doc.css("#pdpImages img").attr("src").value
+          data[:event_name] = doc.css("#product-info .title").text
+          data[:discount] = ""
+          data[:price] = doc.css("#totalSalesPrice").text.scan(/\d/).join('').to_i
+          data[:original_price] = ""
+        when 9906 then
+          data[:event_id] = url.split('/')[-1]
+          data[:image_url] = doc.css("#image_wrapper img").attr("src").value
+          data[:event_name] = doc.css(".title h3 span").text
+          data[:discount] = ""
+          data[:price] = doc.css(".price .ng-scope strong").text.scan(/\d/).join('').to_i
+          data[:original_price] = doc.css(".price .ng-scope del").text
+        end
+        Event.create(event_id: data[:event_id], event_name: data[:event_name], event_url: data[:event_url], event_site_id: event_site_id, 
+                      image_url: data[:image_url], discount: data[:discount], price: data[:price], original_price: data[:original_price] )
+        param.update(is_add: true)
+      rescue
+        next
+      end
+      
+    end
+    
+    
   end
   
   def self.get_gmarket_data(url)
@@ -210,6 +264,7 @@ class Event < ActiveRecord::Base
       data[:original_price] = doc.css(".clearfix .original-price").text
     else
       #DB에 입력후 일괄처리
+      EventAddWaitUrl.create(url: url)
       data = nil      
     end
     return data
@@ -217,6 +272,8 @@ class Event < ActiveRecord::Base
   
   def self.get_auction_data(url)
     #DB에 입력후 일괄처리
+    EventAddWaitUrl.create(url: url)
+    return nil  
   end
   
 
