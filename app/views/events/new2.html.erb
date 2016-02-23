@@ -1,0 +1,38 @@
+<h1 style="padding:10px;">꿀가득 이벤트 생성 페이지</h1>
+<%= form_tag('create_event', :method => :post) do %>
+	<table style="padding:10px; line-height: 2; width:100%">
+		<tr>
+			<td class="first">주소:</td>
+			<td>
+				<%= text_field "event", "url", :class => "second" %>
+			</td>
+		</tr>
+		<tr>
+			<td class="btn" colspan="2">
+				<%= submit_tag "만들기", :style => "width:100%; padding: 5px 10px;" %>
+			</td>
+		</tr>
+	</table>
+<% end %>
+
+<style>
+	.first {
+		width: 10%;
+		text-align: right;
+		margin
+	}
+	.second {
+		width: 90%;
+		text-align: left;
+		
+	}
+	.btn {
+		text-align: center;
+		width:100%;
+	}
+</style>
+<script>
+<% if notice %>
+alert('<%= notice %>')
+<% end %>	
+</script>
