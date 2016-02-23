@@ -39,7 +39,11 @@ class EventsController < ApplicationController
     Event.create(event_id: data[:event_id], event_name: data[:event_name], event_url: data[:event_url], event_site_id: data[:event_site_id],
                   image_url: data[:image_url], discount: data[:discount], price: data[:price], original_price: data[:original_price] ) if data
     flash[:notice] = "데이터 작성 완료"
-    redirect_to :action => "new2"
+    if Rails.env == 'development'
+      redirect_to :action => "new2"
+    else
+      redirect_to :action => "new2", :port => 81
+    end
   end
 
   # GET /events/1
