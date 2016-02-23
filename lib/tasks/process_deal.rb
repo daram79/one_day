@@ -130,8 +130,10 @@ conveni_flg = true
     e = Time.now
     
     #이벤트 일괄 처리
+    p "이벤트 일괄 처리"
     begin
       data = EventAddWaitUrl.where(is_add: false)
+      p "입력할 데이터 수: #{data.count}"
       Event.add_item_from_url(data, browser) unless data.blank?
     rescue
       p "일괄등록 error"
