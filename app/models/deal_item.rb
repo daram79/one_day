@@ -155,7 +155,14 @@ class DealItem < ActiveRecord::Base
       doc = Nokogiri::HTML.parse(browser.html)
       unless doc.css("#flash_deal_goods_list").blank?
         p "G9 플레쉬딜 정보 수집"
-        deal_title = doc.css("#flash_deal_goods_list").css(".title").text.delete!("\n").delete!("\t")
+        
+        deal_title = doc.css("#flash_deal_goods_list").css(".title").text
+        
+        deal_title = doc.css("#flash_deal_goods_list").css(".subject").text if deal_title == "" 
+        
+        deal_title = deal_title.delete!("\n") if deal_title.include?("\n")
+        deal_title = deal_title.delete!("\t") if deal_title.include?("\t")
+        
         deal_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
         deal_price = deal_price.scan(/\d/).join('').to_i
         deal_original_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("del").text
