@@ -60,6 +60,8 @@ class Event < ActiveRecord::Base
       ret = 9907
     elsif url.include?("dongwonmall.com")
       ret = 9908
+    elsif url.include?("ssg.com")
+      ret = 9909
       #동원몰 9908
     end
     return ret
@@ -94,6 +96,9 @@ class Event < ActiveRecord::Base
       when 9908 then
         ret = get_dongwon_data(url)
         #동원몰
+      when 9909 then
+        ret = get_ssg_data(url)
+        #동원몰
       when 9999 then
         #그외
     end
@@ -103,7 +108,6 @@ class Event < ActiveRecord::Base
   
   def self.get_timon_data(url)
     data = Hash.new
-    first_url = "http://m.clien.net/cs3/board"
     html_str = open(url).read
       
     doc = Nokogiri::HTML(html_str)
@@ -116,6 +120,12 @@ class Event < ActiveRecord::Base
     data[:price] = doc.css(".dc .no").text.scan(/\d/).join('').to_i
     data[:original_price] = doc.css(".bfr .no").text
     return data
+  end
+  
+  def self.get_ssg_data(url)
+    #DB에 입력후 일괄처리
+    EventAddWaitUrl.create(url: url)
+    return nil
   end
   
   def self.get_11st_data(url)
@@ -159,9 +169,9 @@ class Event < ActiveRecord::Base
   def self.add_item_from_url(params, browser)
     params.each do |param|
       begin
-        data = Hash.new
         url = param.url
-        event_site_id = get_event_site_id(url)
+        data = Hash.new
+        event_site_id = Event.get_event_site_id(url)
         browser.goto url
         sleep 2
         doc = Nokogiri::HTML.parse(browser.html)
@@ -197,6 +207,21 @@ class Event < ActiveRecord::Base
           data[:discount] = ""
           data[:price] = doc.css(".price .ng-scope strong").text.scan(/\d/).join('').to_i
           data[:original_price] = doc.css(".price .ng-scope del").text
+        when 9909 then
+          data[:event_id] = url.split("itemId=")[1].split("&")[0]
+          data[:image_url] = "http:" + doc.css(".imgbox.imgzoom img").attr("src").value
+          
+          data[:event_name] = doc.css(".item_title").text
+          
+          data[:discount] = doc.css(".item_benefits .ico_left span").text
+          
+          if doc.css(".price_ty").blank?
+            data[:price] = doc.css(".unique em").text.scan(/\d/).join('').to_i
+            data[:original_price] = doc.css(".unique em").text + "원"
+          else
+            data[:price] = doc.css(".price_ty").text.scan(/\d/).join('').to_i
+            data[:original_price] = doc.css(".unique .ssg_price.price").text + "원"
+          end
         end
         Event.create(event_id: data[:event_id], event_name: data[:event_name], event_url: data[:event_url], event_site_id: event_site_id, 
                       image_url: data[:image_url], discount: data[:discount], price: data[:price], original_price: data[:original_price] )
