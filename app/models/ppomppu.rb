@@ -4,7 +4,8 @@ class Ppomppu < ActiveRecord::Base
   
   def send_ppom_push
     gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
-    event_user_id = EventMailingList.find_by_email("shimtong1004@gmail.com").id
+    # event_user_id = EventMailingList.find_by_email("shimtong1004@gmail.com").id
+    event_user_id = [1,2]
     registration_ids = EventUserRegistrations.where(event_user_id: event_user_id).pluck(:registration_id)
     option = { :data => { 'message' => "뽐뿌에 이벤트가 올라왔습니다. ***#{self.url}" } }   
     
