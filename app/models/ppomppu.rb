@@ -13,6 +13,7 @@ class Ppomppu < ActiveRecord::Base
     unless registration_ids.blank?
       begin
         response = gcm.send(registration_ids, option)
+        logger.info("send_ppom push #{event_user_id}")
         Ppomppu.send_ppom_push_check_button(response, registration_ids)
       rescue => e
         pp e.backtrace
