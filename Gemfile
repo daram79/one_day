@@ -70,3 +70,5 @@ gem "watir", "~>4.0"
 gem 'watir-scroll'
 
 gem 'rinku'
+
+gem 'google-api-client', '~> 0.9.1'
