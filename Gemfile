@@ -50,7 +50,7 @@ gem 'unicorn'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
- 
+ gem 'byebug'
  gem 'gcm'
 
 # Use ActiveModel has_secure_password
@@ -72,3 +72,4 @@ gem 'watir-scroll'
 gem 'rinku'
 
 gem 'google-api-client', '~> 0.9.1'
+gem 'signet'
