@@ -7,7 +7,6 @@ class EventDetailsController < ApplicationController
   
   Blogger = Google::Apis::BloggerV3
   @@blog_id = "7518029362139104243"
-  @@google_code = nil
 
   # GET /event_details
   # GET /event_details.json
@@ -33,7 +32,7 @@ class EventDetailsController < ApplicationController
   end
   
   def new
-    @@google_code = params["code"]
+    session[:google_code] = params["code"]
     @event_detail = EventDetail.new
     # @event_detail.event_detail_images.build
     10.times { @event_detail.event_detail_images.build }
@@ -46,8 +45,8 @@ class EventDetailsController < ApplicationController
   # POST /event_details
   # POST /event_details.json
   def create
-    unless @@google_code
-      redirect_to :action => "blog"
+    unless session[:google_code]
+      redirect_to :action => "blog", :port => 81
       return
     end
     
@@ -70,9 +69,9 @@ class EventDetailsController < ApplicationController
         
         client_secrets = Google::APIClient::ClientSecrets.load("config/client_secret.json")
         auth_client = client_secrets.to_authorization
-        auth_client.update!( :scope => 'https://www.googleapis.com/auth/blogger', :redirect_uri => 'http://localhost:3000/event_details/new/' )
+        auth_client.update!( :scope => 'https://www.googleapis.com/auth/blogger', :redirect_uri => 'http://happyhouse.me:81/event_details/new/' )
         
-        auth_client.code = @@google_code
+        auth_client.code = session[:google_code]
         auth_client.fetch_access_token!
         
         images = []
