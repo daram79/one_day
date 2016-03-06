@@ -1,7 +1,13 @@
 Rails.application.routes.draw do
+
   resources :event_reserves
 
-  resources :event_details
+  resources :event_details do
+    collection do
+      get "blog"
+    end
+  end
+  
 
   resources :ppomppus
   resources :convenience_items

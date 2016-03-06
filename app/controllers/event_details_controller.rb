@@ -1,5 +1,12 @@
+require 'google/apis/oauth2_v2'
+require 'google/api_client/client_secrets'
+require "google/apis/blogger_v3"
+
 class EventDetailsController < ApplicationController
   before_action :set_event_detail, only: [:show, :edit, :update, :destroy]
+  
+  Blogger = Google::Apis::BloggerV3
+  @@blog_id = "7518029362139104243"
 
   # GET /event_details
   # GET /event_details.json
@@ -16,7 +23,16 @@ class EventDetailsController < ApplicationController
   end
 
   # GET /event_details/new
+  def blog
+    client_secrets = Google::APIClient::ClientSecrets.load("config/client_secret.json")
+    auth_client = client_secrets.to_authorization
+    auth_client.update!( :scope => 'https://www.googleapis.com/auth/blogger', :redirect_uri => 'http://happyhouse.me:81/event_details/new/' )
+    auth_uri = auth_client.authorization_uri.to_s
+    redirect_to auth_uri
+  end
+  
   def new
+    session[:google_code] = params["code"]
     @event_detail = EventDetail.new
     # @event_detail.event_detail_images.build
     10.times { @event_detail.event_detail_images.build }
@@ -29,10 +45,56 @@ class EventDetailsController < ApplicationController
   # POST /event_details
   # POST /event_details.json
   def create
+    unless session[:google_code]
+      redirect_to :action => "blog", :port => 81
+      return
+    end
+    
+    tmp_content = []
+    tmp_content[0] = params[:event_detail][:content_1]
+    tmp_content[1] = params[:event_detail][:content_2]
+    tmp_content[2] = params[:event_detail][:content_3]
+    tmp_content[3] = params[:event_detail][:content_4]
+    tmp_content[4] = params[:event_detail][:content_5]
+    tmp_content[5] = params[:event_detail][:content_6]
+    tmp_content[6] = params[:event_detail][:content_7]
+    tmp_content[7] = params[:event_detail][:content_8]
+    tmp_content[8] = params[:event_detail][:content_9]
+    tmp_content[9] = params[:event_detail][:content_10]
+    
     @event_detail = EventDetail.new(event_detail_params)
 
     respond_to do |format|
       if @event_detail.save
+        
+        client_secrets = Google::APIClient::ClientSecrets.load("config/client_secret.json")
+        auth_client = client_secrets.to_authorization
+        auth_client.update!( :scope => 'https://www.googleapis.com/auth/blogger', :redirect_uri => 'http://happyhouse.me:81/event_details/new/' )
+        
+        auth_client.code = session[:google_code]
+        auth_client.fetch_access_token!
+        
+        images = []
+        
+        post = Google::Apis::BloggerV3::Post.new
+        post.title = params[:event_detail][:title]        
+        
+        content = ""
+        @event_detail.event_detail_images.each_with_index do |event_detail_image, i|
+          image = Google::Apis::BloggerV3::Post::Image.new
+          image.url = event_detail_image.image.url
+          images.push image.url
+          content += "<img src='http://localhost:3000#{event_detail_image.image.url}'/> #{tmp_content[i]}</br></br>"
+        end
+        post.content = content
+        
+          
+        service = Blogger::BloggerService.new
+        service.authorization = auth_client
+        ret = service.insert_post(@@blog_id, post)
+        ret.url
+        
+        
         if Rails.env == 'development'
           format.html { redirect_to @event_detail, notice: 'Event detail was successfully created.' }
         else
