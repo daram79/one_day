@@ -84,7 +84,7 @@ class EventDetailsController < ApplicationController
           image = Google::Apis::BloggerV3::Post::Image.new
           image.url = event_detail_image.image.url
           images.push image.url
-          content += "<img src='http://localhost:3000#{event_detail_image.image.url}'/> #{tmp_content[i]}</br></br>"
+          content += "<img src='http://happyhouse.me:81#{event_detail_image.image.url}'/> #{tmp_content[i]}</br></br>"
         end
         post.content = content
         
