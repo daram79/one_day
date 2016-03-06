@@ -1,6 +1,7 @@
 require 'google/apis/oauth2_v2'
 require 'google/api_client/client_secrets'
 require "google/apis/blogger_v3"
+require 'google/apis/drive_v3'
 
 class EventDetailsController < ApplicationController
   before_action :set_event_detail, only: [:show, :edit, :update, :destroy]
@@ -21,12 +22,21 @@ class EventDetailsController < ApplicationController
                     @event_detail.content_5, @event_detail.content_6, @event_detail.content_7, @event_detail.content_8,
                     @event_detail.content_9, @event_detail.content_10] 
   end
+  
+  def start_blog
+    
+  end
 
   # GET /event_details/new
   def blog
     client_secrets = Google::APIClient::ClientSecrets.load("config/client_secret.json")
     auth_client = client_secrets.to_authorization
-    auth_client.update!( :scope => 'https://www.googleapis.com/auth/blogger', :redirect_uri => 'http://happyhouse.me:81/event_details/new/' )
+    
+    if Rails.env == 'development'
+      auth_client.update!( :scope => ['https://www.googleapis.com/auth/blogger', 'https://www.googleapis.com/auth/drive'], :redirect_uri => 'http://localhost:3000/event_details/new/' )
+    else
+      auth_client.update!( :scope => ['https://www.googleapis.com/auth/blogger', 'https://www.googleapis.com/auth/drive'], :redirect_uri => 'http://happyhouse.me:81/event_details/new/' )
+    end
     auth_uri = auth_client.authorization_uri.to_s
     redirect_to auth_uri
   end
@@ -69,7 +79,11 @@ class EventDetailsController < ApplicationController
         
         client_secrets = Google::APIClient::ClientSecrets.load("config/client_secret.json")
         auth_client = client_secrets.to_authorization
-        auth_client.update!( :scope => 'https://www.googleapis.com/auth/blogger', :redirect_uri => 'http://happyhouse.me:81/event_details/new/' )
+        if Rails.env == 'development'
+          auth_client.update!( :scope => ['https://www.googleapis.com/auth/blogger', 'https://www.googleapis.com/auth/drive'], :redirect_uri => 'http://localhost:3000/event_details/new/' )
+        else
+          auth_client.update!( :scope => ['https://www.googleapis.com/auth/blogger', 'https://www.googleapis.com/auth/drive'], :redirect_uri => 'http://happyhouse.me:81/event_details/new/' )
+        end
         
         auth_client.code = session[:google_code]
         auth_client.fetch_access_token!
@@ -80,11 +94,40 @@ class EventDetailsController < ApplicationController
         post.title = params[:event_detail][:title]        
         
         content = ""
+        
+        
+#         구글 드라이브에 사진 업로드 시작
+        service = Google::Apis::DriveV3::DriveService.new
+        service.authorization = auth_client
+        
+        # file_metadata = {
+          # name: 'Invoices',
+          # mime_type: 'application/vnd.google-apps.folder'
+        # }
+        # file = service.create_file(file_metadata, fields: 'id')
+        # puts "Folder Id: #{file.id}"
+        
+        # 구글 드라이브에 이미지 넣기
+        folder_id = '0B2gR7kig2klwcGJqR1NEUThtTWc'
+        
+        file_id = []
+        @event_detail.event_detail_images.each_with_index do |event_detail_image, i|
+          file_name = "ggulshopping_" + event_detail_image.image.url.split('/')[-1]
+          
+          file_metadata = { name: file_name, parents: [folder_id] }
+          file = service.create_file(file_metadata, fields: 'id', upload_source: "public/#{event_detail_image.image.url}", content_type: 'image/jpeg')
+          file_id.push file.id
+        end
+        
+#         사진 업로드 종료
+        
+#         블로그 작성
         @event_detail.event_detail_images.each_with_index do |event_detail_image, i|
           image = Google::Apis::BloggerV3::Post::Image.new
           image.url = event_detail_image.image.url
           images.push image.url
-          content += "<img src='http://happyhouse.me:81#{event_detail_image.image.url}'/> #{tmp_content[i]}</br></br>"
+          # https://www.googledrive.com/host/file_id[i]
+          content += "<img src='https://www.googledrive.com/host/#{file_id[i]}'/> #{tmp_content[i]}</br></br>"
         end
         post.content = content
         
@@ -92,14 +135,16 @@ class EventDetailsController < ApplicationController
         service = Blogger::BloggerService.new
         service.authorization = auth_client
         ret = service.insert_post(@@blog_id, post)
-        ret.url
+        
+#         블로그 작성 끝
+        format.html { redirect_to ret.url + "?m=1" }
+        # if Rails.env == 'development'
+          # format.html { redirect_to @event_detail, notice: 'Event detail was successfully created.' }
+        # else
+          # format.html { redirect_to :action => "show", :port => 81, id: @event_detail.id }
+        # end
         
         
-        if Rails.env == 'development'
-          format.html { redirect_to @event_detail, notice: 'Event detail was successfully created.' }
-        else
-          format.html { redirect_to :action => "show", :port => 81, id: @event_detail.id }
-        end
         # format.html { redirect_to @event_detail, notice: 'Event detail was successfully created.' }
         # format.json { render :show, status: :created, location: @event_detail }
       else
