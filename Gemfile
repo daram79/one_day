@@ -73,3 +73,5 @@ gem 'rinku'
 
 gem 'google-api-client', '~> 0.9.1'
 gem 'signet'
+
+gem 'rack-handlers'
