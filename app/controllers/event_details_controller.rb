@@ -127,6 +127,8 @@ class EventDetailsController < ApplicationController
           image.url = event_detail_image.image.url
           images.push image.url
           # https://www.googledrive.com/host/file_id[i]
+          tmp_content[i] = tmp_content[i].gsub(/\r\n|\r|\n/, "<br />")
+          tmp_content[i] = Rinku.auto_link(tmp_content[i])
           content += "<img src='https://www.googledrive.com/host/#{file_id[i]}'/> #{tmp_content[i]}</br></br>"
         end
         post.content = content
