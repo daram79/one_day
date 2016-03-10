@@ -28,6 +28,7 @@ class EventsController < ApplicationController
   
   def add_item
     @event = Event.new
+    @event.event_images.build
   end
   
   def new2
@@ -71,7 +72,7 @@ class EventsController < ApplicationController
     elsif params[:event][:event_url] == ""
       flash[:notice] = "사이트 url을 입력해 주세요."
       ret = false
-    elsif params[:event][:image_url] == ""
+    elsif params[:event][:image_url] == "" && params[:event][:event_images_attributes] == nil
       flash[:notice] = "이미지 URL을 입력해 주세요."
       ret = false      
     end
@@ -102,6 +103,14 @@ class EventsController < ApplicationController
           format.json { render :add_item, status: :created, location: @event }
         else
           flash[:notice] = "데이터 작성 완료"
+          
+          if params[:event][:event_images_attributes]
+            if Rails.env == 'development'
+              @event.update(image_url: "http://192.168.0.4:3000#{@event.event_images[0].image_url.to_s}") unless @event.event_images.blank?
+            else
+              @event.update(image_url: "http://happyhouse.me:81#{@event.event_images[0].image_url.to_s}") unless @event.event_images.blank?
+            end
+          end
           if Rails.env == 'development'
             format.html { redirect_to :action => "add_item" }
           else
