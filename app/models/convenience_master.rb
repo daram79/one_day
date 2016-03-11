@@ -1,4 +1,4 @@
 class ConvenienceMaster < ActiveRecord::Base
-  has_many :conveni_item_keywords
-  has_many :conveni_items
+  has_many :convenience_item_keywords
+  has_many :convenience_items
 end

@@ -60,6 +60,32 @@ class ConvenienceItemsController < ApplicationController
   def edit
   end
   
+  def master_list
+    @list = ConvenienceMaster.all
+  end
+  
+  def add_keyword
+    master_id = params[:master_id]
+    @master = ConvenienceMaster.find(master_id)
+    @keyword = ConvenienceItemKeyword.new
+    @keyword.convenience_master_id = master_id
+    @datas = ConvenienceItemKeyword.where(convenience_master_id: master_id)
+  end
+  
+  def insert_keyword
+    keyword = params[:convenience_item_keyword][:keyword]
+    master_id = params[:convenience_item_keyword][:convenience_master_id]
+    ConvenienceItemKeyword.create(convenience_master_id: master_id, keyword: keyword)
+    redirect_to action: "add_keyword", master_id: master_id
+  end
+  
+  def delete_keyword
+    master_id = params[:master_id]
+    keyword_id = params[:keyword_id]
+    ConvenienceItemKeyword.find(keyword_id).destroy
+    redirect_to action: "add_keyword", master_id: master_id
+  end
+  
   def search
     @convenience_items = []
     if params[:convenience_item_keyword]

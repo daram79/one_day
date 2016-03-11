@@ -1,0 +1,17 @@
+<div>
+	<table>
+		<tr>
+			<td>No.</td>
+			<td>이름</td>
+			<td>등록된 키워드 수</td>
+		</tr>
+		<% @list.each_with_index do |list, i| %>
+		<tr>
+			<td><%=i+1%>.</td>
+			<td><%= link_to list.item_name, add_keyword_convenience_items_path(master_id: list.id) %></td>
+			<td><%= link_to list.convenience_item_keywords.count, add_keyword_convenience_items_path(master_id: list.id)%></td>
+		</tr>
+		<% end %>
+	</table>
+	
+</div>

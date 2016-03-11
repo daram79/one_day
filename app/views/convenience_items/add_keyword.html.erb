@@ -1,0 +1,20 @@
+<div style="padding: 20px 20px;">
+	<div style="padding-bottom: 10px"><a href="master_list">뒤로가기</a></div>
+	<%= form_for @keyword, :url => insert_keyword_convenience_item_path(@master.id) do |f| %>
+		<div>이름: <%= @master.item_name %></div>
+		<div><%= f.text_field :keyword %><%= f.submit "만들기" %></div>
+		<%= f.hidden_field :convenience_master_id %>
+	<% end %>
+	
+	<div style="padding-top: 10px;">
+		<table>
+			<% @datas.each do |data| %>
+			<tr>
+				<td><%= data.id %>.</td>
+				<td><%= data.keyword %></td>
+				<td><a href="delete_keyword?keyword_id=<%=data.id%>&master_id=<%=@master.id%>" data-method="delete" data-confirm="Are you sure?">삭제</a></td>
+			</tr>
+			<% end %>
+		</table>
+	</div>
+</div>

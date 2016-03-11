@@ -14,6 +14,12 @@ Rails.application.routes.draw do
   resources :convenience_items do
     collection do
       get "search"
+      get "master_list"
+      get "add_keyword"
+      delete "delete_keyword"
+    end
+    member do
+      post "insert_keyword"
     end
   end
   
