@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160311033116) do
+ActiveRecord::Schema.define(version: 20160311080253) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -90,9 +90,11 @@ ActiveRecord::Schema.define(version: 20160311033116) do
     t.boolean  "is_show"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "convenience_master_id"
   end
 
   add_index "convenience_items", ["conveni_name", "item_type"], name: "index_convenience_items_on_conveni_name_and_item_type", using: :btree
+  add_index "convenience_items", ["convenience_master_id", "created_at"], name: "index_convenience_items_on_convenience_master_id_and_created_at", using: :btree
   add_index "convenience_items", ["item_type"], name: "index_convenience_items_on_item_type", using: :btree
   add_index "convenience_items", ["name"], name: "index_convenience_items_on_name", using: :btree
 

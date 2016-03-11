@@ -1,0 +1,88 @@
+<%= form_tag('search', method: "get", name: "search") do %>
+<div style="padding-top: 20px; width: 100%; text-align: center;">
+	<input type="text" placeholder="예) 초콜릿" name="convenience_item_keyword" style="padding:12px;" />
+	<a href="#" class="submit_btn" onclick="document.search.submit();">검색</a>
+	<!-- <input type="button" value="검색"> -->
+	<!-- <%= submit_tag "검색", :style => "-webkit-appearance: none; -moz-appearance: none; appearance: none; padding:9px;" %> -->
+</div>
+
+<% end %>
+
+
+
+<% unless @convenience_items.blank? %>
+	<div style="padding-top: 40px;">
+		<table style="width: 100%;">
+			<% @table_index.each do |i| %>
+			<tr>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+					<img src="<%=@convenience_items[i].image_url%>" style="width:<%=@image_size%>px; height:<%=@image_size%>px; margin-bottom: -6px">
+				</td>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+					<img src="<%=@convenience_items[i+1].image_url%>" style="width:<%=@image_size%>px; height:<%=@image_size%>px; margin-bottom: -6px">
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+					<span><%= get_conveni_name(@convenience_items[i].conveni_name) %></span>
+				</td>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+					<span><%= get_conveni_name(@convenience_items[i+1].conveni_name) %></span>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+					<span><%=@convenience_items[i].name%></span>
+				</td>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+					<span><%=@convenience_items[i+1].name%></span>
+				</td>
+			</tr>
+			<tr>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; padding-bottom: 20px ">
+					<span><%=@convenience_items[i].price%>원</span>
+				</td>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; padding-bottom: 20px ">
+					<span><%=@convenience_items[i+1].price%>원</span>
+				</td>
+			</tr>
+			<% end %>
+			<% if @is_even %>
+			<tr>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "><img src="<%=@convenience_items[-1].image_url%>" style="width:<%=@image_size%>px; height:<%=@image_size%>px; margin-bottom: -6px"></td>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "><img src="" style="width:150px; margin-bottom: -6px"></td>
+			</tr>
+			<tr>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+					<span><%= get_conveni_name(@convenience_items[-1].conveni_name) %></span>
+				</td>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "></td>
+			</tr>
+			<tr>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; ">
+					<span><%=@convenience_items[-1].name%></span>
+				</td>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "></td>
+			</tr>
+			<tr>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; padding-bottom: 20px">
+					<span><%=@convenience_items[-1].price%>원</span>
+				</td>
+				<td style="width: 50%; text-align: center; background-color: white; padding: 0px; "></td>
+			</tr>
+			<% end %>
+		</table>
+	</div>
+<% end %>
+
+<style>
+	.submit_btn {
+		width: 50px;
+		padding: 14px;
+		color: #FFF;
+		background-color: #FBB131; 
+		border-radius: 8px; 
+		-webkit-border-radius: 8px;
+		text-decoration: none;
+	}
+</style>

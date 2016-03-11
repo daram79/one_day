@@ -59,6 +59,33 @@ class ConvenienceItemsController < ApplicationController
   # GET /convenience_items/1/edit
   def edit
   end
+  
+  def search
+    @convenience_items = []
+    if params[:convenience_item_keyword]
+      keyword = params[:convenience_item_keyword]
+      
+      master_ids = ConvenienceItemKeyword.where(keyword: keyword).pluck(:convenience_master_id)
+      start_date = Time.now.beginning_of_month
+      end_at = Time.now.end_of_month
+      
+      #테스트용
+      # start_date = Time.now.beginning_of_month.prev_month.prev_month
+      # end_at = Time.now.end_of_month.prev_month.prev_month
+      
+      @convenience_items = ConvenienceItem.where("convenience_master_id in (?) and created_at between ? and ? ", master_ids, start_date, end_at)
+      unless @convenience_items.blank?
+        @half_cnt = @convenience_items.size/2
+        @table_index = []
+        for i in 0..@half_cnt - 1
+          @table_index.push i * 2 
+        end
+        @is_even = false
+        @is_even = true if @convenience_items.size % 2 == 1
+        @image_size = 100
+      end
+    end
+  end
 
   # POST /convenience_items
   # POST /convenience_items.json

@@ -11,7 +11,11 @@ Rails.application.routes.draw do
   
 
   resources :ppomppus
-  resources :convenience_items
+  resources :convenience_items do
+    collection do
+      get "search"
+    end
+  end
   
   resources :deal_search_words do
     collection do
