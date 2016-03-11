@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160223045604) do
+ActiveRecord::Schema.define(version: 20160311033116) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -66,6 +66,15 @@ ActiveRecord::Schema.define(version: 20160223045604) do
 
   add_index "comments", ["feed_id"], name: "index_comments_on_feed_id", using: :btree
 
+  create_table "convenience_item_keywords", force: true do |t|
+    t.integer  "convenience_master_id"
+    t.string   "keyword"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "convenience_item_keywords", ["keyword"], name: "index_convenience_item_keywords_on_keyword", using: :btree
+
   create_table "convenience_items", force: true do |t|
     t.integer  "convenience_item_kind_id"
     t.string   "item_type"
@@ -86,6 +95,14 @@ ActiveRecord::Schema.define(version: 20160223045604) do
   add_index "convenience_items", ["conveni_name", "item_type"], name: "index_convenience_items_on_conveni_name_and_item_type", using: :btree
   add_index "convenience_items", ["item_type"], name: "index_convenience_items_on_item_type", using: :btree
   add_index "convenience_items", ["name"], name: "index_convenience_items_on_name", using: :btree
+
+  create_table "convenience_masters", force: true do |t|
+    t.string   "item_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "convenience_masters", ["item_name"], name: "index_convenience_masters_on_item_name", using: :btree
 
   create_table "deal_item_back_ups", force: true do |t|
     t.integer  "deal_search_word_id"
