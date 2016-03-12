@@ -72,6 +72,20 @@ class ConvenienceItemsController < ApplicationController
     @datas = ConvenienceItemKeyword.where(convenience_master_id: master_id)
   end
   
+  def add_keyword_csv
+  end
+  def insert_keyword_csv
+    respond_to do |format|
+      if ConvenienceItemKeyword.import_csv(params[:csv_file])
+        format.html { redirect_to add_keyword_csv_convenience_items_path }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to add_keyword_csv_convenience_items_path, :notice => "CSVファイルの読み込みに失敗しました。" }
+        format.json { head :no_content }
+      end
+    end
+  end
+  
   def insert_keyword
     keyword = params[:convenience_item_keyword][:keyword]
     master_id = params[:convenience_item_keyword][:convenience_master_id]
@@ -100,7 +114,12 @@ class ConvenienceItemsController < ApplicationController
     if params[:convenience_item_keyword]
       keyword = params[:convenience_item_keyword]
       
-      master_ids = ConvenienceItemKeyword.where(keyword: keyword).pluck(:convenience_master_id)
+      ids = ConvenienceMaster.where("item_name like ?", "%#{keyword}%").pluck(:id)
+      
+      ids2 = ConvenienceItemKeyword.where(keyword: keyword).pluck(:convenience_master_id)
+      master_ids = ids + ids2
+      master_ids.uniq!
+      
       start_date = Time.now.beginning_of_month
       end_at = Time.now.end_of_month
       

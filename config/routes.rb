@@ -17,6 +17,8 @@ Rails.application.routes.draw do
       get "master_list"
       get "add_keyword"
       delete "delete_keyword"
+      get "add_keyword_csv"
+      post "insert_keyword_csv"
     end
     member do
       post "insert_keyword"
