@@ -61,7 +61,7 @@ class ConvenienceItemsController < ApplicationController
   end
   
   def master_list
-    @list = ConvenienceMaster.all
+    @list = ConvenienceMaster.all.order("id desc")
   end
   
   def add_keyword
