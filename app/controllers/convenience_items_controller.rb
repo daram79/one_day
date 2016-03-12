@@ -77,8 +77,13 @@ class ConvenienceItemsController < ApplicationController
   def insert_keyword_csv
     respond_to do |format|
       if ConvenienceItemKeyword.import_csv(params[:csv_file])
-        format.html { redirect_to add_keyword_csv_convenience_items_path }
-        format.json { head :no_content }
+        if Rails.env == 'development'
+          format.html { redirect_to add_keyword_csv_convenience_items_path }
+          format.json { head :no_content }
+        else
+          format.html { redirect_to add_keyword_csv_convenience_items_path, :port => 81 }
+          format.json { head :no_content }
+        end
       else
         format.html { redirect_to add_keyword_csv_convenience_items_path, :notice => "CSVファイルの読み込みに失敗しました。" }
         format.json { head :no_content }
