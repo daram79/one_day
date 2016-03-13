@@ -116,7 +116,10 @@ class EventMailingListsController < ApplicationController
     email = params[:user_email]
     event_user = EventMailingList.find_by_email(email)
     unless event_user
-      EventMailingList.create(email: email)
+      event_user = EventMailingList.create(email: email)
+      EventLog.create(event_user_id: event_user.id, screen_type: "EventMailingListsController", action_type: "create_user", log_type: "create_user")
+    else
+      EventLog.create(event_user_id: event_user.id, screen_type: "EventMailingListsController", action_type: "connect_user", log_type: "connect_user")
     end
     render json: {id: event_user.id, email: event_user.email}
   end
