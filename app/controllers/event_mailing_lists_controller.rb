@@ -32,6 +32,9 @@ class EventMailingListsController < ApplicationController
     unless @event_mailing_list
       @event_mailing_list = EventMailingList.new(event_mailing_list_params)
       @event_mailing_list.save
+      EventLog.create(event_user_id: @event_mailing_list.id, screen_type: "EventMailingListsController", action_type: "create_user", log_type: "create_user")
+    else
+      EventLog.create(event_user_id: @event_mailing_list.id, screen_type: "EventMailingListsController", action_type: "connect_user", log_type: "connect_user")
     end
     # redirect_to controller: 'event_mailing_lists', action: 'index', id: @event_mailing_list.id
 
