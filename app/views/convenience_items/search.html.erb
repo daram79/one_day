@@ -1,6 +1,6 @@
 <%= form_tag('search', method: "get", name: "search") do %>
 <div style="padding-top: 20px; width: 100%; text-align: center;">
-	<input type="text" placeholder="예) 초콜릿" name="convenience_item_keyword" style="padding:12px;" />
+	<input type="text" placeholder="예) 초콜릿" name="convenience_item_keyword" style="padding:12px;" value="<%=@keyword%>" />
 	<a href="#" class="submit_btn" onclick="document.search.submit();">검색</a>
 	<!-- <input type="button" value="검색"> -->
 	<!-- <%= submit_tag "검색", :style => "-webkit-appearance: none; -moz-appearance: none; appearance: none; padding:9px;" %> -->

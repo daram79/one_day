@@ -116,12 +116,12 @@ class ConvenienceItemsController < ApplicationController
   
   def search
     @convenience_items = []
+    @keyword = params[:convenience_item_keyword]
     if params[:convenience_item_keyword]
-      keyword = params[:convenience_item_keyword]
       
-      ids = ConvenienceMaster.where("item_name like ?", "%#{keyword}%").pluck(:id)
+      ids = ConvenienceMaster.where("item_name like ?", "%#{@keyword}%").pluck(:id)
       
-      ids2 = ConvenienceItemKeyword.where("keyword like ?", "%#{keyword}%").pluck(:convenience_master_id)
+      ids2 = ConvenienceItemKeyword.where("keyword like ?", "%#{@keyword}%").pluck(:convenience_master_id)
       master_ids = ids + ids2
       master_ids.uniq!
       
