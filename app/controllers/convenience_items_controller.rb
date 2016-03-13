@@ -121,7 +121,7 @@ class ConvenienceItemsController < ApplicationController
       
       ids = ConvenienceMaster.where("item_name like ?", "%#{keyword}%").pluck(:id)
       
-      ids2 = ConvenienceItemKeyword.where(keyword: keyword).pluck(:convenience_master_id)
+      ids2 = ConvenienceItemKeyword.where("keyword like ?", "%#{keyword}%").pluck(:convenience_master_id)
       master_ids = ids + ids2
       master_ids.uniq!
       
