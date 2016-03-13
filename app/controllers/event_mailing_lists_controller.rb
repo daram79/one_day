@@ -116,7 +116,7 @@ class EventMailingListsController < ApplicationController
     email = params[:user_email]
     if email.eql?("ggulshopping*@ggulshopping.com")
       event_user = EventMailingList.create(email: email)
-      event_user.email.sub! "*", event_user.email.id.to_s
+      event_user.email.sub! "*", event_user.id.to_s
       event_user.save
       EventLog.create(event_user_id: event_user.id, screen_type: "EventMailingListsController", action_type: "create_user", log_type: "create_user")
     else
