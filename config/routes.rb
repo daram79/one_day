@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
 
+  resources :event_logs do
+    collection do
+      post "insert_log"
+    end
+  end
+
   resources :event_reserves
 
   resources :event_details do
