@@ -117,8 +117,7 @@ class ConvenienceItemsController < ApplicationController
   def search
     @convenience_items = []
     @keyword = params[:convenience_item_keyword]
-    if params[:convenience_item_keyword]
-      
+    if @keyword
       ids = ConvenienceMaster.where("item_name like ?", "%#{@keyword}%").pluck(:id)
       
       ids2 = ConvenienceItemKeyword.where("keyword like ?", "%#{@keyword}%").pluck(:convenience_master_id)
@@ -133,17 +132,20 @@ class ConvenienceItemsController < ApplicationController
       # end_at = Time.now.end_of_month.prev_month.prev_month
       
       @convenience_items = ConvenienceItem.where("convenience_master_id in (?) and created_at between ? and ? ", master_ids, start_date, end_at)
-      unless @convenience_items.blank?
-        @half_cnt = @convenience_items.size/2
-        @table_index = []
-        for i in 0..@half_cnt - 1
-          @table_index.push i * 2 
-        end
-        @is_even = false
-        @is_even = true if @convenience_items.size % 2 == 1
-        @image_size = 100
-      end
+    else
+      start_date = Time.now.beginning_of_month
+      end_at = Time.now.end_of_month
+      item_type = "1+1"
+      @convenience_items = ConvenienceItem.where("item_type= ? and created_at between ? and ? ", item_type, start_date, end_at)
     end
+    @half_cnt = @convenience_items.size/2
+    @table_index = []
+    for i in 0..@half_cnt - 1
+      @table_index.push i * 2 
+    end
+    @is_even = false
+    @is_even = true if @convenience_items.size % 2 == 1
+    @image_size = 100
   end
 
   # POST /convenience_items
