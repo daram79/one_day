@@ -331,8 +331,8 @@ class EventsController < ApplicationController
   end
   
   def get_new_flg
-    data = EventUserAlram.where(event_mailing_list_id: params[:user_id]).pluck(:menu_id)
-    render json: data
+    # data = EventUserAlram.where(event_mailing_list_id: params[:user_id]).pluck(:menu_id)
+    render json: {flg: true}
   end
   
   def del_new_flg
