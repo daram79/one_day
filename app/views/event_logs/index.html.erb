@@ -4,22 +4,30 @@
 	<table style="text-align: center">
 		<% @log_type_ary.each do |log_type| %>
 			<% @log_histories[:"#{log_type}"].each_with_index do |data, cnt| %>
-			<% if cnt == 0 %>
-				<tr><td style="text-align: left; padding-top:20px;"><%= @log_histories[:"#{log_type}"][cnt].label_text %></td></tr>
-			<% end %>
-			<tr>
-				<td><span><%=data.value%></span></td>
-				<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
-					<td><span><%=@today_logs[:"#{log_type}"]%></span></td>
+				<% if cnt == 0 %>
+					<tr><td style="text-align: left; padding-top:20px;"><%= @log_histories[:"#{log_type}"][cnt].label_text %></td></tr>
 				<% end %>
-			</tr>
-			
-			<tr>
-				<td><%= data.created_at.strftime("%m-%d")%></td>
-				<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
-					<td><%= "오늘" %></td>
+				<% if cnt == 0 %>
+				<tr>
 				<% end %>
-			</tr>
+					<td><span><%=data.value%></span></td>
+					<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
+						<td><span><%=@today_logs[:"#{log_type}"]%></span></td>
+					<% end %>
+				<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
+				</tr>
+				<% end %>
+				
+				<% if cnt == 0 %>
+				<tr>
+				<% end %>
+					<td><%= data.created_at.strftime("%m-%d")%></td>
+					<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
+						<td><%= "오늘" %></td>
+					<% end %>
+				<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
+				</tr>
+				<% end %>
 			<% end %>
 		<% end %>
 	</table>
