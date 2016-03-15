@@ -15,7 +15,8 @@
 			
 			<tr>
 				<% @log_histories[:"#{log_type}"].each_with_index do |data, cnt| %>
-					<td><%= data.created_at.strftime("%m-%d")%></td>
+				<% date = data.created_at.in_time_zone("Asia/Seoul") %>
+					<td><%= date.change(day: date.day-1).strftime("%m-%d")%></td>
 					<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
 						<td><%= "오늘" %></td>
 					<% end %>
