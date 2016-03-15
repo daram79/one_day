@@ -5,85 +5,60 @@ class EventLogsController < ApplicationController
   # GET /event_logs.json
   def index
     # @event_logs = EventLog.all
+    @log_type_ary = ["new_user_count", "dau_count", "connect_count", "push_connect_count", "gs25_connect_count", "seven_eleven_connect_count", "mini_stop_connect_count",
+                    "cu_connect_count", "search_connect_count", "gguldeal_content_click_count", "search_word"]
     
     start_date = Time.now.beginning_of_day
     end_date = Time.now.end_of_day
     
     #today
     #dau
-    @new_user = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "create_user").count
+    
+    @today_logs = Hash.new
+    
+    @today_logs[:"#{@log_type_ary[0]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "create_user").count
+    
     dau = EventLog.where("created_at between  ? and ?", start_date, end_date).pluck("event_user_id")
     if dau.blank?
-      @dau_size = 0
+      @today_logs[:"#{@log_type_ary[1]}"] = 0
     else
-      @dau_size = dau.uniq!.size
+      @today_logs[:"#{@log_type_ary[1]}"] = dau.uniq!.size
     end
         
-    @connect_user_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "connect_user").count
+    @today_logs[:"#{@log_type_ary[2]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "connect_user").count
     
     
     
     #push 방문 접속자
-    @push_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_push").count
+    @today_logs[:"#{@log_type_ary[3]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_push").count
     
     #push 편의점 방문 접속자
-    @conveni_gs25_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_gs25").count
+    @today_logs[:"#{@log_type_ary[4]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_gs25").count
     
     
-    @conveni_seven_eleven_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_seven_eleven").count
+    @today_logs[:"#{@log_type_ary[5]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_seven_eleven").count
     
     
-    @conveni_mini_stop_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_mini_stop").count
+    @today_logs[:"#{@log_type_ary[6]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_mini_stop").count
     
     
-    @conveni_cu_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_cu").count
+    @today_logs[:"#{@log_type_ary[7]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_cu").count
     
-    @conveni_search_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_search1+1").count
+    @today_logs[:"#{@log_type_ary[8]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_search1+1").count
     
-    @conveni_search_words = EventLog.where("created_at between  ? and ? and log_type = ?", start_date, end_date, "search_1+1").pluck(:action_type)
+    @today_logs[:"#{@log_type_ary[9]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_hotdeal_content").count
     
-    @click_content_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_hotdeal_content").count
+    @today_logs[:"#{@log_type_ary[10]}"] = EventLog.where("created_at between  ? and ? and log_type = ?", start_date, end_date, "search_1+1").pluck(:action_type)
     
     
     #yesterday
     #dau
-    start_date = start_date.yesterday
-    end_date = end_date.yesterday
     
-    @yesterday_new_user = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "create_user").count
-    dau = EventLog.where("created_at between  ? and ?", start_date, end_date).pluck("event_user_id")
-    if dau.blank?
-      @yesterday_dau_size = 0
-    else
-      @yesterday_dau_size = dau.uniq!.size
+    
+    @log_histories = Hash.new
+    @log_type_ary.each do |log_type|
+      @log_histories[:"#{log_type}"] = EventLogHistory.where(log_type: log_type).order(:id)
     end
-    
-    
-    @yesterday_connect_user_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "connect_user").count
-    
-    
-    
-    #push 방문 접속자
-    @yesterday_push_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_push").count
-    
-    #push 편의점 방문 접속자
-    @yesterday_conveni_gs25_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_gs25").count
-    
-    
-    @yesterday_conveni_seven_eleven_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_seven_eleven").count
-    
-    
-    @yesterday_conveni_mini_stop_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_mini_stop").count
-    
-    
-    @yesterday_conveni_cu_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_cu").count
-    
-    @yesterday_conveni_search_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_conveni_search1+1").count
-    
-    @yesterday_conveni_search_words = EventLog.where("created_at between  ? and ? and log_type = ?", start_date, end_date, "search_1+1").pluck(:action_type)
-    
-    @yesterday_click_content_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_hotdeal_content").count
-    
   end
 
   # GET /event_logs/1

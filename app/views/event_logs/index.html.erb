@@ -1,42 +1,27 @@
-<div style="padding-top: 20px; text-align: center;">
-	<div>오늘 데이터</div>
-	<div>신규 회원: <%=@new_user%></div>
-	<div>활성 유저: <%=@dau_size%></div>
-	<div>접속 횟수: <%=@connect_user_size%></div>
-	<div>꿀딜 클릭수: <%=@click_content_size%></div>
-	<div>푸쉬 클릭수: <%=@push_size%></div>
+<div style="padding:30px;">	
 	
-	<div>GS25 클릭수: <%=@conveni_gs25_size%></div>
-	<div>세븐일레븐 클릭수: <%=@conveni_seven_eleven_size%></div>
-	<div>미니스톱 클릭수: <%=@conveni_mini_stop_size%></div>
-	<div>CU 클릭수: <%=@conveni_cu_size%></div>
-	<div>1+1검색 클릭수: <%=@conveni_search_size%></div>
-	<div>1+1 검색단어
-		<% @conveni_search_words.each do |conveni_search_word| %>
-		<div><%= conveni_search_word %></div>
+	
+	<table style="text-align: center">
+		<% @log_type_ary.each do |log_type| %>
+			<% @log_histories[:"#{log_type}"].each_with_index do |data, cnt| %>
+			<% if cnt == 0 %>
+				<tr><td style="text-align: left; padding-top:20px;"><%= @log_histories[:"#{log_type}"][cnt].label_text %></td></tr>
+			<% end %>
+			<tr>
+				<td><span><%=data.value%></span></td>
+				<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
+					<td><span><%=@today_logs[:"#{log_type}"]%></span></td>
+				<% end %>
+			</tr>
+			
+			<tr>
+				<td><%= data.created_at.strftime("%m-%d")%></td>
+				<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
+					<td><%= "오늘" %></td>
+				<% end %>
+			</tr>
+			<% end %>
 		<% end %>
-	</div>
-	<hr>
-	<div>어제 데이터</div>
-	<div>신규 회원: <%=@yesterday_new_user%></div>
-	<div>활성 유저: <%=@yesterday_dau_size%></div>
-	<div>접속 횟수: <%=@yesterday_connect_user_size%></div>
-	<div>꿀딜 클릭수: <%=@yesterday_click_content_size%></div>
-	<div>푸쉬 클릭수: <%=@yesterday_push_size%></div>
-	
-	<div>GS25 클릭수: <%=@yesterday_conveni_gs25_size%></div>
-	<div>세븐일레븐 클릭수: <%=@yesterday_conveni_seven_eleven_size%></div>
-	<div>미니스톱 클릭수: <%=@yesterday_conveni_mini_stop_size%></div>
-	<div>CU 클릭수: <%=@yesterday_conveni_cu_size%></div>
-	<div>1+1검색 클릭수: <%=@yesterday_conveni_search_size%></div>
-	<div>1+1 검색단어
-		<% @yesterday_conveni_search_words.each do |conveni_search_word| %>
-		<div><%= conveni_search_word %></div>
-		<% end %>
-	</div>
-	
-	
-	
-	
+	</table>
 	
 </div>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160315055348) do
+ActiveRecord::Schema.define(version: 20160315173539) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -257,6 +257,8 @@ ActiveRecord::Schema.define(version: 20160315055348) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "event_log_histories", ["log_type"], name: "index_event_log_histories_on_log_type", using: :btree
 
   create_table "event_logs", force: true do |t|
     t.integer  "event_user_id"
