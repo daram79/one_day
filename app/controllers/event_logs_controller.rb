@@ -6,7 +6,7 @@ class EventLogsController < ApplicationController
   def index
     # @event_logs = EventLog.all
     @log_type_ary = ["new_user_count", "dau_count", "connect_count", "push_connect_count", "gs25_connect_count", "seven_eleven_connect_count", "mini_stop_connect_count",
-                    "cu_connect_count", "search_connect_count", "gguldeal_content_click_count", "search_word"]
+                    "cu_connect_count", "search_connect_count", "gguldeal_content_click_count"]
     
     start_date = Time.now.beginning_of_day
     end_date = Time.now.end_of_day
@@ -48,7 +48,11 @@ class EventLogsController < ApplicationController
     
     @today_logs[:"#{@log_type_ary[9]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "click_hotdeal_content").count
     
-    @today_logs[:"#{@log_type_ary[10]}"] = EventLog.where("created_at between  ? and ? and log_type = ?", start_date, end_date, "search_1+1").pluck(:action_type)
+    tmp_datas = EventLog.where("created_at between  ? and ? and log_type = ?", start_date, end_date, "search_1+1").pluck(:action_type)
+    @today_search_words = []
+    tmp_datas.each do |word|
+      @today_search_words.push word.split("_")[-1]
+    end
     
     
     #yesterday
@@ -59,6 +63,15 @@ class EventLogsController < ApplicationController
     @log_type_ary.each do |log_type|
       @log_histories[:"#{log_type}"] = EventLogHistory.where(log_type: log_type).order(:id)
     end
+    
+    @search_words = Hash.new
+    
+    search_word_datas = EventLogHistory.where(log_type: "search_word").order("id desc")
+    search_word_datas.each do |data|
+      @search_words["#{data.created_at.in_time_zone("Asia/Seoul").strftime("%Y-%m-%d")}"] = "" unless @search_words["#{data.created_at.in_time_zone("Asia/Seoul").strftime("%Y-%m-%d")}"]
+      @search_words["#{data.created_at.in_time_zone("Asia/Seoul").strftime("%Y-%m-%d")}"] += "#{data.value}/"
+    end
+    
   end
 
   # GET /event_logs/1

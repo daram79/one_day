@@ -23,6 +23,18 @@
 				<% end %>
 			</tr>
 		<% end %>
+		
+		<tr><td style="padding-top: 20px;">편의점 1+1 검색단어</td></tr>
+		<tr>
+			<td>오늘</td>
+			<td><%= @today_search_words.blank? ? "없음" : @today_search_words.join("/")%></td>
+		</tr>
+		<% @search_words.each do|key, val| %>
+		<tr>
+			<td><%=key%></td>
+			<td><%=val%></td>
+		</tr>
+		<% end %>
 	</table>
 	
 </div>
