@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160313031310) do
+ActiveRecord::Schema.define(version: 20160315055348) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -248,6 +248,14 @@ ActiveRecord::Schema.define(version: 20160313031310) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "event_reserve_id"
+  end
+
+  create_table "event_log_histories", force: true do |t|
+    t.string   "label_text"
+    t.string   "value"
+    t.string   "log_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "event_logs", force: true do |t|

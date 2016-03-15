@@ -5,6 +5,7 @@ class EventLogsController < ApplicationController
   # GET /event_logs.json
   def index
     # @event_logs = EventLog.all
+    
     start_date = Time.now.beginning_of_day
     end_date = Time.now.end_of_day
     
@@ -17,8 +18,7 @@ class EventLogsController < ApplicationController
     else
       @dau_size = dau.uniq!.size
     end
-    
-    
+        
     @connect_user_size = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "connect_user").count
     
     
