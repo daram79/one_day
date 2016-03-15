@@ -10,6 +10,7 @@ class EventLogsController < ApplicationController
     
     #today
     #dau
+    @new_user = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "create_user").count
     dau = EventLog.where("created_at between  ? and ?", start_date, end_date).pluck("event_user_id")
     if dau.blank?
       @dau_size = 0
@@ -47,9 +48,9 @@ class EventLogsController < ApplicationController
     #yesterday
     #dau
     start_date = start_date.yesterday
-    end_date = start_date.yesterday
+    end_date = end_date.yesterday
     
-    
+    @yesterday_new_user = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "create_user").count
     dau = EventLog.where("created_at between  ? and ?", start_date, end_date).pluck("event_user_id")
     if dau.blank?
       @yesterday_dau_size = 0
