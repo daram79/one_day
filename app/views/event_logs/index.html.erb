@@ -9,9 +9,9 @@
 			<tr><td style="text-align: left; padding-top:20px;"><%= @log_histories[:"#{log_type}"][0].label_text %></td></tr>
 			<tr>
 				<% @log_histories[:"#{log_type}"].each_with_index do |data, cnt| %>
-					<td><span><%=data.value%></span></td>
+					<td width="50"><span><%=data.value%></span></td>
 					<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
-						<td><span><%=@today_logs[:"#{log_type}"]%></span></td>
+						<td width="50"><span><%=@today_logs[:"#{log_type}"]%></span></td>
 					<% end %>
 				<% end %>
 			</tr>
