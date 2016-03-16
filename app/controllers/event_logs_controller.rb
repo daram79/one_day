@@ -5,6 +5,12 @@ class EventLogsController < ApplicationController
   # GET /event_logs.json
   def index
     # @event_logs = EventLog.all
+    
+    #tatal user
+    regi_ids = EventUserRegistrations.all.pluck(:registration_id)
+    regi_ids.uniq!
+    @total_user_count = regi_ids.size
+    
     @log_type_ary = ["new_user_count", "dau_count", "connect_count", "push_connect_count", "gs25_connect_count", "seven_eleven_connect_count", "mini_stop_connect_count",
                     "cu_connect_count", "search_connect_count", "gguldeal_content_click_count"]
     
