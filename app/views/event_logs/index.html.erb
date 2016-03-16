@@ -27,8 +27,8 @@
 			</tr>
 		<% end %>
 	</table>
-	<table border="1">
-		<tr><td style="padding-top: 20px; font-weight: bold;" colspan="2">편의점 1+1 검색단어</td></tr>
+	<table style="margin-top: 30px;" border="1">
+		<tr><td style="font-weight: bold;" colspan="2">편의점 1+1 검색단어</td></tr>
 		<tr>
 			<td>오늘</td>
 			<td><%= @today_search_words.blank? ? "없음" : @today_search_words.join("/")%></td>
