@@ -1,12 +1,12 @@
 <div style="padding:30px;">	
 	
 	<table>
-		<tr><td>꿀가득 전체 회원수: <%=@total_user_count%></td></tr>
+		<tr><td><span style="font-weight: bold;">전체 회원수: </span><%=@total_user_count%></td></tr>
 	</table>
 	
-	<table style="text-align: center">
+	<table style="text-align: center; border-collapse: collapse;">
 		<% @log_type_ary.each do |log_type| %>
-			<tr><td style="text-align: left; padding-top:20px;" width="100"><%= @log_histories[:"#{log_type}"][0].label_text %></td></tr>
+			<tr><td style="text-align: left; padding-top:30px; font-weight: bold" colspan="2"><%= @log_histories[:"#{log_type}"][0].label_text %></td></tr>
 			<tr>
 				<% @log_histories[:"#{log_type}"].each_with_index do |data, cnt| %>
 					<td width="50"><span><%=data.value%></span></td>
@@ -19,16 +19,16 @@
 			<tr>
 				<% @log_histories[:"#{log_type}"].each_with_index do |data, cnt| %>
 				<% date = data.created_at.in_time_zone("Asia/Seoul") %>
-					<td><%= date.change(day: date.day-1).strftime("%m-%d")%></td>
+					<td style="border-bottom:1pt solid #bcbcbc;"><%= date.change(day: date.day-1).strftime("%m-%d")%></td>
 					<% if cnt + 1 == @log_histories[:"#{log_type}"].size %>
-						<td><%= "오늘" %></td>
+						<td style="border-bottom:1pt solid #bcbcbc;"><%= "오늘" %></td>
 					<% end %>
 				<% end %>
 			</tr>
 		<% end %>
 	</table>
-	<table>
-		<tr><td style="padding-top: 20px;">편의점 1+1 검색단어</td></tr>
+	<table border="1">
+		<tr><td style="padding-top: 20px; font-weight: bold;" colspan="2">편의점 1+1 검색단어</td></tr>
 		<tr>
 			<td>오늘</td>
 			<td><%= @today_search_words.blank? ? "없음" : @today_search_words.join("/")%></td>
