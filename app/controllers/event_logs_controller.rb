@@ -28,7 +28,8 @@ class EventLogsController < ApplicationController
     if dau.blank?
       @today_logs[:"#{@log_type_ary[1]}"] = 0
     else
-      @today_logs[:"#{@log_type_ary[1]}"] = dau.uniq!.size
+      dau.uniq!
+      @today_logs[:"#{@log_type_ary[1]}"] = dau.size
     end
         
     @today_logs[:"#{@log_type_ary[2]}"] = EventLog.where("created_at between  ? and ? and action_type = ?", start_date, end_date, "connect_user").count
