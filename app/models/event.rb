@@ -323,7 +323,7 @@ class Event < ActiveRecord::Base
   end
 
   def send_push
-    if Time.now.hour > 8 && Time.now.hour < 24
+    if Time.now.hour > 6 && Time.now.hour < 24
       if self.push_flg && self.show_flg
         logger.info("called send_push")
         if @@super_deal_ids.any? { |id| self.event_site_id.to_s.include?(id) }
