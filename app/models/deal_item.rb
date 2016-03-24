@@ -1189,5 +1189,76 @@ class DealItem < ActiveRecord::Base
     
   end
   
+  #####################################################################
+  def self.search_11st(browser)
+    
+    browser = Watir::Browser.new
+    url = "http://www.11st.co.kr/html/main.html"
+    browser.goto url
+    doc = Nokogiri::HTML.parse(browser.html)
+    list01 = doc.css("#Main_layer_RankingTotal ol li")
+     (0..3).each do |num|
+       p title = list01[num].css("p").text
+       p price = list01[num].css("em").text
+     end
+  end
+  
+  def self.read_g9(browser)
+    browser = Watir::Browser.new
+    url = "http://www.g9.co.kr/"
+    browser.goto url
+    
+    sleep 1
+    
+    doc = Nokogiri::HTML.parse(browser.html)
+    list = doc.css("#goods_list1775 li")
+    list.each do |li|
+      title = li.css(".subject").text
+      title = title.delete!("\n") if title.include?("\n")
+      title = title.delete!("\t") if title.include?("\t")
+      p title
+      
+      price = li.css(".price").text.scan(/\d/).join('').to_i
+      p price
+      
+    end
+    
+  end
+  
+  def self.read_auction(browser)
+    browser = Watir::Browser.new
+    url = "http://www.auction.co.kr"
+    browser.goto url
+    
+    
+    
+    doc = Nokogiri::HTML.parse(browser.html)
+    list = doc.css("#touchSlider_allkill li")
+    list.each do |li|
+      event_url = li.css(".allkill_box a").attr("href").value
+      event_id = event_id = event_url.split("itemno=")[1]
+      title = li.css(".allkill_box").text
+      p title
+      
+      price = li.css(".price_box .price_ing").text.scan(/\d/).join('').to_i
+      p price
+    end
+    
+    list = doc.css("#touchSlider_thema_1 li")
+    list.each do |li|
+      event_url = li.css(".allkill_box a").attr("href").value
+      event_id = event_url.split("itemno=")[1]
+      
+      title = li.css(".allkill_box").text
+      title.delete!("\t") if title.include?("\t")
+      p title
+      
+      price = li.css(".price_box .price_ing").text.scan(/\d/).join('').to_i
+      p price
+      
+    end
+    
+  end
+  
   
 end
