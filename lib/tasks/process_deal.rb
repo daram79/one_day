@@ -1,12 +1,12 @@
 #encoding: utf-8
 require "#{File.dirname(__FILE__)}/../../config/environment.rb"
 
-headless = Headless.new
-headless.start
+#headless = Headless.new
+#headless.start
 browser = Watir::Browser.new
-browser.driver.manage.timeouts.implicit_wait = 3
+#browser.driver.manage.timeouts.implicit_wait = 3
 conveni_flg = true
-  i = 0
+  # i = 0
   while 1
     s = Time.now
     p "process start #{s}"
@@ -50,12 +50,12 @@ conveni_flg = true
     unless ret
       p "G9 error"
       browser.close
-      headless.destroy
+      #headless.destroy
       
-      headless = Headless.new
-      headless.start
+      #headless = Headless.new
+      #headless.start
       browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
+      #browser.driver.manage.timeouts.implicit_wait = 3
     end
     
     p "슈퍼꿀딜"
@@ -63,12 +63,12 @@ conveni_flg = true
     unless ret
       p "슈퍼꿀딜 error"
       browser.close
-      headless.destroy
+      #headless.destroy
       
-      headless = Headless.new
-      headless.start
+      #headless = Headless.new
+      #headless.start
       browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
+      #browser.driver.manage.timeouts.implicit_wait = 3
     end
     
     #쇼킹딜
@@ -113,6 +113,19 @@ conveni_flg = true
       # browser.driver.manage.timeouts.implicit_wait = 3
     # end
     
+    p "롯데시네마"
+    ret = DealItem.movie_event_lotteciname(browser)
+    unless ret
+      p "롯데시네마 error"
+      browser.close
+      #headless.destroy
+      
+      #headless = Headless.new
+      #headless.start
+      browser = Watir::Browser.new
+      #browser.driver.manage.timeouts.implicit_wait = 3
+    end
+    
     
     
     p "메가박스"
@@ -120,12 +133,7 @@ conveni_flg = true
     unless ret
       p "메가박스 error"
       browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
       browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
     end
     e = Time.now
     
@@ -138,12 +146,7 @@ conveni_flg = true
     rescue
       p "일괄등록 error"
       browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
       browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
     end
     
     p "process end #{e}"
@@ -179,46 +182,26 @@ conveni_flg = true
       unless ret
         p "GS25 error"
         browser.close
-        headless.destroy
-        
-        headless = Headless.new
-        headless.start
         browser = Watir::Browser.new
-        browser.driver.manage.timeouts.implicit_wait = 3
       end
       ret = DealItem.cu(browser)
       unless ret
         p "CU error"
         browser.close
-        headless.destroy
-        
-        headless = Headless.new
-        headless.start
         browser = Watir::Browser.new
-        browser.driver.manage.timeouts.implicit_wait = 3
       end
       ret = DealItem.seven_eleven(browser)
       unless ret
         p "세븐일레븐 error"
         browser.close
-        headless.destroy
-        
-        headless = Headless.new
-        headless.start
         browser = Watir::Browser.new
-        browser.driver.manage.timeouts.implicit_wait = 3
       end
       
       ret = DealItem.mini_stop(browser)
       unless ret
         p "미니스탑 error"
         browser.close
-        headless.destroy
-        
-        headless = Headless.new
-        headless.start
         browser = Watir::Browser.new
-        browser.driver.manage.timeouts.implicit_wait = 3
       end
     elsif Time.now > end_at
       conveni_flg = true

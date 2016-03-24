@@ -153,7 +153,8 @@ class DealItem < ActiveRecord::Base
       #플레쉬딜
       
       doc = Nokogiri::HTML.parse(browser.html)
-      unless doc.css("#flash_deal_goods_list").blank?
+      # unless doc.css("#flash_deal_goods_list").blank?
+      unless doc.css("#flash_deal_goods_list").css(".tag").blank?
         p "G9 플레쉬딜 정보 수집"
         
         deal_title = doc.css("#flash_deal_goods_list").css(".title").text
@@ -708,6 +709,40 @@ class DealItem < ActiveRecord::Base
     rescue => e
       return false
     end
+  end
+  
+  def self.movie_event_lotteciname(browser)
+    begin
+      url = "http://event.lottecinema.co.kr/LCHS/Contents/Event/event-summary-list.aspx"
+      browser.goto url
+      event_site_id = 4002
+      
+      doc = Nokogiri::HTML.parse(browser.html)
+      list = doc.css("ul#emovie_list_20 li")
+      list.each do |li|
+        event_id = li.css(".event a").attr("onclick").value.split("(")[1].split(",")[0].scan(/\d/).join('').to_i
+        event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        if event.blank?
+          title = li.css(".event").text
+          # price.lstrip!
+          event_name = "[롯데시네마]" + title 
+          event_url = url
+          image_url = li.css("a img")[0].attr("src")
+        
+          if title.include?("얼리버드")
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+                            show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 10001)
+          else
+            # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, price: price, original_price: original_price)
+          end
+        else
+        end
+      end
+      return true
+    rescue => e
+      return false
+    end
+    
   end
   
   def self.add_tmon_super_ggul(browser)
