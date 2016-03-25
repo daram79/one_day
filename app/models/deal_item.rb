@@ -1201,15 +1201,14 @@ class DealItem < ActiveRecord::Base
       (0..3).each do |num|
         event_id =  list[num].css("a").attr("href").value.split(',')[-2].split("'")[1]
         event_url = "http://www.11st.co.kr/html/bestSellerMain4.html?prdNo=#{event_id}"
-           
               
         event_name = list[num].css("p").text
         price = list[num].css("a em").text.scan(/\d/).join('').to_i
-        
+        image_url = list[0].css("img").attr("src").value
         if price < 3000
           event = Event.where(event_id: event_id)
           if event.blank?
-            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
             Ppomppu.send_read_push(event_name, price, event_url)
           end
         end
@@ -1238,14 +1237,17 @@ class DealItem < ActiveRecord::Base
   
   def self.read_g9(browser)
     begin
-      url = "http://www.g9.co.kr/#today_deal"
+      url = "http://www.g9.co.kr"
       browser.goto url
+      
+      browser.li(:class =>'today').click
       
       
       # sleep 1
       
       doc = Nokogiri::HTML.parse(browser.html)
-      list = doc.css("#goods_list1775 li")
+      # list = doc.css("#goods_list1775 li")
+      list = doc.css("#today_deal .list_v3.default_v3 ul li")
       list.each do |li|
         if li.css(".ico_soldout").blank?
           event_url = "http://www.g9.co.kr" + li.css(".tag").attr("href").value
@@ -1255,17 +1257,19 @@ class DealItem < ActiveRecord::Base
           event_name = event_name.delete!("\n") if event_name.include?("\n")
           event_name = event_name.delete!("\t") if event_name.include?("\t")
           price = li.css(".price").text.scan(/\d/).join('').to_i
+          image_url = li.css(".tag .thumbs img").attr("src").value
           if price < 3000
             event = Event.where(event_id: event_id)
             if event.blank?
-              Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+              Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
               Ppomppu.send_read_push(event_name, price, event_url)
             end
           end
         end
       end
       return true
-    rescue
+    rescue => e
+      pp e.backtrace
       return false
     end
   end
@@ -1282,10 +1286,11 @@ class DealItem < ActiveRecord::Base
         event_id = event_url.split("itemno=")[1]
         event_name = li.css(".allkill_box").text
         price = li.css(".price_box .price_ing").text.scan(/\d/).join('').to_i
+        image_url = li.css(".inner .item_img_type1 a img").attr("data-original").value
         if price < 3000
           event = Event.where(event_id: event_id)
           if event.blank?
-            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
             Ppomppu.send_read_push(event_name, price, event_url)
           end
         end
@@ -1298,10 +1303,11 @@ class DealItem < ActiveRecord::Base
         event_name = li.css(".allkill_box").text
         event_name.delete!("\t") if event_name.include?("\t")
         price = li.css(".price_box .price_ing").text.scan(/\d/).join('').to_i
+        image_url = li.css(".inner .item_img_type1 .img_box.h_type3 .item_img.lazy").attr("src").value
         if price < 3000
           event = Event.where(event_id: event_id)
           if event.blank?
-            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
             Ppomppu.send_read_push(event_name, price, event_url)
           end
         end
@@ -1315,10 +1321,11 @@ class DealItem < ActiveRecord::Base
         event_name = li.css(".allkill_box").text
         event_name.delete!("\t") if event_name.include?("\t")
         price = li.css(".price_box .price_ing").text.scan(/\d/).join('').to_i
+        image_url = li.css(".inner .item_img_type1 .img_box.h_type3 .item_img.lazy").attr("src").value
         if price < 3000
           event = Event.where(event_id: event_id)
           if event.blank?
-            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
             Ppomppu.send_read_push(event_name, price, event_url)
           end
         end
@@ -1332,10 +1339,11 @@ class DealItem < ActiveRecord::Base
         event_url = "http://itempage3.auction.co.kr/detailview.aspx?ItemNo=#{event_id}"
         event_name = a.css(".showcace_info .text_type1").text
         price = a.css(".showcace_info em").text.scan(/\d/).join('').to_i
+        image_url = a.css(".showcase_img .item_img.lazy").attr("data-original").value
         if price < 3000
           event = Event.where(event_id: event_id)
           if event.blank?
-            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
             Ppomppu.send_read_push(event_name, price, event_url)
           end
         end
@@ -1348,16 +1356,18 @@ class DealItem < ActiveRecord::Base
         event_id = event_url.split("itemno=")[1]
         event_name = li.css(".showcace_info a")[0].text
         price = li.css(".showcace_info a")[1].text.scan(/\d/).join('').to_i
+        image_url = li.css(".showcase_img .item_img.lazy").attr("data-original").value
         if price < 3000
           event = Event.where(event_id: event_id)
           if event.blank?
-            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
             Ppomppu.send_read_push(event_name, price, event_url)
           end
         end
       end
       return true
-    rescue
+    rescue => e
+      pp e.backtrace
       return false
     end
   end
@@ -1384,7 +1394,7 @@ class DealItem < ActiveRecord::Base
         if price < 3000
           event = Event.where(event_id: event_id)
           if event.blank?
-            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
             Ppomppu.send_read_push(event_name, price, event_url)
           end
         end
