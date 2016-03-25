@@ -1194,7 +1194,9 @@ class DealItem < ActiveRecord::Base
     url = "http://www.11st.co.kr/html/main.html"
     browser.goto url
     doc = Nokogiri::HTML.parse(browser.html)
-    list = doc.css("#rankList4 li")
+    # list = doc.css("#rankList4 li")
+    
+    list = doc.css("#rakingWrap li.selected ol li")
     (0..3).each do |num|
       event_id =  list[num].css("a").attr("href").value.split(',')[-2].split("'")[1]
       event_url = "http://www.11st.co.kr/html/bestSellerMain4.html?prdNo=#{event_id}"
