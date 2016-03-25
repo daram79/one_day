@@ -1363,4 +1363,56 @@ class DealItem < ActiveRecord::Base
   end
   
   
+  def self.read_wemakeprice(browser)
+    begin
+      url = "http://www.wemakeprice.com/"
+      browser.goto url
+      begin
+        browser.link(:onclick=>"close_regpop();").click
+      rescue
+      end
+      
+      doc = Nokogiri::HTML.parse(browser.html)
+      
+      list = doc.css("#today_pick_cont li")
+      list.each do |li|
+        event_url = li.css("a").attr("href").value
+        event_id = event_url.split("?")[0].split("/")[-1]
+        image_url = li.css("img").attr("src").value
+        event_name = li.css("img").attr("alt").value
+        price = li.css(".price .num").text.scan(/\d/).join('').to_i
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      
+      list = doc.css("#wrap_main_best_area li")
+      list.each_with_index do |li, i|
+        # http://www.wemakeprice.com/deal/adeal/1001765?source=todaypick&no=1
+        next unless li.attr("item_id")
+        event_url = "http://www.wemakeprice.com" + li.css("a").attr("href").value
+        event_id = li.css("a").attr("href").value.split("?")[0].split("/")[-1]
+        image_url = li.css(".box_thumb img").attr("src").value
+        event_name = li.css(".tit_desc").text
+        price = li.css(".sale").text.scan(/\d/).join('').to_i
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      
+      return true
+    rescue => e
+      pp e.backtrace
+      return false
+    end
+  end  
+  
 end

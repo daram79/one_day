@@ -11,6 +11,21 @@ conveni_flg = true
     s = Time.now
     p "process start #{s}"
     
+    
+    
+    p "위메프 - 서치"
+    ret = DealItem.read_wemakeprice(browser)
+    unless ret
+      p "위메프 서치 error"
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
+    end
+    
     p "11번가 - 서치"
     ret = DealItem.read_11st(browser)
     unless ret
