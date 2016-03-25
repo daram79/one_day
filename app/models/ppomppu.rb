@@ -7,7 +7,7 @@ class Ppomppu < ActiveRecord::Base
     # event_user_id = EventMailingList.find_by_email("shimtong1004@gmail.com").id
     event_user_id = [1,2]
     registration_ids = EventUserRegistrations.where(event_user_id: event_user_id).pluck(:registration_id)
-    option = { :data => {'message' => "소셜커머스#{price}#{event_name} " + "***" + event_url} }   
+    option = { :data => {'message' => "소셜커머스:#{price} - #{event_name} " + "***" + event_url} }   
     
     registration_ids.uniq!
     unless registration_ids.blank?

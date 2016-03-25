@@ -1204,25 +1204,34 @@ class DealItem < ActiveRecord::Base
   end
   
   def self.read_g9(browser)
-    browser = Watir::Browser.new
-    url = "http://www.g9.co.kr/"
-    browser.goto url
-    
-    sleep 1
-    
-    doc = Nokogiri::HTML.parse(browser.html)
-    list = doc.css("#goods_list1775 li")
-    list.each do |li|
-      title = li.css(".subject").text
-      title = title.delete!("\n") if title.include?("\n")
-      title = title.delete!("\t") if title.include?("\t")
-      p title
+    begin
+      url = "http://www.g9.co.kr/"
+      browser.goto url
       
-      price = li.css(".price").text.scan(/\d/).join('').to_i
-      p price
+      # sleep 1
       
+      doc = Nokogiri::HTML.parse(browser.html)
+      list = doc.css("#goods_list1775 li")
+      list.each do |li|
+        event_url = "http://www.g9.co.kr" + li.css(".tag").attr("href").value
+        event_id = event_url.split("/")[-1]
+        
+        event_name = li.css(".subject").text
+        event_name = event_name.delete!("\n") if event_name.include?("\n")
+        event_name = event_name.delete!("\t") if event_name.include?("\t")
+        price = li.css(".price").text.scan(/\d/).join('').to_i
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      return true
+    rescue
+      return false
     end
-    
   end
   
   def self.read_auction(browser)

@@ -11,11 +11,23 @@ conveni_flg = true
     s = Time.now
     p "process start #{s}"
     
+    p "G9 - 서치"
+    ret = DealItem.read_g9(browser)
+    unless ret
+      p "G9 서치 error"
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
+    end
     
     p "옥션 - 서치"
     ret = DealItem.read_auction(browser)
     unless ret
-      p "G9 error"
+      p "옥션 서치 error"
       browser.close
       headless.destroy
       
