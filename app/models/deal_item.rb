@@ -1191,47 +1191,49 @@ class DealItem < ActiveRecord::Base
   
   #####################################################################
   def self.read_11st(browser)
-    url = "http://www.11st.co.kr/html/main.html"
-    browser.goto url
-    doc = Nokogiri::HTML.parse(browser.html)
-    # list = doc.css("#rankList4 li")
-    
-    list = doc.css("#rakingWrap li.selected ol li")
-    (0..3).each do |num|
-      event_id =  list[num].css("a").attr("href").value.split(',')[-2].split("'")[1]
-      event_url = "http://www.11st.co.kr/html/bestSellerMain4.html?prdNo=#{event_id}"
-         
-            
-      event_name = list[num].css("p").text
-      price = list[num].css("a em").text.scan(/\d/).join('').to_i
+    begin
+      url = "http://www.11st.co.kr/html/main.html"
+      browser.goto url
+      doc = Nokogiri::HTML.parse(browser.html)
+      # list = doc.css("#rankList4 li")
       
-      if price < 3000
-        event = Event.where(event_id: event_id)
-        if event.blank?
-          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
-          Ppomppu.send_read_push(event_name, price, event_url)
+      list = doc.css("#rakingWrap li.selected ol li")
+      (0..3).each do |num|
+        event_id =  list[num].css("a").attr("href").value.split(',')[-2].split("'")[1]
+        event_url = "http://www.11st.co.kr/html/bestSellerMain4.html?prdNo=#{event_id}"
+           
+              
+        event_name = list[num].css("p").text
+        price = list[num].css("a em").text.scan(/\d/).join('').to_i
+        
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
         end
       end
-    end
-    
-    list = doc.css("#shockingDealPrdWrap li")
-    list.each do |li|
-      image_url =  li.css(".thumb_prd img").attr("src").value
-      event_id =  li.css("a").attr("href").value.split("prdNo=")[1].split("&")[0]
-      event_url = li.css("a").attr("href").value
-      event_name = li.css(".prd_info p").text
-      price = li.css(".price_wrap strong").text.scan(/\d/).join('').to_i
-      if price < 3000
-        event = Event.where(event_id: event_id)
-        if event.blank?
-          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
-          Ppomppu.send_read_push(event_name, price, event_url)
+      
+      list = doc.css("#shockingDealPrdWrap li")
+      list.each do |li|
+        image_url =  li.css(".thumb_prd img").attr("src").value
+        event_id =  li.css("a").attr("href").value.split("prdNo=")[1].split("&")[0]
+        event_url = li.css("a").attr("href").value
+        event_name = li.css(".prd_info p").text
+        price = li.css(".price_wrap strong").text.scan(/\d/).join('').to_i
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
         end
       end
+      return true
+    rescue
+      return false
     end
-    
-    
-    
   end
   
   def self.read_g9(browser)
