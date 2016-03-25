@@ -1442,4 +1442,106 @@ class DealItem < ActiveRecord::Base
     end
   end  
   
+  def self.read_timon(browser)
+    cnt = 0
+    begin
+      url = "http://www.ticketmonster.co.kr/home"
+      browser.goto url
+      
+      begin
+        browser.link(:onclick=>"hideSubscribe();return false;").click
+      rescue
+      end
+      
+      doc = Nokogiri::HTML.parse(browser.html)
+      
+      list = doc.css("#_todaysHotSlider li.slider_item")
+      cnt += list.size
+      list.each do |li|
+        event_url = "http://www.ticketmonster.co.kr" + li.css("a").attr("href").value
+        event_id = event_url.split("?")[0].split("/")[-1]
+        event_name = li.css(".tit").text
+        price = li.css(".price").text.split("\n")[0].scan(/\d/).join('').to_i
+        image_url = li.css(".thum img").attr("src").value
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      
+      
+      browser.link(:onclick=>"selectHomeSeparate('todayshot');").click
+      sleep 1
+      doc = Nokogiri::HTML.parse(browser.html)
+      list = doc.css("#home_todayshot li.dealli")
+      cnt += list.size
+      list.each_with_index do |li, cnt|
+        event_url = "http://www.ticketmonster.co.kr" + li.css(".thmb").attr("href").value
+        event_id = event_url.split("/")[-1]
+        event_name = li.css(".subject").text
+        price = li.css(".sale em").text.split("\n")[0].scan(/\d/).join('').to_i
+        image_url = li.css(".thmb img").attr("src").value
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      
+      
+      browser.link(:onclick=>"selectHomeSeparate('todayopen');").click
+      sleep 1
+      doc = Nokogiri::HTML.parse(browser.html)
+      list = doc.css("#home_todayopen li.dealli")
+      cnt += list.size
+      list.each do |li|
+        event_url = "http://www.ticketmonster.co.kr" + li.css(".thmb").attr("href").value
+        event_id = event_url.split("/")[-1]
+        event_name = li.css(".subject").text
+        price = li.css(".sale em").text.split("\n")[0].scan(/\d/).join('').to_i
+        image_url = li.css(".thmb img").attr("src").value
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      
+      
+      
+      browser.link(:onclick=>"selectHomeSeparate('encore');").click
+      sleep 1
+      doc = Nokogiri::HTML.parse(browser.html)
+      list = doc.css("#home_todayopen li.dealli")
+      cnt += list.size
+      list.each do |li|
+        event_url = "http://www.ticketmonster.co.kr" + li.css(".thmb").attr("href").value
+        event_id = event_url.split("/")[-1]
+        event_name = li.css(".subject").text
+        price = li.css(".sale em").text.split("\n")[0].scan(/\d/).join('').to_i
+        image_url = li.css(".thmb img").attr("src").value
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      
+      p "total: #{cnt}"
+      return true
+    rescue => e
+      pp e.backtrace
+      return false
+    end
+  end
+  
 end
