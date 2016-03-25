@@ -1205,8 +1205,9 @@ class DealItem < ActiveRecord::Base
   
   def self.read_g9(browser)
     begin
-      url = "http://www.g9.co.kr/"
+      url = "http://www.g9.co.kr/#today_deal"
       browser.goto url
+      
       
       # sleep 1
       
