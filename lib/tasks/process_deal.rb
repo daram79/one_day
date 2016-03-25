@@ -10,39 +10,20 @@ conveni_flg = true
   while 1
     s = Time.now
     p "process start #{s}"
-    # p "start add key 1"
-    # DealSearchWord.add_key_wemakeprice(browser)
-#     
-    # p "start add key 2"
-    # DealSearchWord.add_key_coupang(browser)
     
-    #위메프
-    # p "위메프"
-    # ret = DealItem.add_wemakeprice(browser)
-    # unless ret
-      # p "위메프 error"
-      # browser.close
-      # headless.destroy
-#       
-      # headless = Headless.new
-      # headless.start
-      # browser = Watir::Browser.new
-      # browser.driver.manage.timeouts.implicit_wait = 3
-    # end
-#     
-    # #쿠팡
-    # p "쿠팡"
-    # ret = DealItem.add_coupang(browser)
-    # unless ret
-      # p "쿠팡 error"
-      # browser.close
-      # headless.destroy
-#       
-      # headless = Headless.new
-      # headless.start
-      # browser = Watir::Browser.new
-      # browser.driver.manage.timeouts.implicit_wait = 3
-    # end
+    
+    p "옥션 - 서치"
+    ret = DealItem.read_auction(browser)
+    unless ret
+      p "G9 error"
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
+    end
     
     #G9
     p "G9"
@@ -70,48 +51,6 @@ conveni_flg = true
       browser = Watir::Browser.new
       browser.driver.manage.timeouts.implicit_wait = 3
     end
-    
-    #쇼킹딜
-    # p "쇼킹딜"
-    # ret = DealItem.add_shocking_deal(browser)
-    # unless ret
-      # p "쇼킹딜 error"
-      # browser.close
-      # headless.destroy
-#       
-      # headless = Headless.new
-      # headless.start
-      # browser = Watir::Browser.new
-      # browser.driver.manage.timeouts.implicit_wait = 3
-    # end
-#     
-    # #티몬
-    # p "티몬"
-    # ret = DealItem.add_tmon(browser)
-    # @@isFirst = true
-    # unless ret
-      # p "티몬 error"
-      # browser.close
-      # headless.destroy
-#       
-      # headless = Headless.new
-      # headless.start
-      # browser = Watir::Browser.new
-      # browser.driver.manage.timeouts.implicit_wait = 3
-    # end
-#     
-    # p "옥션"
-    # ret = DealItem.add_auction(browser)
-    # unless ret
-      # p "옥션 error"
-      # browser.close
-      # headless.destroy
-#       
-      # headless = Headless.new
-      # headless.start
-      # browser = Watir::Browser.new
-      # browser.driver.manage.timeouts.implicit_wait = 3
-    # end
     
     p "롯데시네마"
     ret = DealItem.movie_event_lotteciname(browser)

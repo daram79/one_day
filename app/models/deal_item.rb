@@ -1226,38 +1226,95 @@ class DealItem < ActiveRecord::Base
   end
   
   def self.read_auction(browser)
-    browser = Watir::Browser.new
-    url = "http://www.auction.co.kr"
-    browser.goto url
-    
-    
-    
-    doc = Nokogiri::HTML.parse(browser.html)
-    list = doc.css("#touchSlider_allkill li")
-    list.each do |li|
-      event_url = li.css(".allkill_box a").attr("href").value
-      event_id = event_id = event_url.split("itemno=")[1]
-      title = li.css(".allkill_box").text
-      p title
+    begin
+      url = "http://www.auction.co.kr"
+      browser.goto url
       
-      price = li.css(".price_box .price_ing").text.scan(/\d/).join('').to_i
-      p price
+      doc = Nokogiri::HTML.parse(browser.html)
+      list = doc.css("#touchSlider_allkill li")
+      list.each do |li|
+        event_url = li.css(".allkill_box a").attr("href").value
+        event_id = event_url.split("itemno=")[1]
+        event_name = li.css(".allkill_box").text
+        price = li.css(".price_box .price_ing").text.scan(/\d/).join('').to_i
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      
+      list = doc.css("#touchSlider_thema_1 li")
+      list.each do |li|
+        event_url = li.css(".allkill_box a").attr("href").value
+        event_id = event_url.split("itemno=")[1]
+        event_name = li.css(".allkill_box").text
+        event_name.delete!("\t") if event_name.include?("\t")
+        price = li.css(".price_box .price_ing").text.scan(/\d/).join('').to_i
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+        
+      end
+      
+      list = doc.css("#touchSlider_thema_2 li")
+      list.each do |li|
+        event_url = li.css(".allkill_box a").attr("href").value
+        event_id = event_url.split("itemno=")[1]
+        event_name = li.css(".allkill_box").text
+        event_name.delete!("\t") if event_name.include?("\t")
+        price = li.css(".price_box .price_ing").text.scan(/\d/).join('').to_i
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      
+      list = doc.css("#touchSlider_best li a")
+      list.each do |a|
+        # A971384216
+        event_url = a.attr("href")
+        event_id = event_url.split("selecteditemno%3D")[1]
+        event_url = "http://itempage3.auction.co.kr/detailview.aspx?ItemNo=#{event_id}"
+        event_name = a.css(".showcace_info .text_type1").text
+        price = a.css(".showcace_info em").text.scan(/\d/).join('').to_i
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      
+      
+      list = doc.css(".mystyle_con li")
+      list.each do |li|
+        event_url = li.css(".showcase_img a").attr("href").value
+        event_id = event_url.split("itemno=")[1]
+        event_name = li.css(".showcace_info a")[0].text
+        price = li.css(".showcace_info a")[1].text.scan(/\d/).join('').to_i
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+      return true
+    rescue
+      return false
     end
-    
-    list = doc.css("#touchSlider_thema_1 li")
-    list.each do |li|
-      event_url = li.css(".allkill_box a").attr("href").value
-      event_id = event_url.split("itemno=")[1]
-      
-      title = li.css(".allkill_box").text
-      title.delete!("\t") if title.include?("\t")
-      p title
-      
-      price = li.css(".price_box .price_ing").text.scan(/\d/).join('').to_i
-      p price
-      
-    end
-    
   end
   
   

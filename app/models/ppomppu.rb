@@ -1,6 +1,25 @@
 #encoding: utf-8
 class Ppomppu < ActiveRecord::Base
-  after_create :send_ppom_push  
+  after_create :send_ppom_push
+  
+  def self.send_read_push(event_name, price, event_url)
+    gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
+    # event_user_id = EventMailingList.find_by_email("shimtong1004@gmail.com").id
+    event_user_id = [1,2]
+    registration_ids = EventUserRegistrations.where(event_user_id: event_user_id).pluck(:registration_id)
+    option = { :data => {'message' => "소셜커머스#{price}#{event_name} " + "***" + event_url} }   
+    
+    registration_ids.uniq!
+    unless registration_ids.blank?
+      begin
+        response = gcm.send(registration_ids, option)
+        Ppomppu.send_ppom_push_check_button(response, registration_ids)
+      rescue => e
+        pp e.backtrace
+        
+      end
+    end
+  end 
   
   def send_ppom_push
     gcm = GCM.new("AIzaSyD_3jJfuO8NT8G-kDHcmTiwl3w0W1JuxXQ")
