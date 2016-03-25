@@ -1191,6 +1191,7 @@ class DealItem < ActiveRecord::Base
   
   #####################################################################
   def self.read_11st(browser)
+    cnt = 0
     begin
       url = "http://www.11st.co.kr/html/main.html"
       browser.goto url
@@ -1198,6 +1199,7 @@ class DealItem < ActiveRecord::Base
       # list = doc.css("#rankList4 li")
       
       list = doc.css("#rakingWrap li.selected ol li")
+      cnt += list.size
       (0..3).each do |num|
         event_id =  list[num].css("a").attr("href").value.split(',')[-2].split("'")[1]
         event_url = "http://www.11st.co.kr/html/bestSellerMain4.html?prdNo=#{event_id}"
@@ -1215,6 +1217,7 @@ class DealItem < ActiveRecord::Base
       end
       
       list = doc.css("#shockingDealPrdWrap li")
+      cnt += list.size
       list.each do |li|
         image_url =  li.css(".thumb_prd img").attr("src").value
         event_id =  li.css("a").attr("href").value.split("prdNo=")[1].split("&")[0]
@@ -1229,6 +1232,7 @@ class DealItem < ActiveRecord::Base
           end
         end
       end
+      p "total: #{cnt}"
       return true
     rescue
       return false
@@ -1236,6 +1240,7 @@ class DealItem < ActiveRecord::Base
   end
   
   def self.read_g9(browser)
+    cnt = 0
     begin
       url = "http://www.g9.co.kr"
       browser.goto url
@@ -1248,6 +1253,7 @@ class DealItem < ActiveRecord::Base
       doc = Nokogiri::HTML.parse(browser.html)
       # list = doc.css("#goods_list1775 li")
       list = doc.css("#today_deal .list_v3.default_v3 ul li")
+      cnt += list.size
       list.each do |li|
         if li.css(".ico_soldout").blank?
           event_url = "http://www.g9.co.kr" + li.css(".tag").attr("href").value
@@ -1267,6 +1273,7 @@ class DealItem < ActiveRecord::Base
           end
         end
       end
+      p "total: #{cnt}"
       return true
     rescue => e
       pp e.backtrace
@@ -1275,12 +1282,14 @@ class DealItem < ActiveRecord::Base
   end
   
   def self.read_auction(browser)
+    cnt = 0
     begin
       url = "http://www.auction.co.kr"
       browser.goto url
       
       doc = Nokogiri::HTML.parse(browser.html)
       list = doc.css("#touchSlider_allkill li")
+      cnt += list.size
       list.each do |li|
         event_url = li.css(".allkill_box a").attr("href").value
         event_id = event_url.split("itemno=")[1]
@@ -1297,6 +1306,7 @@ class DealItem < ActiveRecord::Base
       end
       
       list = doc.css("#touchSlider_thema_1 li")
+      cnt += list.size
       list.each do |li|
         event_url = li.css(".allkill_box a").attr("href").value
         event_id = event_url.split("itemno=")[1]
@@ -1315,6 +1325,7 @@ class DealItem < ActiveRecord::Base
       end
       
       list = doc.css("#touchSlider_thema_2 li")
+      cnt += list.size
       list.each do |li|
         event_url = li.css(".allkill_box a").attr("href").value
         event_id = event_url.split("itemno=")[1]
@@ -1332,6 +1343,7 @@ class DealItem < ActiveRecord::Base
       end
       
       list = doc.css("#touchSlider_best li a")
+      cnt += list.size
       list.each do |a|
         # A971384216
         event_url = a.attr("href")
@@ -1351,6 +1363,7 @@ class DealItem < ActiveRecord::Base
       
       
       list = doc.css(".mystyle_con li")
+      cnt += list.size
       list.each do |li|
         event_url = li.css(".showcase_img a").attr("href").value
         event_id = event_url.split("itemno=")[1]
@@ -1365,6 +1378,7 @@ class DealItem < ActiveRecord::Base
           end
         end
       end
+      p "total: #{cnt}"
       return true
     rescue => e
       pp e.backtrace
@@ -1374,6 +1388,7 @@ class DealItem < ActiveRecord::Base
   
   
   def self.read_wemakeprice(browser)
+    cnt = 0
     begin
       url = "http://www.wemakeprice.com/"
       browser.goto url
@@ -1385,6 +1400,7 @@ class DealItem < ActiveRecord::Base
       doc = Nokogiri::HTML.parse(browser.html)
       
       list = doc.css("#today_pick_cont li")
+      cnt += list.size
       list.each do |li|
         event_url = li.css("a").attr("href").value
         event_id = event_url.split("?")[0].split("/")[-1]
@@ -1401,6 +1417,7 @@ class DealItem < ActiveRecord::Base
       end
       
       list = doc.css("#wrap_main_best_area li")
+      cnt += list.size
       list.each_with_index do |li, i|
         # http://www.wemakeprice.com/deal/adeal/1001765?source=todaypick&no=1
         next unless li.attr("item_id")
@@ -1417,7 +1434,7 @@ class DealItem < ActiveRecord::Base
           end
         end
       end
-      
+      p "total: #{cnt}"
       return true
     rescue => e
       pp e.backtrace
