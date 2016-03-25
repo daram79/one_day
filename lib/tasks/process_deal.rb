@@ -11,6 +11,10 @@ conveni_flg = true
     s = Time.now
     p "process start #{s}"
     
+    
+    p "쿠팡 - 서치"
+    ret = DealItem.read_cupang
+    
     p "티몬 - 서치"
     ret = DealItem.read_timon(browser)
     unless ret
