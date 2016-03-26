@@ -146,9 +146,48 @@ class DealItem < ActiveRecord::Base
   def self.add_g9(browser)
     begin
       search_key = DealSearchWord.where(is_on: true)
-      url = "http://www.g9.co.kr"
+      url = "http://m.g9.co.kr/Default.htm#/Display/G9Today"
       site_id = 1003
       browser.goto url
+      # doc = Nokogiri::HTML.parse(browser.html)
+#       
+      # if doc.css(".ico_sout.ng-scope").blank?
+        # image_url = doc.css(".img_box img").attr("src").value
+        # event_id = image_url.split("/")[-2]
+        # event_name = doc.css(".tit2.ng-binding").text
+        # price = doc.css(".price.ng-binding.ng-scope").text
+      # else
+#         
+      # end
+#       
+#       
+#       
+      # event_url =
+      # event_site_id = 
+#       
+#       
+      # original_price = 
+      # discount =
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       
       #플레쉬딜
       
@@ -1572,6 +1611,28 @@ class DealItem < ActiveRecord::Base
       p "total: #{cnt}"
     rescue => e
       pp e.backtrace
+    end
+  end
+  
+  def self.coupang_clothes
+    url = "http://www.coupang.com/np/categories/103?option=new&eventCategory=GNB2&eventLabel=fashion_womanclothe_all_best_new%2520_BTN"
+    html_str = open(url).read
+    doc = Nokogiri::HTML(html_str)
+    list = doc.css("#productList li")
+    list.each do |li|
+      event_url = "http://www.coupang.com" + li.css("a").attr("href").value
+      event_id = event_url.split("/")[-1]
+      
+      event_name = li.css(".title em").text
+      price = li.css(".price em").text.scan(/\d/).join('').to_i
+      image_url = li.css("a img").attr("src").value
+      if price < 3000
+        event = Event.where(event_id: event_id)
+        if event.blank?
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
+          Ppomppu.send_read_push(event_name, price, event_url)
+        end
+      end
     end
   end
   
