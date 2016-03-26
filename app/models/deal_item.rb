@@ -146,88 +146,71 @@ class DealItem < ActiveRecord::Base
   def self.add_g9(browser)
     begin
       search_key = DealSearchWord.where(is_on: true)
-      url = "http://m.g9.co.kr/Default.htm#/Display/G9Today"
+      url = "http://m.g9.co.kr/Default.htm#/Display/HomeMain"
       site_id = 1003
       browser.goto url
-      # doc = Nokogiri::HTML.parse(browser.html)
+      
+      doc = Nokogiri::HTML.parse(browser.html)
+      flash = doc.css("#lay_flash_deal #banner_flash")
+      
 #       
-      # if doc.css(".ico_sout.ng-scope").blank?
-        # image_url = doc.css(".img_box img").attr("src").value
-        # event_id = image_url.split("/")[-2]
-        # event_name = doc.css(".tit2.ng-binding").text
-        # price = doc.css(".price.ng-binding.ng-scope").text
-      # else
-#         
-      # end
-#       
-#       
-#       
-      # event_url =
-      # event_site_id = 
-#       
-#       
-      # original_price = 
-      # discount =
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+      #플레쉬딜
+      unless flash.css("a").blank?
+        event_id = flash.css("a").attr("gdno").value
+        event = Event.where(event_id: event_id, event_site_id: 9002)
+        if event.blank?
+          event_url = "http://m.g9.co.kr/VIP.htm#/Display/VIP/#{event_id}"
+          image_url = "http://image.g9.co.kr/g/#{event_id}/o"
+            
+          event_name = flash.css(".tit2.ng-binding").text
+          price = doc.css(".price.ng-binding.ng-scope").text.scan(/\d/).join('').to_i                                  
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9002, image_url: image_url, price: price, original_price: deal_original_price, 
+                              discount: discount, show_flg: true, push_flg: true, update_flg: true)
+                                    
+        end
+      else
+      end
       
       
       #플레쉬딜
       
-      doc = Nokogiri::HTML.parse(browser.html)
-      # unless doc.css("#flash_deal_goods_list").blank?
-      unless doc.css("#flash_deal_goods_list").css(".tag").blank?
-        p "G9 플레쉬딜 정보 수집"
-        
-        deal_title = doc.css("#flash_deal_goods_list").css(".title").text
-        
-        deal_title = doc.css("#flash_deal_goods_list").css(".subject").text if deal_title == "" 
-        
-        deal_title = deal_title.delete!("\n") if deal_title.include?("\n")
-        deal_title = deal_title.delete!("\t") if deal_title.include?("\t")
-        
-        deal_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
-        deal_price = deal_price.scan(/\d/).join('').to_i
-        deal_original_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("del").text
-        discount = doc.css("#flash_deal_goods_list").css(".price_info").css(".sale").text
-        if doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"] 
-          rear_link_url = doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"].value
-          tmp_ary = rear_link_url.split("/")
-          item_id = tmp_ary[-1]
-          deal_url = url + rear_link_url
-          event = Event.where(event_id: item_id, event_site_id: 9002)
-          # deal_image = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
-          deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
-          if event.blank?
-            DealItem.create(item_id: item_id, site_id: 9002, deal_url: deal_url, deal_image: deal_image, discount: discount, deal_original_price: deal_original_price,
-                                  deal_title: deal_title, deal_price: deal_price)
-                                  
-            Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: 9002, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
-                            discount: discount, show_flg: true, push_flg: true, update_flg: true)
-                                  
-          end
-        else
-          event = Event.where(event_site_id: 9002).last
-          event.update(show_flg: false) if event
-        end
-      end
+      # doc = Nokogiri::HTML.parse(browser.html)
+      # # unless doc.css("#flash_deal_goods_list").blank?
+      # unless doc.css("#flash_deal_goods_list").css(".tag").blank?
+        # p "G9 플레쉬딜 정보 수집"
+#         
+        # deal_title = doc.css("#flash_deal_goods_list").css(".title").text
+#         
+        # deal_title = doc.css("#flash_deal_goods_list").css(".subject").text if deal_title == "" 
+#         
+        # deal_title = deal_title.delete!("\n") if deal_title.include?("\n")
+        # deal_title = deal_title.delete!("\t") if deal_title.include?("\t")
+#         
+        # deal_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("strong").text
+        # deal_price = deal_price.scan(/\d/).join('').to_i
+        # deal_original_price = doc.css("#flash_deal_goods_list").css(".price_info").css(".price").css("del").text
+        # discount = doc.css("#flash_deal_goods_list").css(".price_info").css(".sale").text
+        # if doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"] 
+          # rear_link_url = doc.css("#flash_deal_goods_list").css(".tag")[0].attributes["href"].value
+          # tmp_ary = rear_link_url.split("/")
+          # item_id = tmp_ary[-1]
+          # deal_url = url + rear_link_url
+          # event = Event.where(event_id: item_id, event_site_id: 9002)
+          # # deal_image = doc.css("#flash_deal_goods_list").css(".thumbnail")[0].attributes["src"].value
+          # deal_image = "http://image.g9.co.kr/g/" + item_id.to_s + "/o"
+          # if event.blank?
+            # DealItem.create(item_id: item_id, site_id: 9002, deal_url: deal_url, deal_image: deal_image, discount: discount, deal_original_price: deal_original_price,
+                                  # deal_title: deal_title, deal_price: deal_price)
+#                                   
+            # Event.create(event_id: item_id, event_name: deal_title, event_url: deal_url, event_site_id: 9002, image_url: deal_image, price: deal_price, original_price: deal_original_price, 
+                            # discount: discount, show_flg: true, push_flg: true, update_flg: true)
+#                                   
+          # end
+        # else
+          # event = Event.where(event_site_id: 9002).last
+          # event.update(show_flg: false) if event
+        # end
+      # end
       
       #영화 예메권
       # begin
