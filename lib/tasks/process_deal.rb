@@ -104,18 +104,18 @@ conveni_flg = true
       browser.driver.manage.timeouts.implicit_wait = 3
     end
     
-    p "슈퍼꿀딜"
-    ret = DealItem.add_tmon_super_ggul(browser)
-    unless ret
-      p "슈퍼꿀딜 error"
-      browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
-      browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
-    end
+    # p "슈퍼꿀딜"
+    # ret = DealItem.add_tmon_super_ggul(browser)
+    # unless ret
+      # p "슈퍼꿀딜 error"
+      # browser.close
+      # headless.destroy
+#       
+      # headless = Headless.new
+      # headless.start
+      # browser = Watir::Browser.new
+      # browser.driver.manage.timeouts.implicit_wait = 3
+    # end
     
     p "롯데시네마"
     ret = DealItem.movie_event_lotteciname(browser)
