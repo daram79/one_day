@@ -149,7 +149,7 @@ class DealItem < ActiveRecord::Base
       url = "http://m.g9.co.kr/Default.htm#/Display/HomeMain"
       site_id = 1003
       browser.goto url
-      
+      sleep 0.5
       doc = Nokogiri::HTML.parse(browser.html)
       flash = doc.css("#lay_flash_deal #banner_flash")
       
@@ -163,9 +163,8 @@ class DealItem < ActiveRecord::Base
           image_url = "http://image.g9.co.kr/g/#{event_id}/o"
             
           event_name = flash.css(".tit").text
-          price = doc.css(".price.ng-binding.ng-scope").text.scan(/\d/).join('').to_i                                  
-          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9002, image_url: image_url, price: price, original_price: deal_original_price, 
-                              discount: discount, show_flg: true, push_flg: true, update_flg: true)
+          price = flash.css(".price").text.scan(/\d/).join('').to_i                                  
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9002, image_url: image_url, price: price, show_flg: true, push_flg: true, update_flg: true)
                                     
         end
       else
@@ -406,7 +405,7 @@ class DealItem < ActiveRecord::Base
       # end
       return true
     rescue => e
-      pp e.backtrace
+      p e.backtrace
       return false
     end
     
