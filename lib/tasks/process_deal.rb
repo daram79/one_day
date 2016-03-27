@@ -12,10 +12,10 @@ conveni_flg = true
     p "process start #{s}"
     
     
-    p "티몬 - 서치"
+    p "티몬 - 옷 검색"
     ret = DealItem.timon_clothes(browser)
     unless ret
-      p "티몬 서치 error"
+      p "티몬 옷 검색 error"
       browser.close
       headless.destroy
       
