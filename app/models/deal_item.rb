@@ -1635,7 +1635,7 @@ class DealItem < ActiveRecord::Base
       list.each do |li|
         event_id = li.css("a.thmb").attr("href").value.split("/")[-2]
         event_url = "http://m.ticketmonster.co.kr/deal/detailDaily/#{event_id}"
-        event_name = li.css(".title em").text
+        event_name = li.css(".subject").text
         price = li.css(".price .sale em").text.scan(/\d/).join('').to_i
         image_url = li.css(".thmb img.deal_img").attr("src").value
         if price < 3000
