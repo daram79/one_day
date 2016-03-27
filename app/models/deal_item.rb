@@ -1620,26 +1620,33 @@ class DealItem < ActiveRecord::Base
   end
   
   
-  # def self.coupang_clothes
-    # url = "http://www.coupang.com/np/categories/103?option=new&eventCategory=GNB2&eventLabel=fashion_womanclothe_all_best_new%2520_BTN"
-    # html_str = open(url).read
-    # doc = Nokogiri::HTML(html_str)
-    # list = doc.css("#productList li")
-    # list.each do |li|
-      # event_url = "http://www.coupang.com" + li.css("a").attr("href").value
-      # event_id = event_url.split("/")[-1]
-#       
-      # event_name = li.css(".title em").text
-      # price = li.css(".price em").text.scan(/\d/).join('').to_i
-      # image_url = li.css("a img").attr("src").value
-      # if price < 3000
-        # event = Event.where(event_id: event_id)
-        # if event.blank?
-          # Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
-          # Ppomppu.send_read_push(event_name, price, event_url)
-        # end
-      # end
-    # end
-  # end
+  def self.timon_clothes(browser)
+    #여성복
+    urls = ["http://www.ticketmonster.co.kr/deallist/1000000?sortby=latest", "http://www.ticketmonster.co.kr/deallist/2000000?sortby=latest"]
+    urls.each do |url|
+      browser.goto url
+      begin
+        browser.link(:onclick=>"hideSubscribe();return false;").click
+      rescue
+      end
+      doc = Nokogiri::HTML.parse(browser.html)
+      
+      list = doc.css("#wrap_deal_lst li.dealli")
+      list.each do |li|
+        event_id = li.css("a.thmb").attr("href").value.split("/")[-2]
+        event_url = "http://m.ticketmonster.co.kr/deal/detailDaily/#{event_id}"
+        event_name = li.css(".title em").text
+        price = li.css(".price .sale em").text.scan(/\d/).join('').to_i
+        image_url = li.css(".thmb img.deal_img").attr("src").value
+        if price < 3000
+          event = Event.where(event_id: event_id)
+          if event.blank?
+            Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, price: price, show_flg: false, push_flg: true, update_flg: true, image_url: image_url)
+            Ppomppu.send_read_push(event_name, price, event_url)
+          end
+        end
+      end
+    end
+  end
   
 end

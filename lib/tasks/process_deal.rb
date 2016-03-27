@@ -12,6 +12,20 @@ conveni_flg = true
     p "process start #{s}"
     
     
+    p "티몬 - 서치"
+    ret = DealItem.timon_clothes(browser)
+    unless ret
+      p "티몬 서치 error"
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
+    end
+    
+    
     p "쿠팡 - 서치"
     ret = DealItem.read_cupang
     unless ret
