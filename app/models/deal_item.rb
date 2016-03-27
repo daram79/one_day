@@ -162,7 +162,7 @@ class DealItem < ActiveRecord::Base
           event_url = "http://m.g9.co.kr/VIP.htm#/Display/VIP/#{event_id}"
           image_url = "http://image.g9.co.kr/g/#{event_id}/o"
             
-          event_name = flash.css(".tit2.ng-binding").text
+          event_name = flash.css(".tit").text
           price = doc.css(".price.ng-binding.ng-scope").text.scan(/\d/).join('').to_i                                  
           Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9002, image_url: image_url, price: price, original_price: deal_original_price, 
                               discount: discount, show_flg: true, push_flg: true, update_flg: true)
