@@ -12,97 +12,97 @@ conveni_flg = true
     p "process start #{s}"
     
     
-    p "티몬 - 옷 검색"
-    ret = DealItem.timon_clothes(browser)
-    unless ret
-      p "티몬 옷 검색 error"
-      browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
-      browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
-    end
-    
-    
-    p "쿠팡 - 서치"
-    ret = DealItem.read_cupang
-    unless ret
-      p "쿠팡 서치 error"
-      browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
-      browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
-    end
-    
-    p "티몬 - 서치"
-    ret = DealItem.read_timon(browser)
-    unless ret
-      p "티몬 서치 error"
-      browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
-      browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
-    end
-    
-    p "위메프 - 서치"
-    ret = DealItem.read_wemakeprice(browser)
-    unless ret
-      p "위메프 서치 error"
-      browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
-      browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
-    end
-    
-    p "11번가 - 서치"
-    ret = DealItem.read_11st(browser)
-    unless ret
-      p "11번가 서치 error"
-      browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
-      browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
-    end
-    
-    p "G9 - 서치"
-    ret = DealItem.read_g9(browser)
-    unless ret
-      p "G9 서치 error"
-      browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
-      browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
-    end
-    
-    p "옥션 - 서치"
-    ret = DealItem.read_auction(browser)
-    unless ret
-      p "옥션 서치 error"
-      browser.close
-      headless.destroy
-      
-      headless = Headless.new
-      headless.start
-      browser = Watir::Browser.new
-      browser.driver.manage.timeouts.implicit_wait = 3
-    end
+    # p "티몬 - 옷 검색"
+    # ret = DealItem.timon_clothes(browser)
+    # unless ret
+      # p "티몬 옷 검색 error"
+      # browser.close
+      # headless.destroy
+#       
+      # headless = Headless.new
+      # headless.start
+      # browser = Watir::Browser.new
+      # browser.driver.manage.timeouts.implicit_wait = 3
+    # end
+#     
+#     
+    # p "쿠팡 - 서치"
+    # ret = DealItem.read_cupang
+    # unless ret
+      # p "쿠팡 서치 error"
+      # browser.close
+      # headless.destroy
+#       
+      # headless = Headless.new
+      # headless.start
+      # browser = Watir::Browser.new
+      # browser.driver.manage.timeouts.implicit_wait = 3
+    # end
+#     
+    # p "티몬 - 서치"
+    # ret = DealItem.read_timon(browser)
+    # unless ret
+      # p "티몬 서치 error"
+      # browser.close
+      # headless.destroy
+#       
+      # headless = Headless.new
+      # headless.start
+      # browser = Watir::Browser.new
+      # browser.driver.manage.timeouts.implicit_wait = 3
+    # end
+#     
+    # p "위메프 - 서치"
+    # ret = DealItem.read_wemakeprice(browser)
+    # unless ret
+      # p "위메프 서치 error"
+      # browser.close
+      # headless.destroy
+#       
+      # headless = Headless.new
+      # headless.start
+      # browser = Watir::Browser.new
+      # browser.driver.manage.timeouts.implicit_wait = 3
+    # end
+#     
+    # p "11번가 - 서치"
+    # ret = DealItem.read_11st(browser)
+    # unless ret
+      # p "11번가 서치 error"
+      # browser.close
+      # headless.destroy
+#       
+      # headless = Headless.new
+      # headless.start
+      # browser = Watir::Browser.new
+      # browser.driver.manage.timeouts.implicit_wait = 3
+    # end
+#     
+    # p "G9 - 서치"
+    # ret = DealItem.read_g9(browser)
+    # unless ret
+      # p "G9 서치 error"
+      # browser.close
+      # headless.destroy
+#       
+      # headless = Headless.new
+      # headless.start
+      # browser = Watir::Browser.new
+      # browser.driver.manage.timeouts.implicit_wait = 3
+    # end
+#     
+    # p "옥션 - 서치"
+    # ret = DealItem.read_auction(browser)
+    # unless ret
+      # p "옥션 서치 error"
+      # browser.close
+      # headless.destroy
+#       
+      # headless = Headless.new
+      # headless.start
+      # browser = Watir::Browser.new
+      # browser.driver.manage.timeouts.implicit_wait = 3
+    # end
     
     #G9
     p "G9"
@@ -117,19 +117,6 @@ conveni_flg = true
       browser = Watir::Browser.new
       browser.driver.manage.timeouts.implicit_wait = 3
     end
-    
-    # p "슈퍼꿀딜"
-    # ret = DealItem.add_tmon_super_ggul(browser)
-    # unless ret
-      # p "슈퍼꿀딜 error"
-      # browser.close
-      # headless.destroy
-#       
-      # headless = Headless.new
-      # headless.start
-      # browser = Watir::Browser.new
-      # browser.driver.manage.timeouts.implicit_wait = 3
-    # end
     
     p "롯데시네마"
     ret = DealItem.movie_event_lotteciname(browser)
