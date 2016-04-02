@@ -157,7 +157,11 @@ class DealItem < ActiveRecord::Base
       #플레쉬딜
       unless flash.css("a").blank?
         event_id = flash.css("a").attr("gdno").value
-        event = Event.where(event_id: event_id, event_site_id: 9002)
+        
+        start_date = Time.now.beginning_of_day.yesterday
+        end_date = Time.now.end_of_day.tomorrow
+        
+        event = Event.where(event_id: event_id, event_site_id: 9002).where("created_at > ? and created_at < ?", start_date, end_date)
         if event.blank?
           event_url = "http://m.g9.co.kr/VIP.htm#/Display/VIP/#{event_id}"
           image_url = "http://image.g9.co.kr/g/#{event_id}/o"
