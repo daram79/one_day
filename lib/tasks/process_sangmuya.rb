@@ -19,5 +19,5 @@ require "#{File.dirname(__FILE__)}/../../config/environment.rb"
     
     event = Event.where(event_id: event_id)
     
-    Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, show_flg: true, push_flg: false, update_flg: true, image_url: image_url) if event.blank?
+    Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: 9999, show_flg: false, push_flg: false, update_flg: true, image_url: image_url) if event.blank?
       
