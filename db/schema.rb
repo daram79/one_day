@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160315173539) do
+ActiveRecord::Schema.define(version: 20160403052128) do
 
   create_table "alrams", force: true do |t|
     t.integer  "user_id"
@@ -240,6 +240,7 @@ ActiveRecord::Schema.define(version: 20160315173539) do
     t.string   "next_url"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "first_text"
   end
 
   create_table "event_images", force: true do |t|

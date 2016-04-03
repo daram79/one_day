@@ -7,14 +7,22 @@
 	<table style="width: 100%; padding:10px; text-align: left; background-color: white;">
 		<tr><td style="padding: 10px 5px; font-size: 16px; font-weight: bold;"><%= @event_detail.title %></td></tr>
 		
+		<% if @event_detail.first_text %>
+			<tr>
+				<td style="padding: 0 5px 15px 5px; font-size: 14px;">
+					<%= raw Rinku.auto_link(hbr(@event_detail.first_text)) %>
+				</td>
+			</tr>
+		<% end %>
+		
 		<% @event_detail.event_detail_images.each_with_index do |event_detail_image, i| %>
 		<tr>
-			<td style="padding: 5px 5px 10px 5px">
+			<td style="padding: 5px 5px 0 5px">
 				<img class="image_border" src="<%=event_detail_image.image.url%>" />
 			</td>
 		</tr>
 		<tr>
-			<td style="padding: 0 5px; font-size: 14px;">
+			<td style="padding: 0 5px 20px 5px; font-size: 14px;">
 				<%= raw Rinku.auto_link(hbr(@ary_content[i])) %>
 			</td>
 		</tr>
