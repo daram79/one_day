@@ -1,0 +1,85 @@
+<h1 style="padding: 10px;">꿀가득 이벤트 생성 페이지</h1>
+<%= form_for(@event) do |f| %>
+	<table style="padding:10px; line-height: 2">
+		<tr>
+			<!-- <td>item No.</td> -->
+			<td class="first">사이트명:</td>
+			<td>
+				<!-- <%= f.select :event_site_id, [["11번가", 9900], ["쇼킹딜", 9901], ["티몬", 9902], ["위메프", 9903], ["G9", 9904], ["쿠팡", 9905], ["옥션", 9906]], :selected => 9900 %> -->
+				<%= f.select :event_site_id, [["11번가", 9900], ["쇼킹딜", 9901], ["티몬", 9902], ["위메프", 9903], ["G9", 9904], ["쿠팡", 9905], 
+												["옥션", 9906], ["지마켓", 9907], ["그외", 9999], ["온라인", 10002], ["오프라인", 10001]], :selected => 9999 %>
+			</td>
+		</tr>
+		<tr>
+			<td class="first">타이틀:</td>
+			<td>
+				<%= f.text_field :event_name, :class => "second" %>
+			</td>
+		</tr>
+		<tr>
+			<td class="first">사이트 URL:</td>
+			<td>
+				<%= f.text_field :event_url, :class => "second" %>
+			</td>
+		</tr>
+		<!-- <tr>
+			<td class="first">이미지 URL:</td>
+			<td>
+				<%= f.text_field :image_url, :class => "second" %>
+				<%= f.fields_for :event_images do |event_image| %>
+				  <%= event_image.file_field :image %>
+				<% end %>
+			</td>
+		</tr> -->
+		<tr>
+			<td class="first">할인율:</td>
+			<td>
+				<%= f.text_field :discount %>
+			%</td>
+		</tr>
+		<tr>
+			<td class="first">판매가:</td>
+			<td>
+				<%= f.text_field :price %>원
+			</td>
+		</tr>
+		<tr>
+			<td class="first">정가:</td>
+			<td>
+				<%= f.text_field :original_price %>원
+			</td>
+		</tr>
+		<tr>
+			<td class="first">보여주기:</td>
+			<td>
+				<%= f.select :show_flg, [["yes", true], ["no", false]] %>
+			</td>
+		</tr>
+		<tr>
+			<td class="btn" colspan="2"><%= f.submit :value=>"만들기", :style => "width:100%; padding: 15px 40px;" %></td>
+		</tr>
+	</table>
+	<%= f.hidden_field :push_flg,  :value=>true %>
+	<%= f.hidden_field :update_flg, :value=>true %>
+<% end %>
+
+<style>
+	.first {
+		text-align: right;
+		width: 130px;
+	}
+	.second {
+		width: 100%;
+		text-align: left;
+		
+	}
+	.btn {
+		text-align: center;
+		width:100%;
+	}
+</style>
+<script>
+<% if notice %>
+alert('<%= notice %>')
+<% end %>	
+</script>
