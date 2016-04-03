@@ -1,7 +1,7 @@
 # coding : utf-8
 
 class EventsController < ApplicationController
-  before_action :set_event, only: [:show, :edit, :update, :destroy]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :edit_data]
   
   @@super_deal_ids = [9001, 9002]
 
@@ -33,6 +33,13 @@ class EventsController < ApplicationController
   
   def new2
     
+  end
+  
+  def edit_data
+    if @event.original_price
+      @event.original_price.delete!("원")
+      @event.original_price.delete!(",")
+    end
   end
   
   def create_event
@@ -131,8 +138,13 @@ class EventsController < ApplicationController
   def update
     respond_to do |format|
       if @event.update(event_params)
-        format.html { redirect_to @event, notice: 'Event was successfully updated.' }
-        format.json { render :show, status: :ok, location: @event }
+        # format.html { redirect_to @event, notice: 'Event was successfully updated.' }
+        # format.json { render :show, status: :ok, location: @event }
+        if Rails.env == 'development'
+            format.html { redirect_to :action => "event_true" }
+          else
+            format.html { redirect_to :action => "event_true", :port => 81 }
+          end
       else
         format.html { render :edit }
         format.json { render json: @event.errors, status: :unprocessable_entity }

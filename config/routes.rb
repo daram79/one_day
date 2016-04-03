@@ -64,6 +64,7 @@ Rails.application.routes.draw do
       put "hide_data"
       put "add_push"
       put "force_data"
+      get "edit_data"
     end
   end
   

@@ -16,12 +16,20 @@
 			<input style="padding: 10px;" onclick="javascript:add_push(<%=event.id%>);" type="button" value="알림보내기" />
 			<input style="padding: 10px;" onclick="javascript:show_data(<%=event.id%>);" type="button" value="보여주기" />
 			<input style="padding: 10px;" onclick="javascript:hide_data(<%=event.id%>);" type="button" value="숨기기" />
+			<input style="padding: 10px;" onclick="javascript:edit_data(<%=event.id%>);" type="button" value="수정" />
 		</td>
 	</tr>
 	<%end%>
 </table>
 
 <script>
+
+	function edit_data(event_id) {
+		if (confirm("데이터를 수정 하겠습니까?") == true){    //확인
+			window.location.href = event_id + "/edit_data";
+		}
+	}
+
 	function add_push(event_id){
 		if (confirm("푸쉬를 보내시겠습니까?") == true){    //확인
 		$.ajax({
