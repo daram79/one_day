@@ -9,7 +9,7 @@
 		
 		<% if @event_detail.first_text %>
 			<tr>
-				<td style="padding: 0 5px 15px 5px; font-size: 14px;">
+				<td style="padding: 0 5px 15px 5px; font-size: 14px; word-break:break-all;">
 					<%= raw Rinku.auto_link(hbr(@event_detail.first_text)) %>
 				</td>
 			</tr>
