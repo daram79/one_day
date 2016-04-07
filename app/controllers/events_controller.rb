@@ -242,6 +242,28 @@ class EventsController < ApplicationController
     end
   end
   
+  def get_advance_registration
+    event_site_ids = [9992]
+    @event = Event.where(event_site_id: event_site_ids, super_flg: true).order("show_flg desc").order("id desc")
+       
+    # @event = Event.where(show_flg: true).order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render json: @event }
+    end
+  end
+  
+  def get_lottery_event
+    event_site_ids = [9993] #추첨 이벤트
+    @event = Event.where(event_site_id: event_site_ids, super_flg: true).order("show_flg desc").order("id desc")
+       
+    # @event = Event.where(show_flg: true).order("id desc")
+    respond_to do |format|
+      format.html { render "get_event" }
+      format.json { render json: @event }
+    end
+  end
+  
   def get_hot_offline
     # event_site_ids = [4001, 4002, 4003, 9001, 9002, 9900]
     event_site_ids = [10001]

@@ -50,6 +50,8 @@ Rails.application.routes.draw do
       get "get_hot_all"
       get "get_hot_deal"
       get "get_hot_movie"
+      get "get_advance_registration"
+      get "get_lottery_event"
       get "add_item"
       get "get_hot_offline"
       get "get_hot_online"
