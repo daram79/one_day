@@ -202,11 +202,25 @@ class Event < ActiveRecord::Base
           data[:original_price] = ""
         when 9906 then
           data[:event_id] = url.split('/')[-1]
-          data[:image_url] = doc.css("#image_wrapper img").attr("src").value
-          data[:event_name] = doc.css(".title h3 span").text
+          big-img
+          # data[:image_url] = doc.css("#image_wrapper img").attr("src").value
+          data[:image_url] = doc.css(".big-img img").attr("src").value
+          
+          title = doc.css("#ucCatalogAndItemName_hdivItemTitle").text
+          title.delete!("\n") if title.include?("\n")
+          title.delete!("\t") if title.include?("\t")
+          data[:event_name] = title
+          
+          # data[:event_name] = doc.css(".title h3 span").text
           data[:discount] = ""
-          data[:price] = doc.css(".price .ng-scope strong").text.scan(/\d/).join('').to_i
+          # data[:price] = doc.css(".price .ng-scope strong").text.scan(/\d/).join('').to_i
           data[:original_price] = doc.css(".price .ng-scope del").text
+          
+          data[:price] = doc.css(".dis.mprice").text.scan(/\d/).join('').to_i
+          data[:original_price] = doc.css(".org.mprice").text
+          data[:original_price].delete!("\n") if data[:original_price].include?("\n")
+          data[:original_price].delete!("\t") if data[:original_price].include?("\t")
+          
         when 9909 then
           data[:event_id] = url.split("itemId=")[1].split("&")[0]
           data[:image_url] = "http:" + doc.css(".imgbox.imgzoom img").attr("src").value
