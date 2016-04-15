@@ -202,7 +202,6 @@ class Event < ActiveRecord::Base
           data[:original_price] = ""
         when 9906 then
           data[:event_id] = url.split('/')[-1]
-          big-img
           # data[:image_url] = doc.css("#image_wrapper img").attr("src").value
           data[:image_url] = doc.css(".big-img img").attr("src").value
           
