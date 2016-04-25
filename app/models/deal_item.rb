@@ -1613,4 +1613,58 @@ class DealItem < ActiveRecord::Base
     end
   end
   
+  def self.test
+    out_ary = []
+    ok_ary = []
+    no_ary = [1243, 1351, 1480, 1594, 1633, 1677, 1679, 1758, 1785, 1788, 1789, 1791, 1792, 1793, 1794, 1795, 1796, 1802, 1803, 1808, 1809, 1810, 1811, 1816, 1818]
+    
+    while 1
+      p Time.now
+      for cnt in 1..3000
+        # next if no_ary.find{ |n| n == cnt }
+        # next if out_ary.find{ |n| n == cnt }
+        tmp = Time.now.instance_eval { self.to_i * 1000 + (usec/1000) }
+        url = "http://m.gmarket.co.kr/Event/m_eventview/index.asp?msid=#{cnt}&a=#{tmp}"
+        html_str = open(url).read
+        
+        keyword = "http://image.gmarket.co.kr/Gmkt_Global/event/2016/0408_769_showch/m_visual.jpg"
+        p url if html_str.include?(keyword)
+      end
+      p Time.now
+    end
+    
+    
+    
+    while 1
+      p Time.now
+      # 1470368291
+      
+      # for cnt in 1470368291..1470369900
+      for cnt in 1476525623..1476525623
+        begin
+          tmp = Time.now.instance_eval { self.to_i * 1000 + (usec/1000) }
+          url = "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=#{cnt}&a=#{tmp}"
+          html_str = open(url).read
+          
+          keyword = "오랄비"
+          p url if html_str.include?(keyword)
+        rescue
+        end
+      end
+      p Time.now
+    end
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  end
+  
 end

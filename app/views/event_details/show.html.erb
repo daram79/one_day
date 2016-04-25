@@ -23,7 +23,16 @@
 		</tr>
 		<tr>
 			<td style="padding: 0 5px 20px 5px; font-size: 14px;">
-				<%= raw Rinku.auto_link(hbr(@ary_content[i])) %>
+				<% if @ary_content[i].include?("market://") %>
+				  <% tmp_ary = @ary_content[i].split("market://") %>
+				  <% html_str = tmp_ary[1].split(' ', 2) %>
+				  <% tmp_ary[1].delete html_str %>
+				  <% str = tmp_ary.join %>
+				  <%= raw Rinku.auto_link(hbr(@ary_content[i])) %>
+				  <a href="<%=html_str%>"><%=html_str%></a>
+				<% else %>
+					<%= raw Rinku.auto_link(hbr(@ary_content[i])) %>
+				<% end %>
 			</td>
 		</tr>
 		<% end %>
