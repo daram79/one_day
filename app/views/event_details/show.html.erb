@@ -10,7 +10,18 @@
 		<% if @event_detail.first_text %>
 			<tr>
 				<td style="padding: 0 5px 15px 5px; font-size: 14px; word-break:break-all;">
+				<% if @event_detail.first_text.include?("market://") %>
+				  <% tmp_ary = @event_detail.first_text.split("market://") %>
+				  <% html_str = tmp_ary[1].split(' ', 2)[0] %>
+				  <% html_str = "market://" + html_str %>
+				  <% tmp_ary[1].delete! html_str %>
+				  <% str = tmp_ary.join %>
+				  <%= raw Rinku.auto_link(hbr(str)) %>
+				  <a href="<%=html_str%>"><%=html_str%></a>
+				<% else %>
 					<%= raw Rinku.auto_link(hbr(@event_detail.first_text)) %>
+				<% end %>
+					
 				</td>
 			</tr>
 		<% end %>
@@ -23,16 +34,7 @@
 		</tr>
 		<tr>
 			<td style="padding: 0 5px 20px 5px; font-size: 14px;">
-				<% if @ary_content[i].include?("market://") %>
-				  <% tmp_ary = @ary_content[i].split("market://") %>
-				  <% html_str = tmp_ary[1].split(' ', 2) %>
-				  <% tmp_ary[1].delete html_str %>
-				  <% str = tmp_ary.join %>
-				  <%= raw Rinku.auto_link(hbr(@ary_content[i])) %>
-				  <a href="<%=html_str%>"><%=html_str%></a>
-				<% else %>
-					<%= raw Rinku.auto_link(hbr(@ary_content[i])) %>
-				<% end %>
+				<%= raw Rinku.auto_link(hbr(@ary_content[i])) %>
 			</td>
 		</tr>
 		<% end %>
