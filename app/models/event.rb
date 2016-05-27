@@ -11,7 +11,7 @@ class Event < ActiveRecord::Base
   
   accepts_nested_attributes_for :event_images, reject_if: :feed_photos_attributes.blank?#, allow_destroy: true
   
-  @@super_deal_ids = ["9001", "9002", "4001", "4002", "4003"]
+  @@super_deal_ids = ["9001", "9002", "4001", "4002", "4003", "4004"]
 =begin  
   def send_push
     if self.push_flg && self.show_flg
