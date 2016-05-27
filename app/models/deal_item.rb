@@ -736,6 +736,7 @@ class DealItem < ActiveRecord::Base
     begin
       url = "http://event.lottecinema.co.kr/LCHS/Contents/Event/preview-stage-greeting-list.aspx"
       browser.goto url
+      sleep 2
       event_site_id = 4004
       
       doc = Nokogiri::HTML.parse(browser.html)
