@@ -731,6 +731,37 @@ class DealItem < ActiveRecord::Base
     
   end
   
+  def self.movie_event_lotteciname2(browser)
+#   롯데시네마 무대인사
+    begin
+      url = "http://event.lottecinema.co.kr/LCHS/Contents/Event/preview-stage-greeting-list.aspx"
+      browser.goto url
+      event_site_id = 4004
+      
+      doc = Nokogiri::HTML.parse(browser.html)
+      list = doc.css("ul.emovie_list li")
+      list.each do |li|
+        event_id = li.css(".event a").attr("onclick").value.split("(")[1].split(",")[0].scan(/\d/).join('').to_i
+        event = Event.where(event_id: event_id, event_site_id: event_site_id)
+        if event.blank?
+          title = li.css(".event").text
+          # price.lstrip!
+          event_name = "[롯데시네마/무대인사]" + title 
+          event_url = url
+          image_url = li.css("a img")[0].attr("src")
+        
+          Event.create(event_id: event_id, event_name: event_name, event_url: event_url, event_site_id: event_site_id, image_url: image_url, 
+                        show_flg: true, push_flg: true, update_flg: true, deal_search_word_id: 10001)
+        else
+        end
+      end
+      return true
+    rescue => e
+      return false
+    end
+    
+  end
+  
   def self.add_tmon_super_ggul(browser)
     begin
       url = "http://m.search.ticketmonster.co.kr/search/result?keyword=%EC%8A%88%ED%8D%BC%EA%BF%80%EB%94%9C"
@@ -1640,13 +1671,14 @@ class DealItem < ActiveRecord::Base
       # 1470368291
       
       # for cnt in 1470368291..1470369900
-      for cnt in 1476525623..1476525623
+      for cnt in 1489086957..1489087500
         begin
           tmp = Time.now.instance_eval { self.to_i * 1000 + (usec/1000) }
           url = "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=#{cnt}&a=#{tmp}"
+          # url = "http://www.11st.co.kr/product/SellerProductDetail.tmall?method=getSellerProductDetail&prdNo=#{cnt}&a=#{tmp}"
           html_str = open(url).read
           
-          keyword = "오랄비"
+          keyword = "버거킹"
           p url if html_str.include?(keyword)
         rescue
         end

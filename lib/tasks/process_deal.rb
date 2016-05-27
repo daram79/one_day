@@ -131,6 +131,19 @@ conveni_flg = true
       browser.driver.manage.timeouts.implicit_wait = 3
     end
     
+    p "롯데시네마 무대인사"
+    ret = DealItem.movie_event_lotteciname2(browser)
+    unless ret
+      p "롯데시네마 무대인사 error"
+      browser.close
+      headless.destroy
+      
+      headless = Headless.new
+      headless.start
+      browser = Watir::Browser.new
+      browser.driver.manage.timeouts.implicit_wait = 3
+    end
+    
     
     
     p "메가박스"
